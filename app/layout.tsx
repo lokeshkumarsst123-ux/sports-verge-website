@@ -1,0 +1,82 @@
+import type { Metadata } from "next";
+import { Outfit, Space_Grotesk } from "next/font/google";
+import "./globals.css";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import Preloader from "@/components/Preloader";
+import Script from "next/script";
+
+const outfit = Outfit({
+  variable: "--font-outfit",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800"],
+});
+
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-space-grotesk",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
+export const metadata: Metadata = {
+  title: "SportsVerge - Premium Sports Data & Live Analytics Platform",
+  description: "Experience real-time sports statistics, predictive analytics, and premium content on the Next-Gen sports platform.",
+  keywords: "sports analytics, real-time sports, live sports statistics, sports verge",
+  authors: [{ name: "SportsVerge Team" }],
+  icons: {
+    icon: "/assets/imgs/favicon.png",
+  },
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="en" className={`${outfit.variable} ${spaceGrotesk.variable}`}>
+      <head>
+        <link rel="icon" href="/assets/imgs/favicon.png" type="image/png" />
+
+        {/* Lower precedence for external libraries */}
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          precedence="default"
+        />
+        <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+          precedence="default"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+          rel="stylesheet"
+          precedence="default"
+        />
+
+        {/* Higher precedence for custom styles to ensure they override Bootstrap */}
+        <link
+          rel="stylesheet"
+          href="/assets/css/style.css"
+          precedence="high"
+        />
+        <link
+          rel="stylesheet"
+          href="/assets/css/custom.css"
+          precedence="high"
+        />
+      </head>
+      <body>
+        <Preloader />
+        <Header />
+        {children}
+        <Footer />
+        <Script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+          strategy="afterInteractive"
+        />
+      </body>
+    </html>
+  );
+}
