@@ -50,6 +50,57 @@ export default function StatusBadge({ status }: StatusBadgeProps) {
       border = "1px solid rgba(255, 255, 255, 0.08)";
       color = "#8a94a6";
       break;
+    // Football-specific statuses
+    case "SCHEDULED":
+      bg = "rgba(99, 102, 241, 0.1)";
+      border = "1px solid rgba(99, 102, 241, 0.25)";
+      color = "#818cf8";
+      break;
+    case "KICK OFF":
+      bg = "rgba(220, 53, 69, 0.12)";
+      border = "1px solid rgba(220, 53, 69, 0.25)";
+      color = "#ff5b5b";
+      dotColor = "#ff5b5b";
+      isLive = true;
+      break;
+    case "FIRST HALF":
+      bg = "rgba(220, 53, 69, 0.12)";
+      border = "1px solid rgba(220, 53, 69, 0.25)";
+      color = "#ff5b5b";
+      dotColor = "#ff5b5b";
+      isLive = true;
+      break;
+    case "SECOND HALF":
+      bg = "rgba(220, 53, 69, 0.12)";
+      border = "1px solid rgba(220, 53, 69, 0.25)";
+      color = "#ff5b5b";
+      dotColor = "#ff5b5b";
+      isLive = true;
+      break;
+    case "EXTRA TIME":
+      bg = "rgba(249, 115, 22, 0.12)";
+      border = "1px solid rgba(249, 115, 22, 0.3)";
+      color = "#fb923c";
+      dotColor = "#fb923c";
+      isLive = true;
+      break;
+    case "PENALTY SHOOTOUT":
+      bg = "rgba(168, 85, 247, 0.12)";
+      border = "1px solid rgba(168, 85, 247, 0.3)";
+      color = "#c084fc";
+      dotColor = "#c084fc";
+      isLive = true;
+      break;
+    case "POSTPONED":
+      bg = "rgba(241, 196, 15, 0.12)";
+      border = "1px solid rgba(241, 196, 15, 0.25)";
+      color = "#f1c40f";
+      break;
+    case "CANCELLED":
+      bg = "rgba(220, 53, 69, 0.08)";
+      border = "1px solid rgba(220, 53, 69, 0.2)";
+      color = "#ef4444";
+      break;
     default:
       if (/\b(LIVE|Q\d|\d+('|MIN))\b/i.test(normStatus)) {
         bg = "rgba(220, 53, 69, 0.12)";

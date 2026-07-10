@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
@@ -6,7 +6,8 @@ import { useParams } from "next/navigation";
 import { liveScoresDetailData } from "@/data/mockData";
 import { LiveScoreMatchDetail } from "@/types";
 import StatusBadge from "@/components/live-scores/StatusBadge";
-import { match } from "assert";
+import NFLMatchDetail from "@/components/live-scores/NFLMatchDetail";
+import AFLMatchDetail from "@/components/live-scores/AFLMatchDetail";
 
 interface TeamStat {
   label: string;
@@ -187,9 +188,9 @@ export default function MatchDetailPage() {
           historical: {
             summary: "A rivalry of giants. In the last 15 matchups, Man City has won 8, Arsenal has won 4, and 3 matches have ended in draws.",
             h2h: [
-              { date: "22-Sep-2025", result: "D", detail: "Draw 2-2 â€¢ Premier League" },
-              { date: "31-Mar-2025", result: "D", detail: "Draw 0-0 â€¢ Premier League" },
-              { date: "08-Oct-2024", result: "W", detail: "Arsenal won 1-0 â€¢ Premier League" },
+              { date: "22-Sep-2025", result: "D", detail: "Draw 2-2 Premier League" },
+              { date: "31-Mar-2025", result: "D", detail: "Draw 0-0 Premier League" },
+              { date: "08-Oct-2024", result: "W", detail: "Arsenal won 1-0 Premier League" },
             ]
           }
         };
@@ -236,9 +237,9 @@ export default function MatchDetailPage() {
           historical: {
             summary: "One of the modern NFL's great rivalries. Mahomes and Allen have faced off 8 times in the regular season and playoffs, with Chiefs winning 5 and Bills 3.",
             h2h: [
-              { date: "10-Dec-2024", result: "W", detail: "Bills won 20-17 â€¢ Regular Season" },
-              { date: "21-Jan-2024", result: "L", detail: "Chiefs won 27-24 â€¢ AFC Divisional Round" },
-              { date: "16-Oct-2023", result: "W", detail: "Bills won 24-20 â€¢ Regular Season" },
+              { date: "10-Dec-2024", result: "W", detail: "Bills won 20-17 Regular Season" },
+              { date: "21-Jan-2024", result: "L", detail: "Chiefs won 27-24 AFC Divisional Round" },
+              { date: "16-Oct-2023", result: "W", detail: "Bills won 24-20 Regular Season" },
             ]
           }
         };
@@ -464,667 +465,688 @@ export default function MatchDetailPage() {
           </div>
         </div>
 
-        {/* Tab Navigation Row */}
-        <div className="d-flex border-bottom border-dark overflow-auto mb-4 custom-tabs gap-2 pb-1">
-          {[
-            { id: "overview", label: "Overview", icon: "bi-info-square" },
-            { id: "scorecard", label: "Scorecard", icon: "bi-clipboard-data" },
-            { id: "stats", label: "Statistics", icon: "bi-bar-chart" },
-            { id: "lineups", label: "Lineups", icon: "bi-people" },
-            { id: "timeline", label: "Timeline", icon: "bi-calendar-event" },
-            { id: "commentary", label: "Commentary", icon: "bi-chat-left-text" },
-          ].map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveSubTab(tab.id as any)}
-              className={`btn border-0 rounded-0 px-4 py-3 fw-bold text-uppercase flex-shrink-0 d-flex align-items-center gap-2 ${activeSubTab === tab.id
-                ? "text-success border-bottom border-success border-2"
-                : "text-muted"
-                }`}
-              style={{
-                fontSize: "12px",
-                letterSpacing: "0.5px",
-                transition: "all 0.2s",
-                fontFamily: "var(--font-space-grotesk)",
-              }}
-            >
-              <i className={`bi ${tab.icon}`} style={{ fontSize: "14px" }}></i>
-              {tab.label}
-            </button>
-          ))}
-        </div>
-
-        {/* Tab Contents */}
-        <div className="tab-content">
-
-          {/* OVERVIEW TAB */}
-          {activeSubTab === "overview" && (
-            <div className="d-flex flex-column gap-4">
-              {match.sport === "cricket" && details && (
-                <CricbuzzLiveDashboard match={match} details={details} />
-              )}
-              {/* Match overview details */}
-              <div className="card bg-card border border-dark rounded-3 p-4">
-                <h5
-                  className="text-white fw-bold mb-4 border-start border-success border-4 ps-3"
-                  style={{ fontSize: "18px", fontFamily: "var(--font-space-grotesk)", letterSpacing: "-0.2px" }}
+        {match.sport === "NFL" ? (
+          <NFLMatchDetail match={match} />
+        ) : match.sport === "AFL" ? (
+          <AFLMatchDetail match={match} />
+        ) : (
+          <>
+            {/* Tab Navigation Row */}
+            <div className="d-flex border-bottom border-dark overflow-auto mb-4 custom-tabs gap-2 pb-1">
+              {[
+                { id: "overview", label: "Overview", icon: "bi-info-square" },
+                { id: "scorecard", label: "Scorecard", icon: "bi-clipboard-data" },
+                { id: "stats", label: "Statistics", icon: "bi-bar-chart" },
+                { id: "lineups", label: "Lineups", icon: "bi-people" },
+                { id: "timeline", label: "Timeline", icon: "bi-calendar-event" },
+                { id: "commentary", label: "Commentary", icon: "bi-chat-left-text" },
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveSubTab(tab.id as any)}
+                  className={`btn border-0 rounded-0 px-4 py-3 fw-bold text-uppercase flex-shrink-0 d-flex align-items-center gap-2 ${activeSubTab === tab.id
+                    ? "text-success border-bottom border-success border-2"
+                    : "text-muted"
+                    }`}
+                  style={{
+                    fontSize: "12px",
+                    letterSpacing: "0.5px",
+                    transition: "all 0.2s",
+                    fontFamily: "var(--font-space-grotesk)",
+                  }}
                 >
-                  Match Overview
-                </h5>
-                <div className="row g-3">
-                  {[
-                    { label: "COMPETITION", val: match.competitionName },
-                    { label: "VENUE", val: match.venue },
-                    { label: "LAST UPDATED", val: match.lastUpdated },
-                    { label: "SPORT TYPE", val: match.sport.toUpperCase() }
-                  ].map((item, idx) => (
-                    <div className="col-12 col-sm-6 col-md-3" key={idx}>
-                      <div className="bg-dark bg-opacity-40 border border-secondary border-opacity-10 rounded-3 p-3 h-100">
-                        <div className="text-muted font-monospace mb-2 text-uppercase fw-semibold" style={{ fontSize: "10px", letterSpacing: "0.5px" }}>{item.label}</div>
-                        <div className="text-light fw-bold" style={{ fontSize: "13.5px" }}>{item.val}</div>
+                  <i className={`bi ${tab.icon}`} style={{ fontSize: "14px" }}></i>
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Tab Contents */}
+            <div className="tab-content">
+
+              {/* OVERVIEW TAB */}
+              {activeSubTab === "overview" && (
+                <div className="d-flex flex-column gap-4">
+                  {match.sport === "cricket" && details && (
+                    <CricbuzzLiveDashboard match={match} details={details} />
+                  )}
+                  {match.sport === "football" && (
+                    <FootballLiveDashboard match={match} />
+                  )}
+                  {/* Match overview details */}
+                  <div className="card bg-card border border-dark rounded-3 p-4">
+                    <h5
+                      className="text-white fw-bold mb-4 border-start border-success border-4 ps-3"
+                      style={{ fontSize: "18px", fontFamily: "var(--font-space-grotesk)", letterSpacing: "-0.2px" }}
+                    >
+                      Match Overview
+                    </h5>
+                    <div className="row g-3">
+                      {[
+                        { label: "COMPETITION", val: match.competitionName },
+                        { label: "VENUE", val: match.stadium || match.venue },
+                        { label: "LAST UPDATED", val: match.lastUpdated },
+                        { label: "SPORT TYPE", val: match.sport.toUpperCase() },
+                        ...(match.referee ? [{ label: "REFEREE", val: match.referee }] : []),
+                        ...(match.matchWeek ? [{ label: "ROUND", val: match.matchWeek }] : []),
+                      ].map((item, idx) => (
+                        <div className="col-12 col-sm-6 col-md-3" key={idx}>
+                          <div className="bg-dark bg-opacity-40 border border-secondary border-opacity-10 rounded-3 p-3 h-100">
+                            <div className="text-muted font-monospace mb-2 text-uppercase fw-semibold" style={{ fontSize: "10px", letterSpacing: "0.5px" }}>{item.label}</div>
+                            <div className="text-light fw-bold" style={{ fontSize: "13.5px" }}>{item.val}</div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Head-to-Head & Historical */}
+                  {details?.historical && (
+                    <div className="card bg-card border border-dark rounded-3 p-4">
+                      <h5
+                        className="text-white fw-bold mb-3 border-start border-success border-4 ps-3"
+                        style={{ fontSize: "18px", fontFamily: "var(--font-space-grotesk)", letterSpacing: "-0.2px" }}
+                      >
+                        Historical Results (H2H)
+                      </h5>
+                      <p className="text-muted mb-4" style={{ fontSize: "14px" }}>{details.historical.summary}</p>
+
+                      <div className="d-flex flex-column gap-3">
+                        {details.historical.h2h.map((h, i) => {
+                          const isWin = h.result === "W";
+                          const isLoss = h.result === "L";
+                          const isDraw = h.result === "D";
+
+                          let badgeBg = "rgba(108, 117, 125, 0.15)";
+                          let badgeColor = "#cbd5e1";
+                          let badgeText = "D";
+
+                          if (isWin) {
+                            badgeBg = "rgba(26, 140, 61, 0.15)";
+                            badgeColor = "#4ade80";
+                            badgeText = "W";
+                          } else if (isLoss) {
+                            badgeBg = "rgba(220, 53, 69, 0.15)";
+                            badgeColor = "#f87171";
+                            badgeText = "L";
+                          } else {
+                            badgeBg = "rgba(108, 117, 125, 0.15)";
+                            badgeColor = "#cbd5e1";
+                            badgeText = "D";
+                          }
+
+                          return (
+                            <div key={i} className="d-flex align-items-center justify-content-between border border-dark rounded-3 p-3 bg-dark bg-opacity-30">
+                              <div>
+                                <span className="badge bg-dark border border-secondary border-opacity-10 text-muted mb-2 font-monospace px-2 py-1" style={{ fontSize: "10px" }}>
+                                  {h.date}
+                                </span>
+                                <div className="text-light fw-bold" style={{ fontSize: "14px" }}>{h.detail}</div>
+                              </div>
+
+                              <div
+                                className="d-flex align-items-center justify-content-center rounded-circle fw-bold font-monospace shadow-sm"
+                                style={{
+                                  width: "32px",
+                                  height: "32px",
+                                  backgroundColor: badgeBg,
+                                  color: badgeColor,
+                                  fontSize: "12px",
+                                  border: `1px solid ${badgeColor}40`
+                                }}
+                              >
+                                {badgeText}
+                              </div>
+                            </div>
+                          );
+                        })}
                       </div>
                     </div>
-                  ))}
+                  )}
                 </div>
-              </div>
+              )}
 
-              {/* Head-to-Head & Historical */}
-              {details?.historical && (
+              {/* SCORECARD TAB */}
+              {activeSubTab === "scorecard" && match.sport === "cricket" && (
+                <ScorecardTab match={match} />
+              )}
+
+              {/* STATISTICS TAB */}
+              {activeSubTab === "stats" && (
+                <div className="d-flex flex-column gap-4">
+                  {/* Team Statistics */}
+                  <div className="card bg-card border border-dark rounded-3 p-4">
+                    <h5
+                      className="text-white fw-bold mb-4 border-start border-success border-4 ps-3"
+                      style={{ fontSize: "18px", fontFamily: "var(--font-space-grotesk)", letterSpacing: "-0.2px" }}
+                    >
+                      Team Statistics Comparison
+                    </h5>
+                    <div className="d-flex flex-column gap-4">
+                      {details?.teamStats.map((stat, i) => {
+                        const val1 = parseFloat(stat.team1Val.toString()) || 0;
+                        const val2 = parseFloat(stat.team2Val.toString()) || 0;
+                        const total = val1 + val2 || 1;
+                        const ratio1 = (val1 / total) * 100;
+                        const ratio2 = (val2 / total) * 100;
+
+                        return (
+                          <div key={i} className="d-flex flex-column">
+                            {/* Improved label positioning with Outfit font */}
+                            <div className="d-flex justify-content-between align-items-center mb-2 fw-bold" style={{ fontSize: "13.5px" }}>
+                              <span className="text-white font-monospace" style={{ fontSize: "14px" }}>{stat.team1Val}</span>
+                              <span className="text-muted text-uppercase font-monospace" style={{ fontSize: "10.5px", letterSpacing: "1px" }}>{stat.label}</span>
+                              <span className="text-white font-monospace" style={{ fontSize: "14px" }}>{stat.team2Val}</span>
+                            </div>
+                            {/* Custom Double-sided Progress Bar */}
+                            <div className="d-flex align-items-center gap-2 w-100" style={{ height: "6px" }}>
+                              {/* Team 1 (Left bar, grows right to left) */}
+                              <div className="w-50 d-flex justify-content-end bg-dark rounded-start" style={{ height: "6px", overflow: "hidden" }}>
+                                <div
+                                  className="bg-success rounded-start"
+                                  style={{
+                                    width: `${ratio1}%`,
+                                    height: "6px",
+                                    transition: "width 0.6s ease"
+                                  }}
+                                ></div>
+                              </div>
+                              {/* Center Divider dot */}
+                              <div className="bg-secondary rounded-circle" style={{ width: "4px", height: "4px", opacity: 0.3 }}></div>
+                              {/* Team 2 (Right bar, grows left to right) */}
+                              <div className="w-50 bg-dark rounded-end" style={{ height: "6px", overflow: "hidden" }}>
+                                <div
+                                  className="rounded-end"
+                                  style={{
+                                    width: `${ratio2}%`,
+                                    height: "6px",
+                                    backgroundColor: "#3a4356",
+                                    transition: "width 0.6s ease"
+                                  }}
+                                ></div>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Player Performances */}
+                  <div className="card bg-card border border-dark rounded-3 p-4">
+                    <h5
+                      className="text-white fw-bold mb-4 border-start border-success border-4 ps-3"
+                      style={{ fontSize: "18px", fontFamily: "var(--font-space-grotesk)", letterSpacing: "-0.2px" }}
+                    >
+                      Key Player Performances
+                    </h5>
+
+                    <div className="row g-4">
+                      {/* Team 1 Performance */}
+                      <div className="col-12 col-md-6 border-md-end border-dark pe-md-4">
+                        <div className="d-flex align-items-center gap-2 mb-3">
+                          <div className="bg-success rounded-circle" style={{ width: "8px", height: "8px" }}></div>
+                          <h6 className="text-white fw-bold m-0 font-monospace text-uppercase" style={{ fontSize: "12px", letterSpacing: "0.5px" }}>
+                            {match.team1Name}
+                          </h6>
+                        </div>
+                        <div className="d-flex flex-column gap-3">
+                          {details?.playersTeam1.map((p, i) => {
+                            const firstChar = p.name.charAt(0);
+                            return (
+                              <div
+                                key={i}
+                                className="bg-dark bg-opacity-30 border border-secondary border-opacity-10 rounded-3 d-flex justify-content-between align-items-center hover-card-effect p-3"
+                                style={{ transition: "all 0.2s" }}
+                              >
+                                <div className="d-flex align-items-center gap-3">
+                                  <div
+                                    className="d-flex align-items-center justify-content-center rounded-circle fw-bold font-monospace"
+                                    style={{
+                                      width: "36px",
+                                      height: "36px",
+                                      fontSize: "13px",
+                                      backgroundColor: "rgba(26, 140, 61, 0.15)",
+                                      color: "#4ade80",
+                                      border: "1px solid rgba(26, 140, 61, 0.3)"
+                                    }}
+                                  >
+                                    {firstChar}
+                                  </div>
+                                  <div>
+                                    <div className="text-white fw-bold" style={{ fontSize: "14px" }}>{p.name}</div>
+                                    <div className="text-muted" style={{ fontSize: "11px" }}>{p.role}</div>
+                                  </div>
+                                </div>
+                                <div className="text-end font-monospace">
+                                  <div className="text-success fw-bold" style={{ fontSize: "13.5px" }}>{p.metric1}</div>
+                                  <div className="text-muted" style={{ fontSize: "11px" }}>{p.metric2}</div>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Team 2 Performance */}
+                      <div className="col-12 col-md-6 ps-md-4">
+                        <div className="d-flex align-items-center gap-2 mb-3">
+                          <div className="bg-secondary rounded-circle" style={{ width: "8px", height: "8px", backgroundColor: "#3a4356" }}></div>
+                          <h6 className="text-white fw-bold m-0 font-monospace text-uppercase" style={{ fontSize: "12px", letterSpacing: "0.5px" }}>
+                            {match.team2Name}
+                          </h6>
+                        </div>
+                        <div className="d-flex flex-column gap-3">
+                          {details?.playersTeam2.map((p, i) => {
+                            const firstChar = p.name.charAt(0);
+                            return (
+                              <div
+                                key={i}
+                                className="bg-dark bg-opacity-30 border border-secondary border-opacity-10 rounded-3 d-flex justify-content-between align-items-center hover-card-effect p-3"
+                                style={{ transition: "all 0.2s" }}
+                              >
+                                <div className="d-flex align-items-center gap-3">
+                                  <div
+                                    className="d-flex align-items-center justify-content-center rounded-circle fw-bold font-monospace"
+                                    style={{
+                                      width: "36px",
+                                      height: "36px",
+                                      fontSize: "13px",
+                                      backgroundColor: "rgba(255, 255, 255, 0.06)",
+                                      color: "#e2e8f0",
+                                      border: "1px solid rgba(255, 255, 255, 0.1)"
+                                    }}
+                                  >
+                                    {firstChar}
+                                  </div>
+                                  <div>
+                                    <div className="text-white fw-bold" style={{ fontSize: "14px" }}>{p.name}</div>
+                                    <div className="text-muted" style={{ fontSize: "11px" }}>{p.role}</div>
+                                  </div>
+                                </div>
+                                <div className="text-end font-monospace">
+                                  <div className="text-light fw-bold" style={{ fontSize: "13.5px" }}>{p.metric1}</div>
+                                  <div className="text-muted" style={{ fontSize: "11px" }}>{p.metric2}</div>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* LINEUPS TAB */}
+              {activeSubTab === "lineups" && (
+                match.sport === "football" && match.team1Info && match.team2Info ? (
+                  <FootballLineupsTab match={match} />
+                ) : (
+                  <div className="card bg-card border border-dark rounded-3 p-4">
+                    <h5
+                      className="text-white fw-bold mb-4 border-start border-success border-4 ps-3"
+                      style={{ fontSize: "18px", fontFamily: "var(--font-space-grotesk)", letterSpacing: "-0.2px" }}
+                    >
+                      Starting Formations & Squads
+                    </h5>
+
+                    <div className="row g-4 align-items-start">
+                      {/* Team 1 Squad */}
+                      <div className="col-12 col-md-6 border-md-end border-dark pe-md-4">
+                        <div className="d-flex align-items-center gap-3 mb-4 pb-2 border-bottom border-dark">
+                          <img
+                            src={match.team1Logo}
+                            alt={match.team1Name}
+                            width={32}
+                            height={32}
+                            style={{ objectFit: "contain" }}
+                          />
+                          <h6 className="text-white fw-extrabold m-0" style={{ fontSize: "15px", fontFamily: "var(--font-space-grotesk)" }}>{match.team1Name}</h6>
+                        </div>
+
+                        <div className="d-flex flex-column">
+                          {details?.lineups1.map((player, i) => {
+                            const isCaptain = player.includes("(C)");
+                            const isWK = player.includes("(WK)");
+
+                            return (
+                              <div
+                                key={i}
+                                className="hover-card-effect"
+                                style={{
+                                  display: "flex",
+                                  flexWrap: "wrap",
+                                  gap: "10px",
+                                  alignItems: "center",
+                                  justifyContent: "space-between",
+                                  padding: "12px 16px",
+                                  backgroundColor: "rgba(255, 255, 255, 0.01)",
+                                  borderBottom: "1px solid rgba(255, 255, 255, 0.04)",
+                                  transition: "all 0.15s"
+                                }}
+                              >
+                                <div className="d-flex align-items-center gap-3">
+                                  <div
+                                    className="font-monospace fw-bold"
+                                    style={{
+                                      width: "26px",
+                                      height: "26px",
+                                      fontSize: "11px",
+                                      backgroundColor: isCaptain ? "rgba(26, 140, 61, 0.12)" : "rgba(255, 255, 255, 0.04)",
+                                      color: isCaptain ? "var(--accent-green)" : "#8a94a6",
+                                      borderRadius: "50%",
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center"
+                                    }}
+                                  >
+                                    {i + 1}
+                                  </div>
+                                  <span className={`small ${isCaptain ? "text-success fw-bold" : "text-light"}`} style={{ fontSize: "13.5px" }}>
+                                    {player}
+                                  </span>
+                                </div>
+
+                                <div className="d-flex align-items-center gap-2">
+                                  {isCaptain && (
+                                    <span
+                                      className="badge px-2 py-1"
+                                      style={{
+                                        fontSize: "9px",
+                                        backgroundColor: "rgba(26, 140, 61, 0.15)",
+                                        color: "#4ade80",
+                                        border: "1px solid rgba(26, 140, 61, 0.3)"
+                                      }}
+                                    >
+                                      CAPT
+                                    </span>
+                                  )}
+                                  {isWK && (
+                                    <span
+                                      className="badge px-2 py-1"
+                                      style={{
+                                        fontSize: "9px",
+                                        backgroundColor: "rgba(13, 202, 240, 0.15)",
+                                        color: "#22d3ee",
+                                        border: "1px solid rgba(13, 202, 240, 0.3)"
+                                      }}
+                                    >
+                                      WICKETKEEPER
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Team 2 Squad */}
+                      <div className="col-12 col-md-6 ps-md-4">
+                        <div className="d-flex align-items-center gap-3 mb-4 pb-2 border-bottom border-dark">
+                          <img
+                            src={match.team2Logo}
+                            alt={match.team2Name}
+                            width={32}
+                            height={32}
+                            style={{ objectFit: "contain" }}
+                          />
+                          <h6 className="text-white fw-extrabold m-0" style={{ fontSize: "15px", fontFamily: "var(--font-space-grotesk)" }}>{match.team2Name}</h6>
+                        </div>
+
+                        <div className="d-flex flex-column">
+                          {details?.lineups2.map((player, i) => {
+                            const isCaptain = player.includes("(C)");
+                            const isWK = player.includes("(WK)");
+
+                            return (
+                              <div
+                                key={i}
+                                className="hover-card-effect"
+                                style={{
+                                  display: "flex",
+                                  flexWrap: "wrap",
+                                  gap: "10px",
+                                  alignItems: "center",
+                                  justifyContent: "space-between",
+                                  padding: "12px 16px",
+                                  backgroundColor: "rgba(255, 255, 255, 0.01)",
+                                  borderBottom: "1px solid rgba(255, 255, 255, 0.04)",
+                                  transition: "all 0.15s"
+                                }}
+                              >
+                                <div className="d-flex align-items-center gap-3">
+                                  <div
+                                    className="font-monospace fw-bold"
+                                    style={{
+                                      width: "26px",
+                                      height: "26px",
+                                      fontSize: "11px",
+                                      backgroundColor: isCaptain ? "rgba(255, 255, 255, 0.08)" : "rgba(255, 255, 255, 0.04)",
+                                      color: isCaptain ? "#fff" : "#8a94a6",
+                                      borderRadius: "50%",
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center"
+                                    }}
+                                  >
+                                    {i + 1}
+                                  </div>
+                                  <span className={`small ${isCaptain ? "text-white fw-bold" : "text-light"}`} style={{ fontSize: "13.5px" }}>
+                                    {player}
+                                  </span>
+                                </div>
+
+                                <div className="d-flex align-items-center gap-2">
+                                  {isCaptain && (
+                                    <span
+                                      className="badge px-2 py-1"
+                                      style={{
+                                        fontSize: "9px",
+                                        backgroundColor: "rgba(255, 255, 255, 0.08)",
+                                        color: "#ffffff",
+                                        border: "1px solid rgba(255, 255, 255, 0.15)"
+                                      }}
+                                    >
+                                      CAPT
+                                    </span>
+                                  )}
+                                  {isWK && (
+                                    <span
+                                      className="badge px-2 py-1"
+                                      style={{
+                                        fontSize: "9px",
+                                        backgroundColor: "rgba(13, 202, 240, 0.15)",
+                                        color: "#22d3ee",
+                                        border: "1px solid rgba(13, 202, 240, 0.3)"
+                                      }}
+                                    >
+                                      WICKETKEEPER
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )
+              )}
+
+              {/* TIMELINE/EVENTS TAB */}
+              {activeSubTab === "timeline" && (
                 <div className="card bg-card border border-dark rounded-3 p-4">
                   <h5
-                    className="text-white fw-bold mb-3 border-start border-success border-4 ps-3"
+                    className="text-white fw-bold mb-4 border-start border-success border-4 ps-3"
                     style={{ fontSize: "18px", fontFamily: "var(--font-space-grotesk)", letterSpacing: "-0.2px" }}
                   >
-                    Historical Results (H2H)
+                    Match Events Timeline
                   </h5>
-                  <p className="text-muted mb-4" style={{ fontSize: "14px" }}>{details.historical.summary}</p>
+
+                  {/* Football-specific rich timeline */}
+                  {match.sport === "football" && match.footballTimeline ? (
+                    <FootballTimeline match={match} />
+                  ) : (
+                    <div className="position-relative ps-4 py-2 border-start border-secondary border-opacity-15 border-2 ms-2 d-flex flex-column gap-4">
+                      {details?.events.map((e, i) => {
+                        let iconClass = "bi-info-circle-fill text-muted";
+                        let itemBorder = "1px solid rgba(255, 255, 255, 0.04)";
+
+                        if (e.type === "goal" || e.type === "touchdown") {
+                          iconClass = "bi-football text-success";
+                          itemBorder = "1px solid rgba(26, 140, 61, 0.2)";
+                        } else if (e.type === "wicket") {
+                          iconClass = "bi-x-circle text-danger";
+                          itemBorder = "1px solid rgba(220, 53, 69, 0.15)";
+                        } else if (e.type === "card") {
+                          iconClass = "bi-file-fill text-warning";
+                          itemBorder = "1px solid rgba(255, 193, 7, 0.15)";
+                        } else if (e.type === "point") {
+                          iconClass = "bi-star-fill text-info";
+                        }
+
+                        return (
+                          <div key={i} className="position-relative">
+                            {/* Timeline Dot Indicator */}
+                            <span
+                              className="position-absolute d-flex align-items-center justify-content-center rounded-circle animate-pulse-subtle"
+                              style={{
+                                width: "30px",
+                                height: "30px",
+                                left: "-40px",
+                                top: "6px",
+                                backgroundColor: "#070b12",
+                                border: `2px solid ${e.team === 1 ? "var(--accent-green)" : e.team === 2 ? "#3a4356" : "#2a303c"}`,
+                                zIndex: 10,
+                              }}
+                            >
+                              <i className={`bi ${iconClass}`} style={{ fontSize: "12px" }}></i>
+                            </span>
+
+                            {/* Event Details Card - Spacing & Overlaps Fixed */}
+                            <div
+                              className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center rounded-3 p-3"
+                              style={{
+                                backgroundColor: "rgba(17, 24, 34, 0.5)",
+                                border: itemBorder,
+                                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+                              }}
+                            >
+                              <div>
+                                {/* Explicit Gap & Flex Layout prevents overlaps */}
+                                <div className="d-flex align-items-center gap-3 flex-wrap">
+                                  <span
+                                    className="font-monospace rounded text-success fw-extrabold flex-shrink-0"
+                                    style={{
+                                      fontSize: "11px",
+                                      backgroundColor: "rgba(26, 140, 61, 0.08)",
+                                      border: "1px solid rgba(26, 140, 61, 0.2)",
+                                      padding: "3px 8px"
+                                    }}
+                                  >
+                                    {e.time}
+                                  </span>
+                                  <span className="text-white fw-bold" style={{ fontSize: "14px" }}>
+                                    {e.title}
+                                  </span>
+                                </div>
+                                <div className="text-muted small mt-2" style={{ lineHeight: "1.5", fontSize: "13px" }}>
+                                  {e.detail}
+                                </div>
+                              </div>
+
+                              {e.team && (
+                                <span className="badge bg-dark bg-opacity-40 border border-secondary border-opacity-10 text-muted mt-2 mt-sm-0 font-monospace px-2 py-1" style={{ fontSize: "9px" }}>
+                                  {e.team === 1 ? match.team1Name : match.team2Name}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* COMMENTARY TAB */}
+              {activeSubTab === "commentary" && (
+                <div className="card bg-card border border-dark rounded-3 p-4">
+                  <h5
+                    className="text-white fw-bold mb-4 border-start border-success border-4 ps-3"
+                    style={{ fontSize: "18px", fontFamily: "var(--font-space-grotesk)", letterSpacing: "-0.2px" }}
+                  >
+                    Live Text Commentary
+                  </h5>
 
                   <div className="d-flex flex-column gap-3">
-                    {details.historical.h2h.map((h, i) => {
-                      const isWin = h.result === "W";
-                      const isLoss = h.result === "L";
-                      const isDraw = h.result === "D";
-
-                      let badgeBg = "rgba(108, 117, 125, 0.15)";
-                      let badgeColor = "#cbd5e1";
-                      let badgeText = "D";
-
-                      if (isWin) {
-                        badgeBg = "rgba(26, 140, 61, 0.15)";
-                        badgeColor = "#4ade80";
-                        badgeText = "W";
-                      } else if (isLoss) {
-                        badgeBg = "rgba(220, 53, 69, 0.15)";
-                        badgeColor = "#f87171";
-                        badgeText = "L";
-                      } else {
-                        badgeBg = "rgba(108, 117, 125, 0.15)";
-                        badgeColor = "#cbd5e1";
-                        badgeText = "D";
-                      }
+                    {details?.commentary.slice(0, showAllCommentary ? undefined : 6).map((c, i) => {
+                      const isCricketOverEnd = match.sport === "cricket" && c.time.endsWith(".1");
+                      const overNum = isCricketOverEnd ? c.time.split(".")[0] : "";
 
                       return (
-                        <div key={i} className="d-flex align-items-center justify-content-between border border-dark rounded-3 p-3 bg-dark bg-opacity-30">
-                          <div>
-                            <span className="badge bg-dark border border-secondary border-opacity-10 text-muted mb-2 font-monospace px-2 py-1" style={{ fontSize: "10px" }}>
-                              {h.date}
-                            </span>
-                            <div className="text-light fw-bold" style={{ fontSize: "14px" }}>{h.detail}</div>
-                          </div>
-
+                        <React.Fragment key={i}>
                           <div
-                            className="d-flex align-items-center justify-content-center rounded-circle fw-bold font-monospace shadow-sm"
+                            className="d-flex flex-column flex-sm-row gap-3 align-items-start"
                             style={{
-                              width: "32px",
-                              height: "32px",
-                              backgroundColor: badgeBg,
-                              color: badgeColor,
-                              fontSize: "12px",
-                              border: `1px solid ${badgeColor}40`
+                              padding: "16px 20px",
+                              backgroundColor: c.highlight ? "rgba(26, 140, 61, 0.06)" : "rgba(255, 255, 255, 0.02)",
+                              border: c.highlight ? "1px solid rgba(26, 140, 61, 0.2)" : "1px solid rgba(255, 255, 255, 0.04)",
+                              borderRadius: "10px",
+                              boxShadow: c.highlight ? "0 4px 15px rgba(26, 140, 61, 0.03)" : "none",
+                              transition: "all 0.2s"
                             }}
                           >
-                            {badgeText}
+                            {/* Fixed commentary spacing and overflow issues */}
+                            <div
+                              className="font-monospace text-success fw-bold text-center flex-shrink-0"
+                              style={{
+                                width: "56px",
+                                fontSize: "12px",
+                                backgroundColor: "rgba(26, 140, 61, 0.1)",
+                                border: "1px solid rgba(26, 140, 61, 0.25)",
+                                borderRadius: "6px",
+                                padding: "3px 6px"
+                              }}
+                            >
+                              {c.time}
+                            </div>
+                            <div
+                              className={`small m-0 ${c.highlight ? "text-light fw-bold" : "text-muted"}`}
+                              style={{ lineHeight: "1.5", fontSize: "13.5px" }}
+                            >
+                              {c.text}
+                            </div>
                           </div>
-                        </div>
+
+                          {isCricketOverEnd && (
+                            <OverSummaryBox overNum={overNum} />
+                          )}
+                        </React.Fragment>
                       );
                     })}
+
+                    {details?.commentary && details.commentary.length > 6 && (
+                      <div className="text-center mt-3 pt-2">
+                        <button
+                          className="btn btn-outline-success btn-sm px-4 py-2 fw-semibold text-uppercase"
+                          style={{ fontSize: "12px", letterSpacing: "0.5px" }}
+                          onClick={() => setShowAllCommentary(!showAllCommentary)}
+                        >
+                          {showAllCommentary ? "See Less" : "See More"}
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
+
             </div>
-          )}
-
-          {/* SCORECARD TAB */}
-          {activeSubTab === "scorecard" && match.sport === "cricket" && (
-            <ScorecardTab match={match} />
-          )}
-
-          {/* STATISTICS TAB */}
-          {activeSubTab === "stats" && (
-            <div className="d-flex flex-column gap-4">
-              {/* Team Statistics */}
-              <div className="card bg-card border border-dark rounded-3 p-4">
-                <h5
-                  className="text-white fw-bold mb-4 border-start border-success border-4 ps-3"
-                  style={{ fontSize: "18px", fontFamily: "var(--font-space-grotesk)", letterSpacing: "-0.2px" }}
-                >
-                  Team Statistics Comparison
-                </h5>
-                <div className="d-flex flex-column gap-4">
-                  {details?.teamStats.map((stat, i) => {
-                    const val1 = parseFloat(stat.team1Val.toString()) || 0;
-                    const val2 = parseFloat(stat.team2Val.toString()) || 0;
-                    const total = val1 + val2 || 1;
-                    const ratio1 = (val1 / total) * 100;
-                    const ratio2 = (val2 / total) * 100;
-
-                    return (
-                      <div key={i} className="d-flex flex-column">
-                        {/* Improved label positioning with Outfit font */}
-                        <div className="d-flex justify-content-between align-items-center mb-2 fw-bold" style={{ fontSize: "13.5px" }}>
-                          <span className="text-white font-monospace" style={{ fontSize: "14px" }}>{stat.team1Val}</span>
-                          <span className="text-muted text-uppercase font-monospace" style={{ fontSize: "10.5px", letterSpacing: "1px" }}>{stat.label}</span>
-                          <span className="text-white font-monospace" style={{ fontSize: "14px" }}>{stat.team2Val}</span>
-                        </div>
-                        {/* Custom Double-sided Progress Bar */}
-                        <div className="d-flex align-items-center gap-2 w-100" style={{ height: "6px" }}>
-                          {/* Team 1 (Left bar, grows right to left) */}
-                          <div className="w-50 d-flex justify-content-end bg-dark rounded-start" style={{ height: "6px", overflow: "hidden" }}>
-                            <div
-                              className="bg-success rounded-start"
-                              style={{
-                                width: `${ratio1}%`,
-                                height: "6px",
-                                transition: "width 0.6s ease"
-                              }}
-                            ></div>
-                          </div>
-                          {/* Center Divider dot */}
-                          <div className="bg-secondary rounded-circle" style={{ width: "4px", height: "4px", opacity: 0.3 }}></div>
-                          {/* Team 2 (Right bar, grows left to right) */}
-                          <div className="w-50 bg-dark rounded-end" style={{ height: "6px", overflow: "hidden" }}>
-                            <div
-                              className="rounded-end"
-                              style={{
-                                width: `${ratio2}%`,
-                                height: "6px",
-                                backgroundColor: "#3a4356",
-                                transition: "width 0.6s ease"
-                              }}
-                            ></div>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Player Performances */}
-              <div className="card bg-card border border-dark rounded-3 p-4">
-                <h5
-                  className="text-white fw-bold mb-4 border-start border-success border-4 ps-3"
-                  style={{ fontSize: "18px", fontFamily: "var(--font-space-grotesk)", letterSpacing: "-0.2px" }}
-                >
-                  Key Player Performances
-                </h5>
-
-                <div className="row g-4">
-                  {/* Team 1 Performance */}
-                  <div className="col-12 col-md-6 border-md-end border-dark pe-md-4">
-                    <div className="d-flex align-items-center gap-2 mb-3">
-                      <div className="bg-success rounded-circle" style={{ width: "8px", height: "8px" }}></div>
-                      <h6 className="text-white fw-bold m-0 font-monospace text-uppercase" style={{ fontSize: "12px", letterSpacing: "0.5px" }}>
-                        {match.team1Name}
-                      </h6>
-                    </div>
-                    <div className="d-flex flex-column gap-3">
-                      {details?.playersTeam1.map((p, i) => {
-                        const firstChar = p.name.charAt(0);
-                        return (
-                          <div
-                            key={i}
-                            className="bg-dark bg-opacity-30 border border-secondary border-opacity-10 rounded-3 d-flex justify-content-between align-items-center hover-card-effect p-3"
-                            style={{ transition: "all 0.2s" }}
-                          >
-                            <div className="d-flex align-items-center gap-3">
-                              <div
-                                className="d-flex align-items-center justify-content-center rounded-circle fw-bold font-monospace"
-                                style={{
-                                  width: "36px",
-                                  height: "36px",
-                                  fontSize: "13px",
-                                  backgroundColor: "rgba(26, 140, 61, 0.15)",
-                                  color: "#4ade80",
-                                  border: "1px solid rgba(26, 140, 61, 0.3)"
-                                }}
-                              >
-                                {firstChar}
-                              </div>
-                              <div>
-                                <div className="text-white fw-bold" style={{ fontSize: "14px" }}>{p.name}</div>
-                                <div className="text-muted" style={{ fontSize: "11px" }}>{p.role}</div>
-                              </div>
-                            </div>
-                            <div className="text-end font-monospace">
-                              <div className="text-success fw-bold" style={{ fontSize: "13.5px" }}>{p.metric1}</div>
-                              <div className="text-muted" style={{ fontSize: "11px" }}>{p.metric2}</div>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-
-                  {/* Team 2 Performance */}
-                  <div className="col-12 col-md-6 ps-md-4">
-                    <div className="d-flex align-items-center gap-2 mb-3">
-                      <div className="bg-secondary rounded-circle" style={{ width: "8px", height: "8px", backgroundColor: "#3a4356" }}></div>
-                      <h6 className="text-white fw-bold m-0 font-monospace text-uppercase" style={{ fontSize: "12px", letterSpacing: "0.5px" }}>
-                        {match.team2Name}
-                      </h6>
-                    </div>
-                    <div className="d-flex flex-column gap-3">
-                      {details?.playersTeam2.map((p, i) => {
-                        const firstChar = p.name.charAt(0);
-                        return (
-                          <div
-                            key={i}
-                            className="bg-dark bg-opacity-30 border border-secondary border-opacity-10 rounded-3 d-flex justify-content-between align-items-center hover-card-effect p-3"
-                            style={{ transition: "all 0.2s" }}
-                          >
-                            <div className="d-flex align-items-center gap-3">
-                              <div
-                                className="d-flex align-items-center justify-content-center rounded-circle fw-bold font-monospace"
-                                style={{
-                                  width: "36px",
-                                  height: "36px",
-                                  fontSize: "13px",
-                                  backgroundColor: "rgba(255, 255, 255, 0.06)",
-                                  color: "#e2e8f0",
-                                  border: "1px solid rgba(255, 255, 255, 0.1)"
-                                }}
-                              >
-                                {firstChar}
-                              </div>
-                              <div>
-                                <div className="text-white fw-bold" style={{ fontSize: "14px" }}>{p.name}</div>
-                                <div className="text-muted" style={{ fontSize: "11px" }}>{p.role}</div>
-                              </div>
-                            </div>
-                            <div className="text-end font-monospace">
-                              <div className="text-light fw-bold" style={{ fontSize: "13.5px" }}>{p.metric1}</div>
-                              <div className="text-muted" style={{ fontSize: "11px" }}>{p.metric2}</div>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* LINEUPS TAB */}
-          {activeSubTab === "lineups" && (
-            <div className="card bg-card border border-dark rounded-3 p-4">
-              <h5
-                className="text-white fw-bold mb-4 border-start border-success border-4 ps-3"
-                style={{ fontSize: "18px", fontFamily: "var(--font-space-grotesk)", letterSpacing: "-0.2px" }}
-              >
-                Starting Formations & Squads
-              </h5>
-
-              <div className="row g-4 align-items-start">
-                {/* Team 1 Squad */}
-                <div className="col-12 col-md-6 border-md-end border-dark pe-md-4">
-                  <div className="d-flex align-items-center gap-3 mb-4 pb-2 border-bottom border-dark">
-                    <img
-                      src={match.team1Logo}
-                      alt={match.team1Name}
-                      width={32}
-                      height={32}
-                      style={{ objectFit: "contain" }}
-                    />
-                    <h6 className="text-white fw-extrabold m-0" style={{ fontSize: "15px", fontFamily: "var(--font-space-grotesk)" }}>{match.team1Name}</h6>
-                  </div>
-
-                  <div className="d-flex flex-column">
-                    {details?.lineups1.map((player, i) => {
-                      const isCaptain = player.includes("(C)");
-                      const isWK = player.includes("(WK)");
-
-                      return (
-                        <div
-                          key={i}
-                          className="hover-card-effect"
-                          style={{
-                            display: "flex",
-                            flexWrap: "wrap",
-                            gap: "10px",
-                            alignItems: "center",
-                            justifyContent: "space-between",
-                            padding: "12px 16px",
-                            backgroundColor: "rgba(255, 255, 255, 0.01)",
-                            borderBottom: "1px solid rgba(255, 255, 255, 0.04)",
-                            transition: "all 0.15s"
-                          }}
-                        >
-                          <div className="d-flex align-items-center gap-3">
-                            <div
-                              className="font-monospace fw-bold"
-                              style={{
-                                width: "26px",
-                                height: "26px",
-                                fontSize: "11px",
-                                backgroundColor: isCaptain ? "rgba(26, 140, 61, 0.12)" : "rgba(255, 255, 255, 0.04)",
-                                color: isCaptain ? "var(--accent-green)" : "#8a94a6",
-                                borderRadius: "50%",
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center"
-                              }}
-                            >
-                              {i + 1}
-                            </div>
-                            <span className={`small ${isCaptain ? "text-success fw-bold" : "text-light"}`} style={{ fontSize: "13.5px" }}>
-                              {player}
-                            </span>
-                          </div>
-
-                          <div className="d-flex align-items-center gap-2">
-                            {isCaptain && (
-                              <span
-                                className="badge px-2 py-1"
-                                style={{
-                                  fontSize: "9px",
-                                  backgroundColor: "rgba(26, 140, 61, 0.15)",
-                                  color: "#4ade80",
-                                  border: "1px solid rgba(26, 140, 61, 0.3)"
-                                }}
-                              >
-                                CAPT
-                              </span>
-                            )}
-                            {isWK && (
-                              <span
-                                className="badge px-2 py-1"
-                                style={{
-                                  fontSize: "9px",
-                                  backgroundColor: "rgba(13, 202, 240, 0.15)",
-                                  color: "#22d3ee",
-                                  border: "1px solid rgba(13, 202, 240, 0.3)"
-                                }}
-                              >
-                                WICKETKEEPER
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* Team 2 Squad */}
-                <div className="col-12 col-md-6 ps-md-4">
-                  <div className="d-flex align-items-center gap-3 mb-4 pb-2 border-bottom border-dark">
-                    <img
-                      src={match.team2Logo}
-                      alt={match.team2Name}
-                      width={32}
-                      height={32}
-                      style={{ objectFit: "contain" }}
-                    />
-                    <h6 className="text-white fw-extrabold m-0" style={{ fontSize: "15px", fontFamily: "var(--font-space-grotesk)" }}>{match.team2Name}</h6>
-                  </div>
-
-                  <div className="d-flex flex-column">
-                    {details?.lineups2.map((player, i) => {
-                      const isCaptain = player.includes("(C)");
-                      const isWK = player.includes("(WK)");
-
-                      return (
-                        <div
-                          key={i}
-                          className="hover-card-effect"
-                          style={{
-                            display: "flex",
-                            flexWrap: "wrap",
-                            gap: "10px",
-                            alignItems: "center",
-                            justifyContent: "space-between",
-                            padding: "12px 16px",
-                            backgroundColor: "rgba(255, 255, 255, 0.01)",
-                            borderBottom: "1px solid rgba(255, 255, 255, 0.04)",
-                            transition: "all 0.15s"
-                          }}
-                        >
-                          <div className="d-flex align-items-center gap-3">
-                            <div
-                              className="font-monospace fw-bold"
-                              style={{
-                                width: "26px",
-                                height: "26px",
-                                fontSize: "11px",
-                                backgroundColor: isCaptain ? "rgba(255, 255, 255, 0.08)" : "rgba(255, 255, 255, 0.04)",
-                                color: isCaptain ? "#fff" : "#8a94a6",
-                                borderRadius: "50%",
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center"
-                              }}
-                            >
-                              {i + 1}
-                            </div>
-                            <span className={`small ${isCaptain ? "text-white fw-bold" : "text-light"}`} style={{ fontSize: "13.5px" }}>
-                              {player}
-                            </span>
-                          </div>
-
-                          <div className="d-flex align-items-center gap-2">
-                            {isCaptain && (
-                              <span
-                                className="badge px-2 py-1"
-                                style={{
-                                  fontSize: "9px",
-                                  backgroundColor: "rgba(255, 255, 255, 0.08)",
-                                  color: "#ffffff",
-                                  border: "1px solid rgba(255, 255, 255, 0.15)"
-                                }}
-                              >
-                                CAPT
-                              </span>
-                            )}
-                            {isWK && (
-                              <span
-                                className="badge px-2 py-1"
-                                style={{
-                                  fontSize: "9px",
-                                  backgroundColor: "rgba(13, 202, 240, 0.15)",
-                                  color: "#22d3ee",
-                                  border: "1px solid rgba(13, 202, 240, 0.3)"
-                                }}
-                              >
-                                WICKETKEEPER
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* TIMELINE/EVENTS TAB */}
-          {activeSubTab === "timeline" && (
-            <div className="card bg-card border border-dark rounded-3 p-4">
-              <h5
-                className="text-white fw-bold mb-4 border-start border-success border-4 ps-3"
-                style={{ fontSize: "18px", fontFamily: "var(--font-space-grotesk)", letterSpacing: "-0.2px" }}
-              >
-                Match Events Timeline
-              </h5>
-
-              <div className="position-relative ps-4 py-2 border-start border-secondary border-opacity-15 border-2 ms-2 d-flex flex-column gap-4">
-                {details?.events.map((e, i) => {
-                  let iconClass = "bi-info-circle-fill text-muted";
-                  let itemBorder = "1px solid rgba(255, 255, 255, 0.04)";
-
-                  if (e.type === "goal" || e.type === "touchdown") {
-                    iconClass = "bi-football text-success";
-                    itemBorder = "1px solid rgba(26, 140, 61, 0.2)";
-                  } else if (e.type === "wicket") {
-                    iconClass = "bi-x-circle text-danger";
-                    itemBorder = "1px solid rgba(220, 53, 69, 0.15)";
-                  } else if (e.type === "card") {
-                    iconClass = "bi-file-fill text-warning";
-                    itemBorder = "1px solid rgba(255, 193, 7, 0.15)";
-                  } else if (e.type === "point") {
-                    iconClass = "bi-star-fill text-info";
-                  }
-
-                  return (
-                    <div key={i} className="position-relative">
-                      {/* Timeline Dot Indicator */}
-                      <span
-                        className="position-absolute d-flex align-items-center justify-content-center rounded-circle animate-pulse-subtle"
-                        style={{
-                          width: "30px",
-                          height: "30px",
-                          left: "-40px",
-                          top: "6px",
-                          backgroundColor: "#070b12",
-                          border: `2px solid ${e.team === 1 ? "var(--accent-green)" : e.team === 2 ? "#3a4356" : "#2a303c"}`,
-                          zIndex: 10,
-                        }}
-                      >
-                        <i className={`bi ${iconClass}`} style={{ fontSize: "12px" }}></i>
-                      </span>
-
-                      {/* Event Details Card - Spacing & Overlaps Fixed */}
-                      <div
-                        className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center rounded-3 p-3"
-                        style={{
-                          backgroundColor: "rgba(17, 24, 34, 0.5)",
-                          border: itemBorder,
-                          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-                        }}
-                      >
-                        <div>
-                          {/* Explicit Gap & Flex Layout prevents overlaps */}
-                          <div className="d-flex align-items-center gap-3 flex-wrap">
-                            <span
-                              className="font-monospace rounded text-success fw-extrabold flex-shrink-0"
-                              style={{
-                                fontSize: "11px",
-                                backgroundColor: "rgba(26, 140, 61, 0.08)",
-                                border: "1px solid rgba(26, 140, 61, 0.2)",
-                                padding: "3px 8px"
-                              }}
-                            >
-                              {e.time}
-                            </span>
-                            <span className="text-white fw-bold" style={{ fontSize: "14px" }}>
-                              {e.title}
-                            </span>
-                          </div>
-                          <div className="text-muted small mt-2" style={{ lineHeight: "1.5", fontSize: "13px" }}>
-                            {e.detail}
-                          </div>
-                        </div>
-
-                        {e.team && (
-                          <span className="badge bg-dark bg-opacity-40 border border-secondary border-opacity-10 text-muted mt-2 mt-sm-0 font-monospace px-2 py-1" style={{ fontSize: "9px" }}>
-                            {e.team === 1 ? match.team1Name : match.team2Name}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {/* COMMENTARY TAB */}
-          {activeSubTab === "commentary" && (
-            <div className="card bg-card border border-dark rounded-3 p-4">
-              <h5
-                className="text-white fw-bold mb-4 border-start border-success border-4 ps-3"
-                style={{ fontSize: "18px", fontFamily: "var(--font-space-grotesk)", letterSpacing: "-0.2px" }}
-              >
-                Live Text Commentary
-              </h5>
-
-              <div className="d-flex flex-column gap-3">
-                {details?.commentary.slice(0, showAllCommentary ? undefined : 6).map((c, i) => {
-                  const isCricketOverEnd = match.sport === "cricket" && c.time.endsWith(".1");
-                  const overNum = isCricketOverEnd ? c.time.split(".")[0] : "";
-
-                  return (
-                    <React.Fragment key={i}>
-                      <div
-                        className="d-flex flex-column flex-sm-row gap-3 align-items-start"
-                        style={{
-                          padding: "16px 20px",
-                          backgroundColor: c.highlight ? "rgba(26, 140, 61, 0.06)" : "rgba(255, 255, 255, 0.02)",
-                          border: c.highlight ? "1px solid rgba(26, 140, 61, 0.2)" : "1px solid rgba(255, 255, 255, 0.04)",
-                          borderRadius: "10px",
-                          boxShadow: c.highlight ? "0 4px 15px rgba(26, 140, 61, 0.03)" : "none",
-                          transition: "all 0.2s"
-                        }}
-                      >
-                        {/* Fixed commentary spacing and overflow issues */}
-                        <div
-                          className="font-monospace text-success fw-bold text-center flex-shrink-0"
-                          style={{
-                            width: "56px",
-                            fontSize: "12px",
-                            backgroundColor: "rgba(26, 140, 61, 0.1)",
-                            border: "1px solid rgba(26, 140, 61, 0.25)",
-                            borderRadius: "6px",
-                            padding: "3px 6px"
-                          }}
-                        >
-                          {c.time}
-                        </div>
-                        <div
-                          className={`small m-0 ${c.highlight ? "text-light fw-bold" : "text-muted"}`}
-                          style={{ lineHeight: "1.5", fontSize: "13.5px" }}
-                        >
-                          {c.text}
-                        </div>
-                      </div>
-
-                      {isCricketOverEnd && (
-                        <OverSummaryBox overNum={overNum} />
-                      )}
-                    </React.Fragment>
-                  );
-                })}
-
-                {details?.commentary && details.commentary.length > 6 && (
-                  <div className="text-center mt-3 pt-2">
-                    <button
-                      className="btn btn-outline-success btn-sm px-4 py-2 fw-semibold text-uppercase"
-                      style={{ fontSize: "12px", letterSpacing: "0.5px" }}
-                      onClick={() => setShowAllCommentary(!showAllCommentary)}
-                    >
-                      {showAllCommentary ? "See Less" : "See More"}
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-
-        </div>
-
+          </>
+        )}
       </div>
     </main>
   );
@@ -1491,7 +1513,373 @@ function CricbuzzLiveDashboard({ match, details }: { match: any; details: any })
   );
 }
 
+// ─── Football Live Dashboard (Overview Tab) ───────────────────────────────────
+function FootballLiveDashboard({ match }: { match: any }) {
+  const summary = match.footballEventsSummary;
+  const stats = match.footballStats;
 
+  const renderCard = (color: string) => (
+    <span style={{
+      display: "inline-block", width: "10px", height: "14px",
+      backgroundColor: color, borderRadius: "2px", verticalAlign: "middle",
+    }} />
+  );
+
+  return (
+    <div className="d-flex flex-column gap-4">
+      {/* Match Events Summary */}
+      {summary && (
+        <div className="card bg-card border border-dark rounded-3 p-4">
+          <h5 className="text-white fw-bold mb-4 border-start border-success border-4 ps-3"
+            style={{ fontSize: "18px", fontFamily: "var(--font-space-grotesk)" }}>
+            Match Events Summary
+          </h5>
+          <div className="row g-3">
+            {/* Goals */}
+            <div className="col-12 col-md-6">
+              <div className="bg-dark bg-opacity-40 border border-secondary border-opacity-10 rounded-3 p-3">
+                <div className="text-muted fw-semibold text-uppercase mb-3" style={{ fontSize: "10px", letterSpacing: "0.5px" }}>⚽ Goals</div>
+                {summary.goals.length === 0 ? (
+                  <span className="text-muted small">No goals yet</span>
+                ) : (
+                  <div className="d-flex flex-column gap-2">
+                    {summary.goals.map((g: any, i: number) => (
+                      <div key={i} className="d-flex justify-content-between align-items-center">
+                        <span className="text-light" style={{ fontSize: "13px" }}>
+                          {g.player}
+                          {g.isOwnGoal && <span className="text-danger ms-1 small">(OG)</span>}
+                          {g.isPenalty && <span className="text-warning ms-1 small">(P)</span>}
+                        </span>
+                        <span className="font-monospace text-success fw-bold" style={{ fontSize: "12px" }}>{g.minute}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+            {/* Cards */}
+            <div className="col-12 col-md-6">
+              <div className="bg-dark bg-opacity-40 border border-secondary border-opacity-10 rounded-3 p-3">
+                <div className="text-muted fw-semibold text-uppercase mb-3" style={{ fontSize: "10px", letterSpacing: "0.5px" }}>Cards</div>
+                {(summary.yellowCards.length === 0 && summary.redCards.length === 0) ? (
+                  <span className="text-muted small">No cards</span>
+                ) : (
+                  <div className="d-flex flex-column gap-2">
+                    {summary.yellowCards.map((c: any, i: number) => (
+                      <div key={`y-${i}`} className="d-flex justify-content-between align-items-center gap-2">
+                        <div className="d-flex align-items-center gap-2">
+                          {renderCard("#facc15")}
+                          <span className="text-light" style={{ fontSize: "13px" }}>{c.player}</span>
+                        </div>
+                        <span className="font-monospace text-muted" style={{ fontSize: "12px" }}>{c.minute}</span>
+                      </div>
+                    ))}
+                    {summary.redCards.map((c: any, i: number) => (
+                      <div key={`r-${i}`} className="d-flex justify-content-between align-items-center gap-2">
+                        <div className="d-flex align-items-center gap-2">
+                          {renderCard("#ef4444")}
+                          <span className="text-light" style={{ fontSize: "13px" }}>{c.player}</span>
+                        </div>
+                        <span className="font-monospace text-muted" style={{ fontSize: "12px" }}>{c.minute}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+            {/* VAR */}
+            {summary.varDecisions.length > 0 && (
+              <div className="col-12">
+                <div className="bg-dark bg-opacity-40 border border-secondary border-opacity-10 rounded-3 p-3">
+                  <div className="text-muted fw-semibold text-uppercase mb-3" style={{ fontSize: "10px", letterSpacing: "0.5px" }}>
+                    <span style={{ color: "#c084fc" }}>▣ VAR Decisions</span>
+                  </div>
+                  <div className="d-flex flex-column gap-2">
+                    {summary.varDecisions.map((v: any, i: number) => (
+                      <div key={i} className="d-flex justify-content-between align-items-center">
+                        <span className="text-light" style={{ fontSize: "13px" }}>{v.decision}</span>
+                        <span className="font-monospace" style={{ fontSize: "12px", color: "#c084fc" }}>{v.minute}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+            {/* Substitutions & Injury Time */}
+            <div className="col-12 col-md-6">
+              <div className="bg-dark bg-opacity-40 border border-secondary border-opacity-10 rounded-3 p-3 h-100">
+                <div className="text-muted fw-semibold text-uppercase mb-3" style={{ fontSize: "10px", letterSpacing: "0.5px" }}>🔄 Substitutions</div>
+                <div className="d-flex justify-content-between">
+                  <div className="text-center">
+                    <div className="text-white fw-bold" style={{ fontSize: "22px", fontFamily: "var(--font-space-grotesk)" }}>{summary.substitutions.team1Count}</div>
+                    <div className="text-muted" style={{ fontSize: "11px" }}>{match.team1Name}</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-white fw-bold" style={{ fontSize: "22px", fontFamily: "var(--font-space-grotesk)" }}>{summary.substitutions.team2Count}</div>
+                    <div className="text-muted" style={{ fontSize: "11px" }}>{match.team2Name}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {summary.injuryTime && (
+              <div className="col-12 col-md-6">
+                <div className="bg-dark bg-opacity-40 border border-secondary border-opacity-10 rounded-3 p-3 h-100">
+                  <div className="text-muted fw-semibold text-uppercase mb-3" style={{ fontSize: "10px", letterSpacing: "0.5px" }}>⏱ Injury Time</div>
+                  <div className="d-flex justify-content-between">
+                    <div className="text-center">
+                      <div className="fw-bold text-warning font-monospace" style={{ fontSize: "20px" }}>{summary.injuryTime.firstHalf}</div>
+                      <div className="text-muted" style={{ fontSize: "11px" }}>1st Half</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="fw-bold text-warning font-monospace" style={{ fontSize: "20px" }}>{summary.injuryTime.secondHalf}</div>
+                      <div className="text-muted" style={{ fontSize: "11px" }}>2nd Half</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Match Statistics */}
+      {stats && (
+        <div className="card bg-card border border-dark rounded-3 p-4">
+          <h5 className="text-white fw-bold mb-4 border-start border-success border-4 ps-3"
+            style={{ fontSize: "18px", fontFamily: "var(--font-space-grotesk)" }}>
+            Match Statistics
+          </h5>
+          {/* Team headers */}
+          <div className="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom border-dark">
+            <div className="d-flex align-items-center gap-2">
+              <img src={match.team1Logo} alt={match.team1Name} width={20} height={20} style={{ objectFit: "contain" }} />
+              <span className="text-white fw-bold" style={{ fontSize: "12px" }}>{match.team1Name}</span>
+            </div>
+            <div className="d-flex align-items-center gap-2">
+              <span className="text-white fw-bold" style={{ fontSize: "12px" }}>{match.team2Name}</span>
+              <img src={match.team2Logo} alt={match.team2Name} width={20} height={20} style={{ objectFit: "contain" }} />
+            </div>
+          </div>
+          <div className="d-flex flex-column gap-4">
+            {[
+              { label: "Ball Possession", t1: `${stats.possession.team1}%`, t2: `${stats.possession.team2}%`, r1: stats.possession.team1, r2: stats.possession.team2 },
+              { label: "Total Shots", t1: stats.totalShots.team1, t2: stats.totalShots.team2, r1: stats.totalShots.team1, r2: stats.totalShots.team2 },
+              { label: "Shots on Target", t1: stats.shotsOnTarget.team1, t2: stats.shotsOnTarget.team2, r1: stats.shotsOnTarget.team1, r2: stats.shotsOnTarget.team2 },
+              { label: "Corner Kicks", t1: stats.corners.team1, t2: stats.corners.team2, r1: stats.corners.team1, r2: stats.corners.team2 },
+              { label: "Fouls", t1: stats.fouls.team1, t2: stats.fouls.team2, r1: stats.fouls.team1, r2: stats.fouls.team2 },
+              { label: "Offsides", t1: stats.offsides.team1, t2: stats.offsides.team2, r1: stats.offsides.team1, r2: stats.offsides.team2 },
+              { label: "Saves", t1: stats.saves.team1, t2: stats.saves.team2, r1: stats.saves.team1, r2: stats.saves.team2 },
+            ].map((s, i) => {
+              const total = (Number(s.r1) + Number(s.r2)) || 1;
+              const pct1 = (Number(s.r1) / total) * 100;
+              const pct2 = (Number(s.r2) / total) * 100;
+              return (
+                <div key={i}>
+                  <div className="d-flex justify-content-between align-items-center mb-2">
+                    <span className="font-monospace fw-bold text-white" style={{ fontSize: "13px" }}>{s.t1}</span>
+                    <span className="text-muted text-uppercase font-monospace" style={{ fontSize: "10px", letterSpacing: "1px" }}>{s.label}</span>
+                    <span className="font-monospace fw-bold text-white" style={{ fontSize: "13px" }}>{s.t2}</span>
+                  </div>
+                  <div className="d-flex align-items-center gap-1" style={{ height: "6px" }}>
+                    <div className="flex-grow-1 d-flex justify-content-end rounded-start overflow-hidden" style={{ backgroundColor: "rgba(255,255,255,0.06)" }}>
+                      <div style={{ width: `${pct1}%`, backgroundColor: "var(--accent-green, #22c55e)", transition: "width 0.5s" }} />
+                    </div>
+                    <div className="bg-secondary rounded-circle" style={{ width: "4px", height: "4px", opacity: 0.3, flexShrink: 0 }} />
+                    <div className="flex-grow-1 rounded-end overflow-hidden" style={{ backgroundColor: "rgba(255,255,255,0.06)" }}>
+                      <div style={{ width: `${pct2}%`, backgroundColor: "#3a4356", transition: "width 0.5s" }} />
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Football Lineups Tab ─────────────────────────────────────────────────────
+function FootballLineupsTab({ match }: { match: any }) {
+  const t1 = match.team1Info;
+  const t2 = match.team2Info;
+
+  const renderPlayer = (p: any, teamColor: string) => (
+    <div key={p.number}
+      className="d-flex align-items-center justify-content-between hover-card-effect"
+      style={{ padding: "10px 14px", borderBottom: "1px solid rgba(255,255,255,0.04)", transition: "background 0.15s" }}>
+      <div className="d-flex align-items-center gap-3">
+        <div className="font-monospace fw-bold d-flex align-items-center justify-content-center rounded-circle"
+          style={{ width: "28px", height: "28px", fontSize: "11px", backgroundColor: "rgba(255,255,255,0.05)", color: "#8a94a6", flexShrink: 0 }}>
+          {p.number}
+        </div>
+        <span className={`${p.substituted ? "text-muted" : "text-light"} fw-semibold`} style={{ fontSize: "13.5px" }}>
+          {p.name}
+        </span>
+        <span className="text-muted" style={{ fontSize: "11px" }}>{p.position}</span>
+      </div>
+      <div className="d-flex align-items-center gap-2">
+        {p.goals > 0 && <span style={{ fontSize: "13px" }} title="Goal">⚽</span>}
+        {p.isCaptain && (
+          <span className="badge px-2 py-1" style={{ fontSize: "9px", backgroundColor: "rgba(26,140,61,0.15)", color: "#4ade80", border: "1px solid rgba(26,140,61,0.3)" }}>C</span>
+        )}
+        {p.yellowCard && (
+          <span style={{ display: "inline-block", width: "9px", height: "13px", backgroundColor: "#facc15", borderRadius: "2px" }} title="Yellow Card" />
+        )}
+        {p.redCard && (
+          <span style={{ display: "inline-block", width: "9px", height: "13px", backgroundColor: "#ef4444", borderRadius: "2px" }} title="Red Card" />
+        )}
+        {p.substituted && (
+          <span className="text-info" style={{ fontSize: "11px" }} title="Substituted">🔄</span>
+        )}
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="d-flex flex-column gap-4">
+      {/* Formation Banner */}
+      <div className="card bg-card border border-dark rounded-3 p-4">
+        <h5 className="text-white fw-bold mb-4 border-start border-success border-4 ps-3"
+          style={{ fontSize: "18px", fontFamily: "var(--font-space-grotesk)" }}>
+          Team Formations
+        </h5>
+        <div className="row g-3 text-center">
+          <div className="col-6">
+            <div className="bg-dark bg-opacity-40 border border-secondary border-opacity-10 rounded-3 p-3">
+              <img src={match.team1Logo} alt={match.team1Name} width={36} height={36} style={{ objectFit: "contain" }} className="mb-2" />
+              <div className="text-white fw-bold" style={{ fontSize: "13px" }}>{match.team1Name}</div>
+              <div className="text-success fw-bold font-monospace mt-1" style={{ fontSize: "20px", letterSpacing: "-0.5px" }}>{t1.formation}</div>
+              <div className="text-muted mt-1" style={{ fontSize: "11px" }}>Coach: {t1.coach}</div>
+            </div>
+          </div>
+          <div className="col-6">
+            <div className="bg-dark bg-opacity-40 border border-secondary border-opacity-10 rounded-3 p-3">
+              <img src={match.team2Logo} alt={match.team2Name} width={36} height={36} style={{ objectFit: "contain" }} className="mb-2" />
+              <div className="text-white fw-bold" style={{ fontSize: "13px" }}>{match.team2Name}</div>
+              <div className="text-success fw-bold font-monospace mt-1" style={{ fontSize: "20px", letterSpacing: "-0.5px" }}>{t2.formation}</div>
+              <div className="text-muted mt-1" style={{ fontSize: "11px" }}>Coach: {t2.coach}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Starting XIs */}
+      <div className="row g-4">
+        {/* Team 1 XI */}
+        <div className="col-12 col-md-6">
+          <div className="card bg-card border border-dark rounded-3 overflow-hidden">
+            <div className="d-flex align-items-center gap-3 p-3 border-bottom border-dark" style={{ backgroundColor: "rgba(26,140,61,0.06)" }}>
+              <img src={match.team1Logo} alt={match.team1Name} width={24} height={24} style={{ objectFit: "contain" }} />
+              <h6 className="text-white fw-extrabold m-0" style={{ fontSize: "14px", fontFamily: "var(--font-space-grotesk)" }}>{match.team1Name}</h6>
+              <span className="ms-auto text-success font-monospace" style={{ fontSize: "12px" }}>{t1.formation}</span>
+            </div>
+            <div className="px-1 py-1">
+              <div className="text-muted fw-semibold text-uppercase px-3 py-2" style={{ fontSize: "9px", letterSpacing: "0.5px" }}>Starting XI</div>
+              {t1.startingXI.map((p: any) => renderPlayer(p, "#22c55e"))}
+              <div className="text-muted fw-semibold text-uppercase px-3 pt-3 pb-1" style={{ fontSize: "9px", letterSpacing: "0.5px", borderTop: "1px solid rgba(255,255,255,0.05)", marginTop: "8px" }}>Bench</div>
+              {t1.bench.map((p: any) => renderPlayer(p, "#8a94a6"))}
+            </div>
+          </div>
+        </div>
+        {/* Team 2 XI */}
+        <div className="col-12 col-md-6">
+          <div className="card bg-card border border-dark rounded-3 overflow-hidden">
+            <div className="d-flex align-items-center gap-3 p-3 border-bottom border-dark" style={{ backgroundColor: "rgba(255,255,255,0.02)" }}>
+              <img src={match.team2Logo} alt={match.team2Name} width={24} height={24} style={{ objectFit: "contain" }} />
+              <h6 className="text-white fw-extrabold m-0" style={{ fontSize: "14px", fontFamily: "var(--font-space-grotesk)" }}>{match.team2Name}</h6>
+              <span className="ms-auto text-muted font-monospace" style={{ fontSize: "12px" }}>{t2.formation}</span>
+            </div>
+            <div className="px-1 py-1">
+              <div className="text-muted fw-semibold text-uppercase px-3 py-2" style={{ fontSize: "9px", letterSpacing: "0.5px" }}>Starting XI</div>
+              {t2.startingXI.map((p: any) => renderPlayer(p, "#8a94a6"))}
+              <div className="text-muted fw-semibold text-uppercase px-3 pt-3 pb-1" style={{ fontSize: "9px", letterSpacing: "0.5px", borderTop: "1px solid rgba(255,255,255,0.05)", marginTop: "8px" }}>Bench</div>
+              {t2.bench.map((p: any) => renderPlayer(p, "#8a94a6"))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Football Timeline ────────────────────────────────────────────────────────
+function FootballTimeline({ match }: { match: any }) {
+  const timeline: any[] = match.footballTimeline || [];
+  const team1Name: string = match.team1Name;
+  const team2Name: string = match.team2Name;
+
+  const getEventConfig = (type: string) => {
+    switch (type) {
+      case "goal": return { icon: "⚽", label: "Goal", border: "rgba(26,140,61,0.3)", bg: "rgba(26,140,61,0.06)", dotBg: "#22c55e" };
+      case "yellow_card": return { icon: "🟨", label: "Yellow Card", border: "rgba(250,204,21,0.25)", bg: "rgba(250,204,21,0.04)", dotBg: "#facc15" };
+      case "red_card": return { icon: "🟥", label: "Red Card", border: "rgba(239,68,68,0.3)", bg: "rgba(239,68,68,0.06)", dotBg: "#ef4444" };
+      case "substitution": return { icon: "🔄", label: "Substitution", border: "rgba(34,211,238,0.2)", bg: "rgba(34,211,238,0.03)", dotBg: "#22d3ee" };
+      case "penalty": return { icon: "🎯", label: "Penalty", border: "rgba(249,115,22,0.3)", bg: "rgba(249,115,22,0.06)", dotBg: "#fb923c" };
+      case "var": return { icon: "▣", label: "VAR", border: "rgba(168,85,247,0.3)", bg: "rgba(168,85,247,0.06)", dotBg: "#c084fc" };
+      case "own_goal": return { icon: "⚽", label: "Own Goal", border: "rgba(239,68,68,0.25)", bg: "rgba(239,68,68,0.04)", dotBg: "#f87171" };
+      case "half_time":
+      case "full_time": return { icon: "⏱", label: type === "full_time" ? "Full Time" : "Half Time", border: "rgba(52,152,219,0.25)", bg: "rgba(52,152,219,0.05)", dotBg: "#3498db" };
+      case "injury_time": return { icon: "+", label: "Injury Time", border: "rgba(255,255,255,0.06)", bg: "transparent", dotBg: "#4b5563" };
+      default: return { icon: "·", label: type, border: "rgba(255,255,255,0.06)", bg: "transparent", dotBg: "#4b5563" };
+    }
+  };
+
+  return (
+    <div className="position-relative ps-4 py-2 border-start border-secondary border-opacity-15 border-2 ms-2 d-flex flex-column gap-3">
+      {timeline.map((e, i) => {
+        const cfg = getEventConfig(e.type);
+        const teamName = e.team === 1 ? team1Name : e.team === 2 ? team2Name : null;
+        const isHighlight = ["goal", "red_card", "penalty", "var", "full_time"].includes(e.type);
+
+        return (
+          <div key={i} className="position-relative">
+            {/* Timeline dot */}
+            <span className="position-absolute d-flex align-items-center justify-content-center rounded-circle"
+              style={{ width: "28px", height: "28px", left: "-42px", top: "8px", backgroundColor: "#070b12", border: `2px solid ${cfg.dotBg}`, zIndex: 10, fontSize: "11px" }}>
+              {e.type === "var" ? (
+                <span style={{ fontSize: "8px", fontWeight: 700, color: "#c084fc" }}>VAR</span>
+              ) : (
+                <span>{cfg.icon}</span>
+              )}
+            </span>
+
+            {/* Event card */}
+            <div className="rounded-3 p-3"
+              style={{ backgroundColor: cfg.bg, border: `1px solid ${cfg.border}`, boxShadow: isHighlight ? `0 4px 15px ${cfg.dotBg}18` : "none" }}>
+              <div className="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-1">
+                <div className="d-flex align-items-center gap-2 flex-wrap">
+                  <span className="font-monospace fw-bold rounded text-success"
+                    style={{ fontSize: "10px", backgroundColor: "rgba(26,140,61,0.08)", border: "1px solid rgba(26,140,61,0.2)", padding: "2px 7px" }}>
+                    {e.minute}
+                  </span>
+                  <span className="text-white fw-bold" style={{ fontSize: "14px" }}>
+                    {e.type === "substitution" ? `${e.player} ↑  ${e.playerOut} ↓` : e.player || cfg.label}
+                  </span>
+                </div>
+                {teamName && (
+                  <span className="badge bg-dark border border-secondary border-opacity-10 text-muted font-monospace px-2 py-1" style={{ fontSize: "9px" }}>
+                    {teamName}
+                  </span>
+                )}
+              </div>
+              {e.detail && (
+                <div className="text-muted small" style={{ fontSize: "12.5px", lineHeight: "1.5" }}>{e.detail}</div>
+              )}
+              {e.varDecision && (
+                <div className="mt-1">
+                  <span style={{ fontSize: "11px", fontWeight: 700, color: "#c084fc", backgroundColor: "rgba(168,85,247,0.12)", border: "1px solid rgba(168,85,247,0.3)", borderRadius: "4px", padding: "2px 8px" }}>
+                    ✓ {e.varDecision}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
 function ScorecardTab({ match }: { match: any }) {
   const [activeInnings, setActiveInnings] = React.useState<1 | 2>(2);
 

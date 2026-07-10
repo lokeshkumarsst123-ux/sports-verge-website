@@ -5,12 +5,18 @@ import Image from "next/image";
 import Link from "next/link";
 import { LiveScoreMatchDetail } from "@/types";
 import StatusBadge from "./StatusBadge";
+import FootballMatchCard from "./FootballMatchCard";
 
 interface LiveMatchCardProps {
   match: LiveScoreMatchDetail;
 }
 
 export default function LiveMatchCard({ match }: LiveMatchCardProps) {
+  // Delegate to football-specific card when football match has rich data
+  if (match.sport === "football" && (match.footballStats || match.footballEventsSummary || match.team1Info)) {
+    return <FootballMatchCard match={match} />;
+  }
+
   const getSportIcon = (sport: string) => {
     switch (sport.toLowerCase()) {
       case "cricket":
@@ -70,10 +76,10 @@ export default function LiveMatchCard({ match }: LiveMatchCardProps) {
         {/* Teams List (Column Left) */}
         <div className="col-12 col-md-8 d-flex flex-column gap-3">
           {/* Team 1 */}
-          <div className="d-flex align-items-center justify-content-between">
-            <div className="d-flex align-items-center gap-3">
+          <div className="d-flex align-items-center justify-content-between gap-2">
+            <div className="d-flex align-items-center gap-3 overflow-hidden">
               <div
-                className="d-flex align-items-center justify-content-center bg-dark rounded p-1 border border-secondary border-opacity-10"
+                className="d-flex align-items-center justify-content-center bg-dark rounded p-1 border border-secondary border-opacity-10 flex-shrink-0"
                 style={{ width: "32px", height: "32px", position: "relative" }}
               >
                 <Image
@@ -84,19 +90,19 @@ export default function LiveMatchCard({ match }: LiveMatchCardProps) {
                   style={{ objectFit: "contain" }}
                 />
               </div>
-              <span className="fw-semibold text-white">{match.team1Name}</span>
+              <span className="fw-semibold text-white text-truncate">{match.team1Name}</span>
               {match.team1Overs && (
-                <span className="text-muted small">({match.team1Overs} ov)</span>
+                <span className="text-muted small text-nowrap">({match.team1Overs} ov)</span>
               )}
             </div>
             <div className="fs-5 fw-bold text-success font-monospace">{match.team1Score}</div>
           </div>
 
           {/* Team 2 */}
-          <div className="d-flex align-items-center justify-content-between">
-            <div className="d-flex align-items-center gap-3">
+          <div className="d-flex align-items-center justify-content-between gap-2">
+            <div className="d-flex align-items-center gap-3 overflow-hidden">
               <div
-                className="d-flex align-items-center justify-content-center bg-dark rounded p-1 border border-secondary border-opacity-10"
+                className="d-flex align-items-center justify-content-center bg-dark rounded p-1 border border-secondary border-opacity-10 flex-shrink-0"
                 style={{ width: "32px", height: "32px", position: "relative" }}
               >
                 <Image
@@ -107,9 +113,9 @@ export default function LiveMatchCard({ match }: LiveMatchCardProps) {
                   style={{ objectFit: "contain" }}
                 />
               </div>
-              <span className="fw-semibold text-white">{match.team2Name}</span>
+              <span className="fw-semibold text-white text-truncate">{match.team2Name}</span>
               {match.team2Overs && (
-                <span className="text-muted small">({match.team2Overs} ov)</span>
+                <span className="text-muted small text-nowrap">({match.team2Overs} ov)</span>
               )}
             </div>
             <div className="fs-5 fw-bold text-success font-monospace">{match.team2Score}</div>
@@ -122,7 +128,7 @@ export default function LiveMatchCard({ match }: LiveMatchCardProps) {
             <span className="text-muted d-none d-md-block mb-1" style={{ fontSize: "11px" }}>STATUS</span>
             <StatusBadge status={match.matchStatus} />
           </div>
-          <div className="text-end text-md-center mt-md-2">
+          <div className="text-start text-md-center mt-2 mt-md-0 d-flex flex-row flex-md-column align-items-center gap-2">
             <span className="text-muted d-none d-md-block mb-0.5" style={{ fontSize: "11px" }}>TIME</span>
             <div className="small font-monospace text-light">{match.matchTime}</div>
           </div>
