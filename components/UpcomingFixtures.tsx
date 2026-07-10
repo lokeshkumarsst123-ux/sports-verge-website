@@ -11,6 +11,13 @@ export default function UpcomingFixtures() {
   const [showArrows, setShowArrows] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  const getMatchLink = (match: FixtureItem) => {
+    if (match.id) return `/live-scores/${match.id}`;
+    if (match.type === "football") return "/live-scores/match-2";
+    if (match.type === "NFL") return "/live-scores/match-3";
+    return "/live-scores/match-1";
+  };
+
   const filteredFixtures = activeTab === "all"
     ? upcomingFixtures
     : upcomingFixtures.filter((fixture) => fixture.type === activeTab);
@@ -44,10 +51,10 @@ export default function UpcomingFixtures() {
   return (
     <section className="fixtures-section bg-card rounded-3 border border-dark p-4 mt-4">
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h5 className="m-0 fw-semibold border-start border-success border-3 ps-2">
+        <h2 className="h5 m-0 fw-semibold border-start border-success border-3 ps-2">
           Upcoming Fixtures
-        </h5>
-        <Link href="#" className="text-success text-decoration-none small">
+        </h2>
+        <Link href="/live-scores" className="text-success text-decoration-none small">
           View All
         </Link>
       </div>
@@ -84,7 +91,7 @@ export default function UpcomingFixtures() {
           {filteredFixtures.length > 0 ? (
             filteredFixtures.map((match: FixtureItem, index: number) => (
               <Link
-                href="#"
+                href={getMatchLink(match)}
                 key={index}
                 className="fixture-card flex-shrink-0 rounded-3 border border-dark p-3 text-decoration-none"
               >

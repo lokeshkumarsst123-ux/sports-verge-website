@@ -11,6 +11,13 @@ export default function RecentResults() {
   const [showArrows, setShowArrows] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  const getMatchLink = (item: ResultItem) => {
+    if (item.id) return `/live-scores/${item.id}`;
+    if (item.type === "football") return "/live-scores/match-2";
+    if (item.type === "NFL") return "/live-scores/match-3";
+    return "/live-scores/match-1";
+  };
+
   const filteredResults = activeTab === "all"
     ? recentResults
     : recentResults.filter((item) => item.type === activeTab);
@@ -44,10 +51,10 @@ export default function RecentResults() {
   return (
     <section className="results-section bg-card rounded-3 p-4 border border-dark mt-4">
       <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
-        <h5 className="m-0 fw-semibold border-start border-3 border-success ps-2">
+        <h2 className="h5 m-0 fw-semibold border-start border-3 border-success ps-2">
           Recent Results
-        </h5>
-        <Link href="#" className="text-success text-decoration-none small">
+        </h2>
+        <Link href="/live-scores" className="text-success text-decoration-none small">
           View All
         </Link>
       </div>
@@ -85,7 +92,7 @@ export default function RecentResults() {
             filteredResults.map((item: ResultItem, index: number) => (
               <Link
                 key={index}
-                href="#"
+                href={getMatchLink(item)}
                 className="fixture-card d-block text-decoration-none flex-shrink-0 rounded-3 p-3 border border-dark"
               >
                 <div className="text-center text-muted small mb-3">

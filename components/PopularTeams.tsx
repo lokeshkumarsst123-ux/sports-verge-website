@@ -18,7 +18,7 @@ export default function PopularTeams() {
   return (
     <aside className="popular-teams-section bg-card rounded-3 p-4 border border-dark mt-4 sticky-top" style={{ top: "90px", zIndex: 10 }}>
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h5 className="m-0 fw-semibold border-start border-success border-3 ps-2">Popular Teams</h5>
+        <h2 className="h5 m-0 fw-semibold border-start border-success border-3 ps-2">Popular Teams</h2>
         <Link href="#" className="text-success text-decoration-none small fw-medium">
           View All
         </Link>

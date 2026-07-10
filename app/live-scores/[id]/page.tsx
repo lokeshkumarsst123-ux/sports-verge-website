@@ -480,7 +480,7 @@ export default function MatchDetailPage() {
                 { id: "lineups", label: "Lineups", icon: "bi-people" },
                 { id: "timeline", label: "Timeline", icon: "bi-calendar-event" },
                 { id: "commentary", label: "Commentary", icon: "bi-chat-left-text" },
-              ].map((tab) => (
+              ].filter(t => t.id !== "scorecard" || match.sport === "cricket").map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveSubTab(tab.id as any)}
@@ -1538,7 +1538,9 @@ function FootballLiveDashboard({ match }: { match: any }) {
             {/* Goals */}
             <div className="col-12 col-md-6">
               <div className="bg-dark bg-opacity-40 border border-secondary border-opacity-10 rounded-3 p-3">
-                <div className="text-muted fw-semibold text-uppercase mb-3" style={{ fontSize: "10px", letterSpacing: "0.5px" }}>⚽ Goals</div>
+                <div className="text-muted fw-semibold text-uppercase mb-3 d-flex align-items-center gap-1.5" style={{ fontSize: "10px", letterSpacing: "0.5px" }}>
+                  <span style={{ fontFamily: "'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif", fontSize: "12px" }}>⚽</span> Goals
+                </div>
                 {summary.goals.length === 0 ? (
                   <span className="text-muted small">No goals yet</span>
                 ) : (
@@ -1719,18 +1721,27 @@ function FootballLineupsTab({ match }: { match: any }) {
         <span className="text-muted" style={{ fontSize: "11px" }}>{p.position}</span>
       </div>
       <div className="d-flex align-items-center gap-2">
-        {p.goals > 0 && <span style={{ fontSize: "13px" }} title="Goal">⚽</span>}
+        {p.goals > 0 && (
+          <div className="d-flex align-items-center gap-1" title="Goal">
+            <span style={{ fontFamily: "'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif", fontSize: "13px" }}>⚽</span>
+            {p.goals > 1 && <span className="fw-bold text-white" style={{ fontSize: "10px" }}>{p.goals}</span>}
+          </div>
+        )}
         {p.isCaptain && (
-          <span className="badge px-2 py-1" style={{ fontSize: "9px", backgroundColor: "rgba(26,140,61,0.15)", color: "#4ade80", border: "1px solid rgba(26,140,61,0.3)" }}>C</span>
+          <span className="badge px-1 py-0 d-flex align-items-center justify-content-center fw-bold" style={{ fontSize: "9px", height: "16px", minWidth: "16px", backgroundColor: "rgba(26,140,61,0.15)", color: "#4ade80", border: "1px solid rgba(26,140,61,0.3)" }}>C</span>
         )}
         {p.yellowCard && (
-          <span style={{ display: "inline-block", width: "9px", height: "13px", backgroundColor: "#facc15", borderRadius: "2px" }} title="Yellow Card" />
+          <div className="d-flex align-items-center justify-content-center" title="Yellow Card">
+            <div style={{ width: "9px", height: "13px", backgroundColor: "#facc15", borderRadius: "1px", border: "1px solid rgba(0,0,0,0.2)" }}></div>
+          </div>
         )}
         {p.redCard && (
-          <span style={{ display: "inline-block", width: "9px", height: "13px", backgroundColor: "#ef4444", borderRadius: "2px" }} title="Red Card" />
+          <div className="d-flex align-items-center justify-content-center" title="Red Card">
+            <div style={{ width: "9px", height: "13px", backgroundColor: "#ef4444", borderRadius: "1px", border: "1px solid rgba(0,0,0,0.2)" }}></div>
+          </div>
         )}
         {p.substituted && (
-          <span className="text-info" style={{ fontSize: "11px" }} title="Substituted">🔄</span>
+          <i className="bi bi-arrow-left-right text-info ms-1" style={{ fontSize: "12px" }} title="Substituted"></i>
         )}
       </div>
     </div>
@@ -1811,17 +1822,17 @@ function FootballTimeline({ match }: { match: any }) {
 
   const getEventConfig = (type: string) => {
     switch (type) {
-      case "goal": return { icon: "⚽", label: "Goal", border: "rgba(26,140,61,0.3)", bg: "rgba(26,140,61,0.06)", dotBg: "#22c55e" };
-      case "yellow_card": return { icon: "🟨", label: "Yellow Card", border: "rgba(250,204,21,0.25)", bg: "rgba(250,204,21,0.04)", dotBg: "#facc15" };
-      case "red_card": return { icon: "🟥", label: "Red Card", border: "rgba(239,68,68,0.3)", bg: "rgba(239,68,68,0.06)", dotBg: "#ef4444" };
-      case "substitution": return { icon: "🔄", label: "Substitution", border: "rgba(34,211,238,0.2)", bg: "rgba(34,211,238,0.03)", dotBg: "#22d3ee" };
-      case "penalty": return { icon: "🎯", label: "Penalty", border: "rgba(249,115,22,0.3)", bg: "rgba(249,115,22,0.06)", dotBg: "#fb923c" };
-      case "var": return { icon: "▣", label: "VAR", border: "rgba(168,85,247,0.3)", bg: "rgba(168,85,247,0.06)", dotBg: "#c084fc" };
-      case "own_goal": return { icon: "⚽", label: "Own Goal", border: "rgba(239,68,68,0.25)", bg: "rgba(239,68,68,0.04)", dotBg: "#f87171" };
+      case "goal": return { icon: <span style={{ fontFamily: "'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif", fontSize: "12px", lineHeight: 1 }}>⚽</span>, label: "Goal", border: "rgba(26,140,61,0.3)", bg: "rgba(26,140,61,0.06)", dotBg: "#22c55e" };
+      case "yellow_card": return { icon: <div style={{ width: "9px", height: "13px", backgroundColor: "#facc15", borderRadius: "1px", border: "1px solid rgba(0,0,0,0.2)" }}></div>, label: "Yellow Card", border: "rgba(250,204,21,0.25)", bg: "rgba(250,204,21,0.04)", dotBg: "#facc15" };
+      case "red_card": return { icon: <div style={{ width: "9px", height: "13px", backgroundColor: "#ef4444", borderRadius: "1px", border: "1px solid rgba(0,0,0,0.2)" }}></div>, label: "Red Card", border: "rgba(239,68,68,0.3)", bg: "rgba(239,68,68,0.06)", dotBg: "#ef4444" };
+      case "substitution": return { icon: <i className="bi bi-arrow-left-right text-info" style={{ fontSize: "11px" }}></i>, label: "Substitution", border: "rgba(34,211,238,0.2)", bg: "rgba(34,211,238,0.03)", dotBg: "#22d3ee" };
+      case "penalty": return { icon: <i className="bi bi-bullseye text-warning" style={{ fontSize: "12px" }}></i>, label: "Penalty", border: "rgba(249,115,22,0.3)", bg: "rgba(249,115,22,0.06)", dotBg: "#fb923c" };
+      case "var": return { icon: <i className="bi bi-display" style={{ fontSize: "11px" }}></i>, label: "VAR", border: "rgba(168,85,247,0.3)", bg: "rgba(168,85,247,0.06)", dotBg: "#c084fc" };
+      case "own_goal": return { icon: <span style={{ fontFamily: "'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif", fontSize: "12px", lineHeight: 1 }}>⚽</span>, label: "Own Goal", border: "rgba(239,68,68,0.25)", bg: "rgba(239,68,68,0.04)", dotBg: "#f87171" };
       case "half_time":
-      case "full_time": return { icon: "⏱", label: type === "full_time" ? "Full Time" : "Half Time", border: "rgba(52,152,219,0.25)", bg: "rgba(52,152,219,0.05)", dotBg: "#3498db" };
-      case "injury_time": return { icon: "+", label: "Injury Time", border: "rgba(255,255,255,0.06)", bg: "transparent", dotBg: "#4b5563" };
-      default: return { icon: "·", label: type, border: "rgba(255,255,255,0.06)", bg: "transparent", dotBg: "#4b5563" };
+      case "full_time": return { icon: <i className="bi bi-stopwatch text-info" style={{ fontSize: "12px" }}></i>, label: type === "full_time" ? "Full Time" : "Half Time", border: "rgba(52,152,219,0.25)", bg: "rgba(52,152,219,0.05)", dotBg: "#3498db" };
+      case "injury_time": return { icon: <i className="bi bi-plus" style={{ fontSize: "14px" }}></i>, label: "Injury Time", border: "rgba(255,255,255,0.06)", bg: "transparent", dotBg: "#4b5563" };
+      default: return { icon: <i className="bi bi-circle-fill text-muted" style={{ fontSize: "6px" }}></i>, label: type, border: "rgba(255,255,255,0.06)", bg: "transparent", dotBg: "#4b5563" };
     }
   };
 

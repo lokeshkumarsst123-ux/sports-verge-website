@@ -65,6 +65,7 @@ export default function Header() {
                   setIsSearchOpen(!isSearchOpen);
                 }}
               >
+                <span className="visually-hidden">Toggle search</span>
                 <i className={`bi ${isSearchOpen ? "bi-x-lg" : "bi-search"}`}></i>
               </Link>
 
@@ -82,6 +83,7 @@ export default function Header() {
                   />
 
                   <button className="btn btn-search" type="submit">
+                    <span className="visually-hidden">Submit search</span>
                     <i className="bi bi-search"></i>
                   </button>
                 </form>
@@ -93,6 +95,7 @@ export default function Header() {
               className="control-icon text-white position-relative ms-3 ms-xl-4"
               onClick={(e) => e.preventDefault()}
             >
+              <span className="visually-hidden">Notifications</span>
               <i className="bi bi-bell"></i>
 
               <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success notification-badge">
@@ -116,6 +119,7 @@ export default function Header() {
             aria-controls="mainNav"
             aria-expanded={isMenuOpen}
           >
+            <span className="visually-hidden">Toggle navigation</span>
             <span className="navbar-toggler-icon"></span>
           </button>
 

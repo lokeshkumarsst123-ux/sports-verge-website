@@ -12,9 +12,26 @@ body {
   overflow-x: visible !important;
 }
 
-.ms-badge{padding: 15px 15px 10px!important}
+.ms-badge{
+  padding: 15px 15px 10px!important;
+  background-color: #000000 !important; /* Higher contrast background */
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
 
-.text-muted{color:rgb(121 136 151 / 85%) !important}
+.text-muted{color: #adb5bd !important} /* Lighter gray for better contrast on dark */
+.text-success { color: #4ade80 !important; } /* Brighter green for contrast on dark */
+.btn-success { background-color: #198754 !important; color: #ffffff !important; border-color: #198754 !important; }
+.btn-success:hover { background-color: #146c43 !important; }
+/* Alternatively, make the btn-success use dark text on bright background for perfect contrast */
+.btn.btn-success {
+  background-color: var(--custom-primary, #39ff14) !important;
+  color: #000000 !important;
+  font-weight: 600 !important;
+  border: none !important;
+}
+.btn.btn-success:hover {
+  background-color: #32e012 !important;
+}
 
 .nav-item .dropdown-toggle::after{display: none!important}
 

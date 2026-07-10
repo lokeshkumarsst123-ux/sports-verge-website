@@ -5,6 +5,7 @@ export interface SlideItem {
 }
 
 export interface FixtureItem {
+  id?: string;
   league: string;
   home: string;
   away: string;
@@ -17,6 +18,7 @@ export interface FixtureItem {
 }
 
 export interface ResultItem {
+  id?: string;
   league: string;
   home: string;
   away: string;
@@ -45,6 +47,7 @@ export interface PlayerItem {
 }
 
 export interface LiveScoreMatch {
+  id?: string;
   league: string;
   time?: string;
   status: "LIVE" | "finished" | string;

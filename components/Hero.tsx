@@ -70,6 +70,9 @@ export default function Hero() {
                   height={650}
                   className="featured-img w-100"
                   priority={index === 0}
+                  fetchPriority={index === 0 ? "high" : "auto"}
+                  sizes="(max-width: 768px) 100vw, 1200px"
+                  style={{ objectFit: "cover" }}
                 />
 
                 <div className="featured-overlay"></div>

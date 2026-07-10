@@ -20,6 +20,8 @@ export default function HorizontalBanner() {
                     height={220}
                     className="img-fluid"
                     priority
+                    sizes="(max-width: 768px) 100vw, 1400px"
+                    style={{ width: "100%", height: "auto" }}
                 />
             </Link>
         </section>

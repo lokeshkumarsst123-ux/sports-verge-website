@@ -30,19 +30,19 @@ export default function Footer() {
             </p>
             <h6 className="footer-title text-white fw-semibold small mb-3">FOLLOW US</h6>
             <div className="d-flex gap-2">
-              <Link href="#" className="social-icon">
+              <Link href="#" className="social-icon" aria-label="Facebook">
                 <i className="bi bi-facebook"></i>
               </Link>
-              <Link href="#" className="social-icon">
+              <Link href="#" className="social-icon" aria-label="X (formerly Twitter)">
                 <i className="bi bi-twitter-x"></i>
               </Link>
-              <Link href="#" className="social-icon">
+              <Link href="#" className="social-icon" aria-label="Instagram">
                 <i className="bi bi-instagram"></i>
               </Link>
-              <Link href="#" className="social-icon">
+              <Link href="#" className="social-icon" aria-label="YouTube">
                 <i className="bi bi-youtube"></i>
               </Link>
-              <Link href="#" className="social-icon">
+              <Link href="#" className="social-icon" aria-label="Discord">
                 <i className="bi bi-discord"></i>
               </Link>
             </div>
