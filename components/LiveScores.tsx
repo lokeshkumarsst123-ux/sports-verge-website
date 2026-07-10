@@ -17,7 +17,7 @@ export default function LiveScores() {
     <aside className="live-scores-section bg-card rounded-3 py-4 px-3 border border-dark">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h5 className="m-0 fw-semibold">Live Scores</h5>
-        <Link href="#" className="text-success text-decoration-none small fw-medium">
+        <Link href="/live-scores" className="text-success text-decoration-none small fw-medium">
           View All
         </Link>
       </div>
@@ -110,7 +110,7 @@ export default function LiveScores() {
             )}
 
             <Link
-              href="#"
+              href="/live-scores"
               className="btn btn-outline-success w-100 mt-2 p-3 rounded-3 text-uppercase fw-medium"
               style={{ fontSize: "13px" }}
             >

@@ -101,7 +101,7 @@ export default function Header() {
             </Link>
 
             <div className="d-none d-xl-flex align-items-center">
-              <Link href="/" className="btn btn-signup ms-4">
+              <Link href="/login" className="btn btn-signup ms-4">
                 Login
               </Link>
             </div>
@@ -125,7 +125,7 @@ export default function Header() {
             <NavigationMenu />
 
             <div className="d-xl-none d-flex flex-column mt-3 pb-3 border-top border-secondary pt-3">
-              <Link href="/" className="btn btn-signup w-100">
+              <Link href="/login" className="btn btn-signup w-100">
                 Login
               </Link>
             </div>

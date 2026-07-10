@@ -176,3 +176,60 @@ body {
     z-index: 10 !important;
   }
 }
+
+/* Custom scrollbar and swipe indicator for sports tabs navigation */
+.custom-tabs {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+  -webkit-overflow-scrolling: touch;
+}
+
+.custom-tabs::-webkit-scrollbar {
+  height: 4px;
+}
+
+.custom-tabs::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-tabs::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+}
+
+.custom-tabs::-webkit-scrollbar-thumb:hover {
+  background-color: var(--custom-primary, #39ff14);
+}
+
+/* Custom premium checkboxes */
+.form-check-input {
+  background-color: #111622 !important;
+  border: 1px solid var(--border-dark, #2a303c) !important;
+  cursor: pointer;
+  width: 1.15em !important;
+  height: 1.15em !important;
+  border-radius: 4px !important;
+  box-shadow: none !important;
+  transition: all 0.2s ease-in-out;
+}
+
+.form-check-input:checked {
+  background-color: var(--accent-green) !important;
+  border-color: var(--accent-green) !important;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m6 10 3 3 6-6'/%3e%3c/svg%3e") !important;
+}
+
+.form-check-input:focus {
+  border-color: var(--accent-green) !important;
+  box-shadow: 0 0 0 0.25rem rgba(26, 140, 97, 0.15) !important;
+}
+
+/* Form switch toggle override */
+.form-switch .form-check-input {
+  width: 2em !important;
+  border-radius: 2em !important;
+}
+
+.form-switch .form-check-input:checked {
+  background-position: right center !important;
+}

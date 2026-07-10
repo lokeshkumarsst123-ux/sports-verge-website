@@ -85,3 +85,24 @@ export interface PopularTeamItem {
   sport: string;
   logo: string;
 }
+
+export interface LiveScoreMatchDetail {
+  id: string;
+  sport: "cricket" | "football" | "NFL" | "AFL";
+  competitionName: string;
+  matchName: string;
+  team1Logo: string;
+  team1Name: string;
+  team1Score: string;
+  team1Overs?: string;
+  team2Logo: string;
+  team2Name: string;
+  team2Score: string;
+  team2Overs?: string;
+  matchStatus: "LIVE" | "BREAK" | "HALF TIME" | "1ST INNINGS" | "2ND INNINGS" | "FINISHED";
+  matchTime: string;
+  venue: string;
+  lastUpdated: string;
+  note?: string;
+}
+
