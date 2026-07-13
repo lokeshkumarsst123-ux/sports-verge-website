@@ -58,41 +58,27 @@ export default function Sidebar() {
             <Link
               key={idx}
               href="#"
-              className="d-flex align-items-center justify-content-between p-2 rounded-3 text-decoration-none"
-              style={{
-                border: "1px solid transparent",
-                transition: "all 0.2s ease",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "var(--hover-card)";
-                e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.05)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "transparent";
-                e.currentTarget.style.borderColor = "transparent";
-              }}
+              className="d-flex align-items-center justify-content-between p-2 rounded-3 text-decoration-none popular-comp-link"
             >
               <div className="d-flex align-items-center gap-3">
                 <div
-                  className="d-flex align-items-center justify-content-center bg-dark rounded p-1 border border-secondary border-opacity-10"
-                  style={{ width: "32px", height: "32px", position: "relative" }}
+                  className="d-flex align-items-center justify-content-center bg-dark rounded p-1 border border-secondary border-opacity-10 w-32 h-32 position-relative"
                 >
                   <Image
                     src={comp.logo}
                     alt={comp.name}
                     width={22}
-                    height={22}
-                    style={{ objectFit: "contain" }}
+                    height={22} className="object-fit-contain"
                   />
                 </div>
                 <div>
                   <div className="text-light fw-semibold small">{comp.name}</div>
-                  <div className="text-muted" style={{ fontSize: "11px" }}>
+                  <div className="text-muted fs-11">
                     {comp.sport}
                   </div>
                 </div>
               </div>
-              <span className="badge bg-secondary bg-opacity-30 text-light font-monospace" style={{ fontSize: "10px" }}>
+              <span className="badge bg-secondary bg-opacity-30 text-light font-monospace fs-10">
                 {comp.teams}
               </span>
             </Link>
@@ -102,28 +88,24 @@ export default function Sidebar() {
 
       {/* Active Advertisements */}
       <div
-        className="position-relative overflow-hidden rounded-3 border border-dark d-flex align-items-end"
-        style={{ height: "300px" }}
+        className="position-relative overflow-hidden rounded-3 border border-dark d-flex align-items-end h-300"
       >
         <Image
           src="/assets/imgs/ad+1.webp"
           alt="Ad Banner"
           fill
           sizes="(max-width: 991px) 100vw, 320px"
-          style={{ objectFit: "cover" }}
-          className="ad-bg-img"
+          className="object-fit-cover ad-bg-img"
         />
-        <div className="ad-overlay d-flex flex-column justify-content-end p-4 w-100 h-100 position-absolute top-0 start-0" style={{
-          background: "linear-gradient(to top, rgba(7, 11, 18, 0.95) 0%, rgba(7, 11, 18, 0.4) 60%, transparent 100%)"
-        }}>
-          <span className="badge bg-dark bg-opacity-70 text-success align-self-start mb-2 px-2 py-1" style={{ fontSize: "9px", letterSpacing: "1px" }}>
+        <div className="ad-overlay d-flex flex-column justify-content-end p-4 w-100 h-100 position-absolute top-0 start-0 ad-bg-gradient">
+          <span className="badge bg-dark bg-opacity-70 text-success align-self-start mb-2 px-2 py-1 fs-9 ls-1">
             ADVERTISEMENT
           </span>
           <h6 className="text-white fw-bold mb-1">Upgrade to Premium Pass</h6>
-          <p className="text-muted mb-3" style={{ fontSize: "11px" }}>
+          <p className="text-muted mb-3 fs-11">
             Get ad-free scores, advanced analytics and live commentary alerts.
           </p>
-          <Link href="#" className="btn btn-success btn-sm fw-semibold text-uppercase py-2" style={{ fontSize: "11px", letterSpacing: "0.5px" }}>
+          <Link href="#" className="btn btn-success btn-sm fw-semibold text-uppercase py-2 fs-11 ls-05">
             Get 50% Off Now
           </Link>
         </div>
@@ -139,47 +121,30 @@ export default function Sidebar() {
             <Link
               key={idx}
               href="#"
-              className="d-flex gap-3 text-decoration-none border-bottom border-secondary border-opacity-10 pb-3"
-              style={{ transition: "all 0.2s" }}
-              onMouseEnter={(e) => {
-                const titleEl = e.currentTarget.querySelector(".news-title");
-                if (titleEl instanceof HTMLElement) titleEl.style.color = "var(--custom-primary)";
-              }}
-              onMouseLeave={(e) => {
-                const titleEl = e.currentTarget.querySelector(".news-title");
-                if (titleEl instanceof HTMLElement) titleEl.style.color = "var(--text-light)";
-              }}
+              className="d-flex gap-3 text-decoration-none border-bottom border-secondary border-opacity-10 pb-3 news-item-link"
             >
               <div
-                className="flex-shrink-0 rounded overflow-hidden position-relative"
-                style={{ width: "80px", height: "60px" }}
+                className="flex-shrink-0 rounded overflow-hidden position-relative w-80 h-60"
               >
                 <Image
                   src={news.image}
                   alt={news.title}
                   fill
-                  sizes="80px"
-                  style={{ objectFit: "cover" }}
+                  sizes="80px" className="object-fit-cover"
                 />
               </div>
               <div className="d-flex flex-column justify-content-center">
                 <span
-                  className="text-success font-monospace mb-0.5 text-uppercase fw-semibold"
-                  style={{ fontSize: "9px", letterSpacing: "0.5px" }}
+                  className="text-success font-monospace mb-0.5 text-uppercase fw-semibold fs-9 ls-05"
                 >
                   {news.sport}
                 </span>
                 <h6
                   className="news-title text-light fw-semibold mb-1 line-clamp-2"
-                  style={{
-                    fontSize: "13px",
-                    lineHeight: "1.3",
-                    transition: "color 0.2s ease",
-                  }}
                 >
                   {news.title}
                 </h6>
-                <span className="text-muted" style={{ fontSize: "10px" }}>
+                <span className="text-muted fs-10">
                   {news.date.split("•")[1] || news.date}
                 </span>
               </div>

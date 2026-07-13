@@ -54,8 +54,8 @@ export default function RecentResults() {
         <h2 className="h5 m-0 fw-semibold border-start border-3 border-success ps-2">
           Recent Results
         </h2>
-        <Link href="/live-scores" className="text-success text-decoration-none small">
-          View All
+        <Link href="/live-scores" className="text-success text-decoration-none small fw-semibold d-inline-flex align-items-center gap-1 hover-opacity">
+          View All <i className="bi bi-chevron-right" style={{ fontSize: '0.8em' }}></i>
         </Link>
       </div>
 
@@ -147,8 +147,7 @@ export default function RecentResults() {
                         height={34}
                       />
                       <div
-                        className="small fw-semibold text-light mt-1"
-                        style={{ fontSize: 11 }}
+                        className="small fw-semibold text-light mt-1 fs-11"
                       >
                         {item.home}
                       </div>
@@ -166,8 +165,7 @@ export default function RecentResults() {
                         height={34}
                       />
                       <div
-                        className="small fw-semibold text-light mt-1"
-                        style={{ fontSize: 11 }}
+                        className="small fw-semibold text-light mt-1 fs-11"
                       >
                         {item.away}
                       </div>

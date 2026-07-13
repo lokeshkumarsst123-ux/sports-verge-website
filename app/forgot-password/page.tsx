@@ -7,6 +7,7 @@ import Image from "next/image";
 export default function ForgotPasswordPage() {
   const [flowStep, setFlowStep] = useState<"email" | "link_sent" | "reset_form" | "success">("email");
   const [email, setEmail] = useState("");
+  const [otp, setOtp] = useState("");
   const [passwords, setPasswords] = useState({
     password: "",
     confirmPassword: "",
@@ -79,38 +80,36 @@ export default function ForgotPasswordPage() {
     }, 1500);
   };
 
+  const handleVerifyOTP = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (otp.length < 4) {
+      setErrors({ otp: "Please enter a valid OTP." });
+      return;
+    }
+    setLoading(true);
+    setErrors({});
+
+    // Simulate OTP verification
+    setTimeout(() => {
+      setLoading(false);
+      setFlowStep("reset_form");
+    }, 1500);
+  };
+
   return (
     <main
-      className="min-vh-100 d-flex align-items-center justify-content-center py-5 px-3 position-relative overflow-hidden"
-      style={{
-        backgroundColor: "#070b12",
-      }}
+      className="min-vh-100 d-flex align-items-center justify-content-center py-5 px-3 position-relative overflow-hidden auth-main-bg"
+      
     >
       {/* Background Mesh Glows */}
       <div
-        className="position-absolute rounded-circle"
-        style={{
-          width: "400px",
-          height: "400px",
-          background: "radial-gradient(circle, rgba(57, 255, 20, 0.05) 0%, transparent 70%)",
-          top: "-100px",
-          right: "-100px",
-          zIndex: 1,
-        }}
+        className="position-absolute rounded-circle mesh-glow-1"
       ></div>
       <div
-        className="position-absolute rounded-circle"
-        style={{
-          width: "450px",
-          height: "450px",
-          background: "radial-gradient(circle, rgba(26, 140, 61, 0.04) 0%, transparent 70%)",
-          bottom: "-150px",
-          left: "-150px",
-          zIndex: 1,
-        }}
+        className="position-absolute rounded-circle mesh-glow-2"
       ></div>
 
-      <div className="w-100 position-relative" style={{ maxWidth: "460px", zIndex: 10 }}>
+      <div className="w-100 position-relative auth-card-wrapper">
         {/* Logo Header */}
         <div className="text-center mb-4">
           <Link href="/" className="d-inline-block">
@@ -148,7 +147,7 @@ export default function ForgotPasswordPage() {
                     className={`form-control bg-dark text-white border-0 ${
                       errors.email ? "is-invalid" : ""
                     }`}
-                    style={{ padding: "11px 16px", fontSize: "14px" }}
+                    
                     placeholder="john@example.com"
                   />
                   {errors.email && (
@@ -158,8 +157,8 @@ export default function ForgotPasswordPage() {
 
                 <button
                   type="submit"
-                  className="btn btn-signup w-100 fw-semibold text-uppercase py-2.5 mt-3"
-                  style={{ letterSpacing: "0.5px" }}
+                  className="btn btn-signup w-100 fw-semibold text-uppercase py-2.5 mt-3 ls-05"
+                  
                   disabled={loading}
                 >
                   {loading ? (
@@ -183,34 +182,48 @@ export default function ForgotPasswordPage() {
 
           {flowStep === "link_sent" && (
             <div className="text-center py-2">
-              <div
-                className="d-inline-flex align-items-center justify-content-center bg-success bg-opacity-10 text-success rounded-circle p-3 mb-4"
-                style={{ width: "64px", height: "64px" }}
-              >
-                <i className="bi bi-send-check-fill" style={{ fontSize: "28px" }}></i>
+              <div className="d-inline-flex align-items-center justify-content-center bg-success bg-opacity-10 text-success rounded-circle p-3 mb-4 w-64 h-64">
+                <i className="bi bi-shield-lock-fill fs-28"></i>
               </div>
-              <h4 className="text-white fw-bold">Reset Email Sent</h4>
-              <p className="text-muted small my-3" style={{ lineHeight: "1.6" }}>
-                A password reset link has been dispatched to <strong className="text-light">{email}</strong>. 
-                Check your inbox and follow the instructions to configure your credentials.
+              <h4 className="text-white fw-bold">Verify OTP</h4>
+              <p className="text-muted small my-3 lh-1-6">
+                A secure OTP has been dispatched to <strong className="text-light">{email}</strong>. 
+                Please enter the OTP below to verify your identity.
               </p>
 
-              {/* Simulation Sandbox CTA */}
-              <div className="bg-dark bg-opacity-40 border border-secondary border-opacity-10 rounded-3 p-3 my-4">
-                <span className="badge bg-secondary bg-opacity-20 text-success mb-2 px-2.5 py-1.5" style={{ fontSize: "9px", letterSpacing: "0.5px" }}>
-                  SIMULATION SANDBOX
-                </span>
-                <p className="text-muted" style={{ fontSize: "11px", lineHeight: "1.4" }}>
-                  In production, users would click the secure token in the email. Click below to simulate that action.
-                </p>
+              <form onSubmit={handleVerifyOTP} className="my-4">
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    maxLength={6}
+                    value={otp}
+                    onChange={(e) => {
+                      setOtp(e.target.value.replace(/[^0-9]/g, ''));
+                      if (errors.otp) setErrors({});
+                    }}
+                    placeholder="Enter 6-digit OTP"
+                    className={`form-control bg-dark text-white border-0 text-center fw-bold fs-4 py-3 ls-05 ${
+                      errors.otp ? "is-invalid" : ""
+                    }`}
+                  />
+                  {errors.otp && <div className="invalid-feedback text-start">{errors.otp}</div>}
+                </div>
+
                 <button
-                  onClick={() => setFlowStep("reset_form")}
-                  className="btn btn-login w-100 fw-semibold text-uppercase py-2"
-                  style={{ fontSize: "11px" }}
+                  type="submit"
+                  disabled={loading || otp.length < 4}
+                  className="btn btn-login w-100 fw-semibold text-uppercase py-3 position-relative d-flex justify-content-center align-items-center fs-13"
                 >
-                  Simulate Email Token click
+                  {loading ? (
+                    <>
+                      <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                      Verifying...
+                    </>
+                  ) : (
+                    "Verify OTP"
+                  )}
                 </button>
-              </div>
+              </form>
 
               <div className="text-center mt-2">
                 <span className="text-muted small">Didn't get the link? </span>
@@ -246,7 +259,7 @@ export default function ForgotPasswordPage() {
                       className={`form-control bg-dark text-white border-0 pe-5 ${
                         errors.password ? "is-invalid" : ""
                       }`}
-                      style={{ padding: "11px 16px", fontSize: "14px" }}
+                      
                       placeholder="••••••••"
                     />
                     <button
@@ -273,7 +286,7 @@ export default function ForgotPasswordPage() {
                       className={`form-control bg-dark text-white border-0 pe-5 ${
                         errors.confirmPassword ? "is-invalid" : ""
                       }`}
-                      style={{ padding: "11px 16px", fontSize: "14px" }}
+                      
                       placeholder="••••••••"
                     />
                     <button
@@ -291,8 +304,8 @@ export default function ForgotPasswordPage() {
 
                 <button
                   type="submit"
-                  className="btn btn-signup w-100 fw-semibold text-uppercase py-2.5 mt-3"
-                  style={{ letterSpacing: "0.5px" }}
+                  className="btn btn-signup w-100 fw-semibold text-uppercase py-2.5 mt-3 ls-05"
+                  
                   disabled={loading}
                 >
                   {loading ? (
@@ -311,20 +324,19 @@ export default function ForgotPasswordPage() {
           {flowStep === "success" && (
             <div className="text-center py-2">
               <div
-                className="d-inline-flex align-items-center justify-content-center bg-success bg-opacity-10 text-success rounded-circle p-3 mb-4"
-                style={{ width: "64px", height: "64px" }}
+                className="d-inline-flex align-items-center justify-content-center bg-success bg-opacity-10 text-success rounded-circle p-3 mb-4 w-64px h-64px"
               >
-                <i className="bi bi-check2-circle" style={{ fontSize: "36px" }}></i>
+                <i className="bi bi-check2-circle fs-36"></i>
               </div>
               <h4 className="text-white fw-bold">Password Reset Complete</h4>
-              <p className="text-muted small my-3" style={{ lineHeight: "1.6" }}>
+              <p className="text-muted small my-3 lh-1-6">
                 Your account credentials have been successfully updated. You can now login with your new password.
               </p>
 
               <Link
                 href="/login"
-                className="btn btn-signup w-100 fw-semibold text-uppercase py-2.5 mt-3"
-                style={{ letterSpacing: "0.5px" }}
+                className="btn btn-signup w-100 fw-semibold text-uppercase py-2.5 mt-3 ls-05"
+                
               >
                 Go to Sign In
               </Link>

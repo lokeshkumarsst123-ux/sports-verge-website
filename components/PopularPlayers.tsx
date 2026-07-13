@@ -100,14 +100,12 @@ export default function PopularPlayers() {
 
                 <div className="player-info p-2">
                   <div
-                    className="fw-semibold text-light text-truncate"
-                    style={{ fontSize: 13 }}
+                    className="fw-semibold text-light text-truncate fs-13"
                   >
                     {player.name}
                   </div>
                   <div
-                    className="text-muted text-truncate"
-                    style={{ fontSize: 11 }}
+                    className="text-muted text-truncate fs-11"
                   >
                     {player.team}
                   </div>

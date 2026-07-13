@@ -56,25 +56,23 @@ export default function DashboardPage() {
   if (!user) return null;
 
   return (
-    <main className="min-vh-100 py-5" style={{ backgroundColor: "#070b12", color: "#fff" }}>
-      <div className="container custom-container" style={{ maxWidth: "900px" }}>
+    <main className="min-vh-100 py-5">
+      <div className="container custom-container">
         {/* Upper Breadcrumb/Header */}
         <div className="d-flex justify-content-between align-items-center mb-5 pb-3 border-bottom border-secondary border-opacity-10">
           <div>
             <span
-              className="text-success font-monospace mb-1 text-uppercase fw-semibold"
-              style={{ fontSize: "11px", letterSpacing: "1px" }}
+              className="text-success font-monospace mb-1 text-uppercase fw-semibold fs-11"
             >
               MEMBERS AREA
             </span>
-            <h2 className="fw-bold text-white mb-0" style={{ fontFamily: "var(--font-space-grotesk)" }}>
+            <h2 className="fw-bold mb-0">
               Welcome back, <span className="text-success">{user.firstName}</span>!
             </h2>
           </div>
           <button
             onClick={handleLogout}
-            className="btn btn-outline-danger btn-sm px-3 py-2 fw-semibold text-uppercase"
-            style={{ fontSize: "11px", letterSpacing: "0.5px" }}
+            className="btn btn-outline-danger btn-sm px-3 py-2 fw-semibold text-uppercase fs-11"
           >
             <i className="bi bi-box-arrow-right me-1"></i> Sign Out
           </button>
@@ -87,28 +85,28 @@ export default function DashboardPage() {
               <div className="text-center mb-4 pb-3 border-bottom border-secondary border-opacity-10">
                 <div
                   className="d-inline-flex align-items-center justify-content-center bg-success bg-opacity-10 text-success rounded-circle fw-bold fs-3 mb-3"
-                  style={{ width: "80px", height: "80px", border: "2px solid rgba(26, 140, 61, 0.3)" }}
+                // style={{ width: "80px", height: "80px", border: "2px solid rgba(26, 140, 61, 0.3)" }}
                 >
                   {user.firstName[0]}
                   {user.lastName[0]}
                 </div>
-                <h5 className="text-white fw-bold m-0">
+                <h5 className="fw-bold m-0">
                   {user.firstName} {user.lastName}
                 </h5>
-                <span className="text-muted small">{user.email}</span>
+                <span className="small">{user.email}</span>
               </div>
 
               <div className="d-flex flex-column gap-3">
                 <div className="d-flex justify-content-between align-items-center">
                   <span className="text-muted small fw-medium">ACCOUNT TIER</span>
-                  <span className="badge bg-success bg-opacity-10 text-success fw-bold font-monospace px-2 py-1" style={{ fontSize: "10px" }}>
+                  <span className="badge bg-success bg-opacity-10 text-success fw-bold font-monospace px-2 py-1 fs-10">
                     PREMIUM PASS
                   </span>
                 </div>
 
                 <div className="d-flex justify-content-between align-items-center">
                   <span className="text-muted small fw-medium">EMAIL STATUS</span>
-                  <span className="badge bg-success text-white fw-bold font-monospace px-2 py-1" style={{ fontSize: "10px" }}>
+                  <span className="badge bg-success text-white fw-bold font-monospace px-2 py-1 fs-10">
                     VERIFIED
                   </span>
                 </div>
@@ -141,7 +139,7 @@ export default function DashboardPage() {
                     id="newsletterSwitch"
                     checked={newsletterChecked}
                     onChange={() => setNewsletterChecked(!newsletterChecked)}
-                    style={{ width: "40px", height: "20px" }}
+
                   />
                 </div>
 
@@ -156,7 +154,7 @@ export default function DashboardPage() {
                     id="smsSwitch"
                     checked={smsAlertsChecked}
                     onChange={() => setSmsAlertsChecked(!smsAlertsChecked)}
-                    style={{ width: "40px", height: "20px" }}
+
                   />
                 </div>
               </div>
@@ -176,7 +174,7 @@ export default function DashboardPage() {
                   <Link
                     href="/live-scores"
                     className="btn btn-dark w-100 py-3 rounded border border-secondary border-opacity-10 d-flex flex-column align-items-center gap-2 text-decoration-none"
-                    style={{ transition: "all 0.2s" }}
+
                     onMouseEnter={(e) => (e.currentTarget.style.borderColor = "var(--custom-primary)")}
                     onMouseLeave={(e) => (e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.05)")}
                   >
@@ -188,7 +186,7 @@ export default function DashboardPage() {
                   <Link
                     href="#"
                     className="btn btn-dark w-100 py-3 rounded border border-secondary border-opacity-10 d-flex flex-column align-items-center gap-2 text-decoration-none"
-                    style={{ transition: "all 0.2s" }}
+
                     onMouseEnter={(e) => (e.currentTarget.style.borderColor = "var(--custom-primary)")}
                     onMouseLeave={(e) => (e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.05)")}
                   >

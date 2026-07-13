@@ -100,42 +100,24 @@ export default function RegisterPage() {
         sessionStorage.setItem("user_session", JSON.stringify(parsed)); // log them in
       }
       setLoading(false);
-      router.push("/dashboard");
+      router.push("/profile");
     }, 1500);
   };
 
   return (
     <main
-      className="min-vh-100 d-flex align-items-center justify-content-center py-5 px-3 position-relative overflow-hidden"
-      style={{
-        backgroundColor: "#070b12",
-      }}
+      className="min-vh-100 d-flex align-items-center justify-content-center py-5 px-3 position-relative overflow-hidden auth-main-bg"
+      
     >
       {/* Background Mesh Glows */}
       <div
-        className="position-absolute rounded-circle"
-        style={{
-          width: "400px",
-          height: "400px",
-          background: "radial-gradient(circle, rgba(57, 255, 20, 0.05) 0%, transparent 70%)",
-          top: "-100px",
-          right: "-100px",
-          zIndex: 1,
-        }}
+        className="position-absolute rounded-circle mesh-glow-1"
       ></div>
       <div
-        className="position-absolute rounded-circle"
-        style={{
-          width: "450px",
-          height: "450px",
-          background: "radial-gradient(circle, rgba(26, 140, 61, 0.04) 0%, transparent 70%)",
-          bottom: "-150px",
-          left: "-150px",
-          zIndex: 1,
-        }}
+        className="position-absolute rounded-circle mesh-glow-2"
       ></div>
 
-      <div className="w-100 position-relative" style={{ maxWidth: "480px", zIndex: 10 }}>
+      <div className="w-100 position-relative register-card-wrapper">
         {/* Logo Header */}
         <div className="text-center mb-4">
           <Link href="/" className="d-inline-block">
@@ -154,7 +136,7 @@ export default function RegisterPage() {
         <div className="card bg-card border border-dark rounded-4 p-4 p-md-5">
           {step === "form" && (
             <>
-              <h3 className="text-white fw-bold mb-1">Create Account</h3>
+              <h3 className="text-white fw-semibold mb-1">Create Account</h3>
               <p className="text-muted small mb-4">
                 Get started today and experience premium sports analytics.
               </p>
@@ -168,10 +150,10 @@ export default function RegisterPage() {
                       name="firstName"
                       value={formData.firstName}
                       onChange={handleInputChange}
-                      className={`form-control bg-dark text-white border-0 ${
+                      className={`form-control bg-dark text-white fw-medium border-0 ${
                         errors.firstName ? "is-invalid" : ""
                       }`}
-                      style={{ padding: "11px 16px", fontSize: "14px" }}
+                      
                       placeholder="John"
                     />
                     {errors.firstName && (
@@ -185,10 +167,10 @@ export default function RegisterPage() {
                       name="lastName"
                       value={formData.lastName}
                       onChange={handleInputChange}
-                      className={`form-control bg-dark text-white border-0 ${
+                      className={`form-control bg-dark text-white fw-medium border-0 ${
                         errors.lastName ? "is-invalid" : ""
                       }`}
-                      style={{ padding: "11px 16px", fontSize: "14px" }}
+                      
                       placeholder="Doe"
                     />
                     {errors.lastName && (
@@ -204,10 +186,10 @@ export default function RegisterPage() {
                     name="email"
                     value={formData.email}
                     onChange={handleInputChange}
-                    className={`form-control bg-dark text-white border-0 ${
+                    className={`form-control bg-dark text-white fw-medium border-0 ${
                       errors.email ? "is-invalid" : ""
                     }`}
-                    style={{ padding: "11px 16px", fontSize: "14px" }}
+                    
                     placeholder="john@example.com"
                   />
                   {errors.email && (
@@ -223,10 +205,10 @@ export default function RegisterPage() {
                       name="password"
                       value={formData.password}
                       onChange={handleInputChange}
-                      className={`form-control bg-dark text-white border-0 pe-5 ${
+                      className={`form-control bg-dark text-white fw-medium border-0 pe-5 ${
                         errors.password ? "is-invalid" : ""
                       }`}
-                      style={{ padding: "11px 16px", fontSize: "14px" }}
+                      
                       placeholder="••••••••"
                     />
                     <button
@@ -250,10 +232,10 @@ export default function RegisterPage() {
                       name="confirmPassword"
                       value={formData.confirmPassword}
                       onChange={handleInputChange}
-                      className={`form-control bg-dark text-white border-0 pe-5 ${
+                      className={`form-control bg-dark text-white fw-medium border-0 pe-5 ${
                         errors.confirmPassword ? "is-invalid" : ""
                       }`}
-                      style={{ padding: "11px 16px", fontSize: "14px" }}
+                      
                       placeholder="••••••••"
                     />
                     <button
@@ -283,8 +265,8 @@ export default function RegisterPage() {
 
                 <button
                   type="submit"
-                  className="btn btn-signup w-100 fw-semibold text-uppercase py-2.5 mt-3"
-                  style={{ letterSpacing: "0.5px" }}
+                  className="btn btn-signup w-100 fw-semibold text-uppercase py-2.5 mt-3 ls-05"
+                  
                   disabled={loading}
                 >
                   Create Account
@@ -302,10 +284,10 @@ export default function RegisterPage() {
 
           {step === "sending" && (
             <div className="text-center py-4">
-              <div className="spinner-border text-success mb-3" role="status" style={{ width: "3rem", height: "3rem" }}>
+              <div className="spinner-border text-success mb-3 spinner-large" role="status">
                 <span className="visually-hidden">Loading...</span>
               </div>
-              <h4 className="text-white fw-bold">Creating Account...</h4>
+              <h4 className="text-white fw-semibold">Creating Account...</h4>
               <p className="text-muted small mt-2">
                 We are configuring your profile and preparing secure access.
               </p>
@@ -315,29 +297,27 @@ export default function RegisterPage() {
           {step === "verify_sent" && (
             <div className="text-center py-2">
               <div
-                className="d-inline-flex align-items-center justify-content-center bg-success bg-opacity-10 text-success rounded-circle p-3 mb-4"
-                style={{ width: "64px", height: "64px" }}
+                className="d-inline-flex align-items-center justify-content-center bg-success bg-opacity-10 text-success rounded-circle p-3 mb-4 envelope-icon-wrapper"
               >
-                <i className="bi bi-envelope-check-fill" style={{ fontSize: "28px" }}></i>
+                <i className="bi bi-envelope-check-fill fs-28"></i>
               </div>
-              <h4 className="text-white fw-bold">Verify Your Email</h4>
-              <p className="text-muted small my-3" style={{ lineHeight: "1.6" }}>
+              <h4 className="text-white fw-semibold">Verify Your Email</h4>
+              <p className="text-muted small my-3 lh-16">
                 A verification link has been sent to <strong className="text-light">{formData.email}</strong>. 
                 Please click the link in the email to activate your profile dashboard.
               </p>
 
               {/* Simulation Sandbox CTA */}
               <div className="bg-dark bg-opacity-40 border border-secondary border-opacity-10 rounded-3 p-3 my-4">
-                <span className="badge bg-secondary bg-opacity-20 text-success mb-2 px-2.5 py-1.5" style={{ fontSize: "9px", letterSpacing: "0.5px" }}>
+                <span className="badge bg-secondary bg-opacity-20 text-success mb-2 px-2.5 py-1.5 sandbox-badge">
                   SIMULATION SANDBOX
                 </span>
-                <p className="text-muted" style={{ fontSize: "11px", lineHeight: "1.4" }}>
+                <p className="text-muted sandbox-text">
                   In production, users would check their email client. Click the trigger below to simulate clicking the email link.
                 </p>
                 <button
                   onClick={handleSimulateVerification}
-                  className="btn btn-login w-100 fw-semibold text-uppercase py-2"
-                  style={{ fontSize: "11px" }}
+                  className="btn btn-login w-100 fw-semibold text-uppercase py-2 fs-11"
                   disabled={loading}
                 >
                   {loading ? "Verifying..." : "Simulate Email Link Click"}

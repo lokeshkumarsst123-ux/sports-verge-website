@@ -9,6 +9,8 @@ import StatusBadge from "@/components/live-scores/StatusBadge";
 import NFLMatchDetail from "@/components/live-scores/NFLMatchDetail";
 import AFLMatchDetail from "@/components/live-scores/AFLMatchDetail";
 
+const getWidthStyle = (w: number | string | undefined) => ({ width: `${w}%` });
+
 interface TeamStat {
   label: string;
   team1Val: string | number;
@@ -55,7 +57,7 @@ export default function MatchDetailPage() {
 
   if (loading) {
     return (
-      <main className="min-vh-100 d-flex align-items-center justify-content-center" style={{ backgroundColor: "#070b12" }}>
+      <main className="min-vh-100 d-flex align-items-center justify-content-center bg-page">
         <div className="spinner-border text-success" role="status">
           <span className="visually-hidden">Loading...</span>
         </div>
@@ -65,7 +67,7 @@ export default function MatchDetailPage() {
 
   if (!match) {
     return (
-      <main className="min-vh-100 d-flex flex-column align-items-center justify-content-center py-5" style={{ backgroundColor: "#070b12", color: "#fff" }}>
+      <main className="min-vh-100 d-flex flex-column align-items-center justify-content-center py-5 bg-page text-white">
         <h3 className="fw-bold mb-3">Match Not Found</h3>
         <p className="text-muted mb-4">The selected match details are currently unavailable.</p>
         <Link href="/live-scores" className="btn btn-signup text-uppercase fw-semibold px-4 py-2">
@@ -74,6 +76,8 @@ export default function MatchDetailPage() {
       </main>
     );
   }
+
+  const getWidthStyle = (w: number | string | undefined) => ({ width: `${w}%` });
 
   const getSportDetails = () => {
     switch (match.sport) {
@@ -293,46 +297,33 @@ export default function MatchDetailPage() {
   const details = getSportDetails();
 
   return (
-    <main className="min-vh-100 py-5" style={{ backgroundColor: "#070b12", color: "#fff", fontFamily: "var(--font-outfit)" }}>
-      <div className="container custom-container" style={{ maxWidth: "1000px" }}>
+    <main className="min-vh-100 py-5 bg-page text-white font-outfit">
+      <div className="container custom-container max-w-1000px">
 
         {/* Breadcrumb Back Button */}
         <div className="mb-4">
           <Link
             href="/live-scores"
-            className="text-muted text-decoration-none small fw-semibold hover-success d-inline-flex align-items-center gap-2"
-            style={{ transition: "color 0.2s", fontSize: "13px" }}
+            className="text-muted text-decoration-none small fw-semibold hover-success d-inline-flex align-items-center gap-2 fs-13 transition-color"
           >
-            <i className="bi bi-chevron-left" style={{ fontSize: "11px" }}></i>
+            <i className="bi bi-chevron-left fs-11"></i>
             Back to Live Scores
           </Link>
         </div>
 
         {/* Dynamic Match Scoreboard Header Card */}
         <div
-          className="card border border-secondary border-opacity-10 rounded-4 p-4 p-md-5 mb-4 position-relative overflow-hidden shadow-lg"
-          style={{
-            background: "linear-gradient(135deg, #111823 0%, #0c1119 100%)",
-          }}
+          className="card border border-secondary border-opacity-10 rounded-4 p-4 p-md-5 mb-4 position-relative overflow-hidden shadow-lg bg-match-header"
         >
           {/* Subtle Ambient Glow */}
           <div
-            className="position-absolute rounded-circle"
-            style={{
-              width: "300px",
-              height: "300px",
-              background: "radial-gradient(circle, rgba(57, 255, 20, 0.04) 0%, transparent 70%)",
-              top: "-80px",
-              left: "50%",
-              transform: "translateX(-50%)",
-              pointerEvents: "none",
-            }}
+            className="position-absolute rounded-circle w-300px h-300px ambient-glow-top"
           ></div>
 
-          <div className="position-relative" style={{ zIndex: 5 }}>
+          <div className="position-relative z-5">
             {/* Header Meta: Competition & Status */}
             <div className="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2 mb-4 pb-3 border-bottom border-secondary border-opacity-10">
-              <span className="text-muted small fw-bold font-monospace text-uppercase" style={{ letterSpacing: "1px", fontSize: "11px" }}>
+              <span className="text-muted small fw-bold font-monospace text-uppercase ls-1 fs-11">
                 {match.competitionName}
               </span>
               <div className="d-flex align-items-center gap-3">
@@ -349,28 +340,23 @@ export default function MatchDetailPage() {
               {/* Team 1 */}
               <div className="col-12 col-sm-4 d-flex flex-column align-items-center gap-3">
                 <div
-                  className="d-flex align-items-center justify-content-center bg-dark bg-opacity-60 rounded-circle p-3 border border-secondary border-opacity-15 shadow-sm animate-pulse-subtle"
-                  style={{
-                    width: "92px",
-                    height: "92px",
-                  }}
+                  className="d-flex align-items-center justify-content-center bg-dark bg-opacity-60 rounded-circle p-3 border border-secondary border-opacity-15 shadow-sm animate-pulse-subtle w-92px h-92px"
                 >
                   <img
                     src={match.team1Logo}
                     alt={match.team1Name}
                     width={56}
-                    height={56}
-                    style={{ objectFit: "contain" }}
+                    height={56} className="object-fit-contain"
                     onError={(e) => {
                       e.currentTarget.src = "/assets/imgs/teams/team-placeholder.svg";
                     }}
                   />
                 </div>
-                <h5 className="text-white fw-extrabold m-0 px-2" style={{ fontFamily: "var(--font-space-grotesk)", fontSize: "19px", letterSpacing: "-0.3px" }}>
+                <h5 className="text-white fw-extrabold m-0 px-2 font-space-grotesk fs-19 ls-minus-03">
                   {match.team1Name}
                 </h5>
                 {match.team1Overs && (
-                  <span className="badge bg-dark bg-opacity-50 border border-secondary border-opacity-10 text-muted font-monospace py-1.5 px-3" style={{ fontSize: "11px", borderRadius: "10px" }}>
+                  <span className="badge bg-dark bg-opacity-50 border border-secondary border-opacity-10 text-muted font-monospace py-1.5 px-3 fs-11 br-10px">
                     {match.team1Overs} ov
                   </span>
                 )}
@@ -379,26 +365,18 @@ export default function MatchDetailPage() {
               {/* Middle Score Display */}
               <div className="col-12 col-sm-4 d-flex flex-column align-items-center justify-content-center">
                 <div className="d-flex align-items-center justify-content-center gap-3">
-                  <span className="display-4 fw-extrabold text-light font-monospace" style={{ letterSpacing: "-1px", fontSize: "46px", textShadow: "0 0 20px rgba(255, 255, 255, 0.05)" }}>
+                  <span className="display-4 fw-extrabold text-light font-monospace ls-minus-1 fs-46 text-shadow-glow">
                     {match.team1Score}
                   </span>
 
                   {/* Neon VS Pill - Fixed Solid Green Issue */}
                   <span
-                    className="fw-bold font-monospace text-uppercase rounded-pill"
-                    style={{
-                      fontSize: "12px",
-                      letterSpacing: "1.5px",
-                      backgroundColor: "rgba(26, 140, 61, 0.08)",
-                      border: "1px solid rgba(26, 140, 61, 0.2)",
-                      color: "var(--accent-green)",
-                      padding: "4px 12px"
-                    }}
+                    className="fw-bold font-monospace text-uppercase rounded-pill fs-12 ls-15 text-accent-green bg-rgba2614061008 border-1pxsolidrgba261406102 padding-4px12px"
                   >
                     VS
                   </span>
 
-                  <span className="display-4 fw-extrabold text-light font-monospace" style={{ letterSpacing: "-1px", fontSize: "46px", textShadow: "0 0 20px rgba(255, 255, 255, 0.05)" }}>
+                  <span className="display-4 fw-extrabold text-light font-monospace ls-minus-1 fs-46 text-shadow-glow">
                     {match.team2Score}
                   </span>
                 </div>
@@ -411,37 +389,32 @@ export default function MatchDetailPage() {
                   </div>
                 )}
 
-                <div className="d-inline-flex align-items-center gap-2 text-muted small mt-3 bg-dark bg-opacity-40 border border-secondary border-opacity-10 rounded-pill px-3 py-2" style={{ fontSize: "12px" }}>
-                  <i className="bi bi-geo-alt-fill text-success" style={{ fontSize: "11px" }}></i>
-                  <span className="text-truncate" style={{ maxWidth: "200px" }}>{match.venue}</span>
+                <div className="d-inline-flex align-items-center gap-2 text-muted small mt-3 bg-dark bg-opacity-40 border border-secondary border-opacity-10 rounded-pill px-3 py-2 fs-12">
+                  <i className="bi bi-geo-alt-fill text-success fs-11"></i>
+                  <span className="text-truncate max-w-200px">{match.venue}</span>
                 </div>
               </div>
 
               {/* Team 2 */}
               <div className="col-12 col-sm-4 d-flex flex-column align-items-center gap-3">
                 <div
-                  className="d-flex align-items-center justify-content-center bg-dark bg-opacity-60 rounded-circle p-3 border border-secondary border-opacity-15 shadow-sm animate-pulse-subtle"
-                  style={{
-                    width: "92px",
-                    height: "92px",
-                  }}
+                  className="d-flex align-items-center justify-content-center bg-dark bg-opacity-60 rounded-circle p-3 border border-secondary border-opacity-15 shadow-sm animate-pulse-subtle w-92px h-92px"
                 >
                   <img
                     src={match.team2Logo}
                     alt={match.team2Name}
                     width={56}
-                    height={56}
-                    style={{ objectFit: "contain" }}
+                    height={56} className="object-fit-contain"
                     onError={(e) => {
                       e.currentTarget.src = "/assets/imgs/teams/team-placeholder.svg";
                     }}
                   />
                 </div>
-                <h5 className="text-white fw-extrabold m-0 px-2" style={{ fontFamily: "var(--font-space-grotesk)", fontSize: "19px", letterSpacing: "-0.3px" }}>
+                <h5 className="text-white fw-extrabold m-0 px-2 font-space-grotesk fs-19 ls-minus-03">
                   {match.team2Name}
                 </h5>
                 {match.team2Overs && (
-                  <span className="badge bg-dark bg-opacity-50 border border-secondary border-opacity-10 text-muted font-monospace py-1.5 px-3" style={{ fontSize: "11px", borderRadius: "10px" }}>
+                  <span className="badge bg-dark bg-opacity-50 border border-secondary border-opacity-10 text-muted font-monospace py-1.5 px-3 fs-11 br-10px">
                     {match.team2Overs} ov
                   </span>
                 )}
@@ -451,14 +424,9 @@ export default function MatchDetailPage() {
             {/* Note banner - Theme Compliant Green */}
             {match.note && (
               <div
-                className="rounded-3 p-3 mt-4 text-center small fw-bold d-flex align-items-center justify-content-center gap-2"
-                style={{
-                  backgroundColor: "rgba(26, 140, 61, 0.06)",
-                  border: "1px solid rgba(26, 140, 61, 0.2)",
-                  color: "var(--accent-green)",
-                }}
+                className="rounded-3 p-3 mt-4 text-center small fw-bold d-flex align-items-center justify-content-center gap-2 text-accent-green bg-rgba2614061006 border-1pxsolidrgba261406102"
               >
-                <i className="bi bi-info-circle-fill" style={{ color: "var(--accent-green)" }}></i>
+                <i className="bi bi-info-circle-fill text-accent-green"></i>
                 {match.note}
               </div>
             )}
@@ -487,15 +455,9 @@ export default function MatchDetailPage() {
                   className={`btn border-0 rounded-0 px-4 py-3 fw-bold text-uppercase flex-shrink-0 d-flex align-items-center gap-2 ${activeSubTab === tab.id
                     ? "text-success border-bottom border-success border-2"
                     : "text-muted"
-                    }`}
-                  style={{
-                    fontSize: "12px",
-                    letterSpacing: "0.5px",
-                    transition: "all 0.2s",
-                    fontFamily: "var(--font-space-grotesk)",
-                  }}
+                    } fs-12 ls-05 transition-fast font-space-grotesk`}
                 >
-                  <i className={`bi ${tab.icon}`} style={{ fontSize: "14px" }}></i>
+                  <i className={`bi ${tab.icon} fs-14`}></i>
                   {tab.label}
                 </button>
               ))}
@@ -516,8 +478,7 @@ export default function MatchDetailPage() {
                   {/* Match overview details */}
                   <div className="card bg-card border border-dark rounded-3 p-4">
                     <h5
-                      className="text-white fw-bold mb-4 border-start border-success border-4 ps-3"
-                      style={{ fontSize: "18px", fontFamily: "var(--font-space-grotesk)", letterSpacing: "-0.2px" }}
+                      className="text-white fw-bold mb-4 border-start border-success border-4 ps-3 fs-18 font-space-grotesk ls-minus-02"
                     >
                       Match Overview
                     </h5>
@@ -532,8 +493,8 @@ export default function MatchDetailPage() {
                       ].map((item, idx) => (
                         <div className="col-12 col-sm-6 col-md-3" key={idx}>
                           <div className="bg-dark bg-opacity-40 border border-secondary border-opacity-10 rounded-3 p-3 h-100">
-                            <div className="text-muted font-monospace mb-2 text-uppercase fw-semibold" style={{ fontSize: "10px", letterSpacing: "0.5px" }}>{item.label}</div>
-                            <div className="text-light fw-bold" style={{ fontSize: "13.5px" }}>{item.val}</div>
+                            <div className="text-muted font-monospace mb-2 text-uppercase fw-semibold fs-10 ls-05">{item.label}</div>
+                            <div className="text-light fw-bold fs-13-5">{item.val}</div>
                           </div>
                         </div>
                       ))}
@@ -544,12 +505,11 @@ export default function MatchDetailPage() {
                   {details?.historical && (
                     <div className="card bg-card border border-dark rounded-3 p-4">
                       <h5
-                        className="text-white fw-bold mb-3 border-start border-success border-4 ps-3"
-                        style={{ fontSize: "18px", fontFamily: "var(--font-space-grotesk)", letterSpacing: "-0.2px" }}
+                        className="text-white fw-bold mb-3 border-start border-success border-4 ps-3 fs-18 font-space-grotesk ls-minus-02"
                       >
                         Historical Results (H2H)
                       </h5>
-                      <p className="text-muted mb-4" style={{ fontSize: "14px" }}>{details.historical.summary}</p>
+                      <p className="text-muted mb-4 fs-14">{details.historical.summary}</p>
 
                       <div className="d-flex flex-column gap-3">
                         {details.historical.h2h.map((h, i) => {
@@ -578,22 +538,14 @@ export default function MatchDetailPage() {
                           return (
                             <div key={i} className="d-flex align-items-center justify-content-between border border-dark rounded-3 p-3 bg-dark bg-opacity-30">
                               <div>
-                                <span className="badge bg-dark border border-secondary border-opacity-10 text-muted mb-2 font-monospace px-2 py-1" style={{ fontSize: "10px" }}>
+                                <span className="badge bg-dark border border-secondary border-opacity-10 text-muted mb-2 font-monospace px-2 py-1 fs-10">
                                   {h.date}
                                 </span>
-                                <div className="text-light fw-bold" style={{ fontSize: "14px" }}>{h.detail}</div>
+                                <div className="text-light fw-bold fs-14">{h.detail}</div>
                               </div>
 
                               <div
-                                className="d-flex align-items-center justify-content-center rounded-circle fw-bold font-monospace shadow-sm"
-                                style={{
-                                  width: "32px",
-                                  height: "32px",
-                                  backgroundColor: badgeBg,
-                                  color: badgeColor,
-                                  fontSize: "12px",
-                                  border: `1px solid ${badgeColor}40`
-                                }}
+                                className={`d-flex align-items-center justify-content-center rounded-circle fw-bold font-monospace shadow-sm ${`w-32px h-32px fs-12 ${h.result === "win" ? "badge-win" : h.result === "loss" ? "badge-loss" : "badge-draw"}`}`}
                               >
                                 {badgeText}
                               </div>
@@ -617,8 +569,7 @@ export default function MatchDetailPage() {
                   {/* Team Statistics */}
                   <div className="card bg-card border border-dark rounded-3 p-4">
                     <h5
-                      className="text-white fw-bold mb-4 border-start border-success border-4 ps-3"
-                      style={{ fontSize: "18px", fontFamily: "var(--font-space-grotesk)", letterSpacing: "-0.2px" }}
+                      className="text-white fw-bold mb-4 border-start border-success border-4 ps-3 fs-18 font-space-grotesk ls-minus-02"
                     >
                       Team Statistics Comparison
                     </h5>
@@ -633,36 +584,25 @@ export default function MatchDetailPage() {
                         return (
                           <div key={i} className="d-flex flex-column">
                             {/* Improved label positioning with Outfit font */}
-                            <div className="d-flex justify-content-between align-items-center mb-2 fw-bold" style={{ fontSize: "13.5px" }}>
-                              <span className="text-white font-monospace" style={{ fontSize: "14px" }}>{stat.team1Val}</span>
-                              <span className="text-muted text-uppercase font-monospace" style={{ fontSize: "10.5px", letterSpacing: "1px" }}>{stat.label}</span>
-                              <span className="text-white font-monospace" style={{ fontSize: "14px" }}>{stat.team2Val}</span>
+                            <div className="d-flex justify-content-between align-items-center mb-2 fw-bold fs-13-5">
+                              <span className="text-white font-monospace fs-14">{stat.team1Val}</span>
+                              <span className="text-muted text-uppercase font-monospace fs-10-5 ls-1">{stat.label}</span>
+                              <span className="text-white font-monospace fs-14">{stat.team2Val}</span>
                             </div>
                             {/* Custom Double-sided Progress Bar */}
-                            <div className="d-flex align-items-center gap-2 w-100" style={{ height: "6px" }}>
+                            <div className="d-flex align-items-center gap-2 w-100 h-6px">
                               {/* Team 1 (Left bar, grows right to left) */}
-                              <div className="w-50 d-flex justify-content-end bg-dark rounded-start" style={{ height: "6px", overflow: "hidden" }}>
+                              <div className="w-50 d-flex justify-content-end bg-dark rounded-start h-6px overflow-hidden">
                                 <div
-                                  className="bg-success rounded-start"
-                                  style={{
-                                    width: `${ratio1}%`,
-                                    height: "6px",
-                                    transition: "width 0.6s ease"
-                                  }}
+                                  className="bg-success rounded-start progress-bar-base" style={getWidthStyle(ratio1)}
                                 ></div>
                               </div>
                               {/* Center Divider dot */}
-                              <div className="bg-secondary rounded-circle" style={{ width: "4px", height: "4px", opacity: 0.3 }}></div>
+                              <div className="bg-secondary rounded-circle w-4px h-4px opacity-30"></div>
                               {/* Team 2 (Right bar, grows left to right) */}
-                              <div className="w-50 bg-dark rounded-end" style={{ height: "6px", overflow: "hidden" }}>
+                              <div className="w-50 bg-dark rounded-end h-6px overflow-hidden">
                                 <div
-                                  className="rounded-end"
-                                  style={{
-                                    width: `${ratio2}%`,
-                                    height: "6px",
-                                    backgroundColor: "#3a4356",
-                                    transition: "width 0.6s ease"
-                                  }}
+                                  className="rounded-end progress-bar-base bg-dark-slate" style={getWidthStyle(ratio2)}
                                 ></div>
                               </div>
                             </div>
@@ -675,8 +615,7 @@ export default function MatchDetailPage() {
                   {/* Player Performances */}
                   <div className="card bg-card border border-dark rounded-3 p-4">
                     <h5
-                      className="text-white fw-bold mb-4 border-start border-success border-4 ps-3"
-                      style={{ fontSize: "18px", fontFamily: "var(--font-space-grotesk)", letterSpacing: "-0.2px" }}
+                      className="text-white fw-bold mb-4 border-start border-success border-4 ps-3 fs-18 font-space-grotesk ls-minus-02"
                     >
                       Key Player Performances
                     </h5>
@@ -685,8 +624,8 @@ export default function MatchDetailPage() {
                       {/* Team 1 Performance */}
                       <div className="col-12 col-md-6 border-md-end border-dark pe-md-4">
                         <div className="d-flex align-items-center gap-2 mb-3">
-                          <div className="bg-success rounded-circle" style={{ width: "8px", height: "8px" }}></div>
-                          <h6 className="text-white fw-bold m-0 font-monospace text-uppercase" style={{ fontSize: "12px", letterSpacing: "0.5px" }}>
+                          <div className="bg-success rounded-circle w-8px h-8px"></div>
+                          <h6 className="text-white fw-bold m-0 font-monospace text-uppercase fs-12 ls-05">
                             {match.team1Name}
                           </h6>
                         </div>
@@ -696,31 +635,22 @@ export default function MatchDetailPage() {
                             return (
                               <div
                                 key={i}
-                                className="bg-dark bg-opacity-30 border border-secondary border-opacity-10 rounded-3 d-flex justify-content-between align-items-center hover-card-effect p-3"
-                                style={{ transition: "all 0.2s" }}
+                                className="bg-dark bg-opacity-30 border border-secondary border-opacity-10 rounded-3 d-flex justify-content-between align-items-center hover-card-effect p-3 transition-fast"
                               >
                                 <div className="d-flex align-items-center gap-3">
                                   <div
-                                    className="d-flex align-items-center justify-content-center rounded-circle fw-bold font-monospace"
-                                    style={{
-                                      width: "36px",
-                                      height: "36px",
-                                      fontSize: "13px",
-                                      backgroundColor: "rgba(26, 140, 61, 0.15)",
-                                      color: "#4ade80",
-                                      border: "1px solid rgba(26, 140, 61, 0.3)"
-                                    }}
+                                    className="d-flex align-items-center justify-content-center rounded-circle fw-bold font-monospace w-36px h-36px fs-13 bg-rgba2614061015 text-4ade80 border-1pxsolidrgba261406103"
                                   >
                                     {firstChar}
                                   </div>
                                   <div>
-                                    <div className="text-white fw-bold" style={{ fontSize: "14px" }}>{p.name}</div>
-                                    <div className="text-muted" style={{ fontSize: "11px" }}>{p.role}</div>
+                                    <div className="text-white fw-bold fs-14">{p.name}</div>
+                                    <div className="text-muted fs-11">{p.role}</div>
                                   </div>
                                 </div>
                                 <div className="text-end font-monospace">
-                                  <div className="text-success fw-bold" style={{ fontSize: "13.5px" }}>{p.metric1}</div>
-                                  <div className="text-muted" style={{ fontSize: "11px" }}>{p.metric2}</div>
+                                  <div className="text-success fw-bold fs-13-5">{p.metric1}</div>
+                                  <div className="text-muted fs-11">{p.metric2}</div>
                                 </div>
                               </div>
                             );
@@ -731,8 +661,8 @@ export default function MatchDetailPage() {
                       {/* Team 2 Performance */}
                       <div className="col-12 col-md-6 ps-md-4">
                         <div className="d-flex align-items-center gap-2 mb-3">
-                          <div className="bg-secondary rounded-circle" style={{ width: "8px", height: "8px", backgroundColor: "#3a4356" }}></div>
-                          <h6 className="text-white fw-bold m-0 font-monospace text-uppercase" style={{ fontSize: "12px", letterSpacing: "0.5px" }}>
+                          <div className="bg-secondary rounded-circle w-8px h-8px bg-3a4356"></div>
+                          <h6 className="text-white fw-bold m-0 font-monospace text-uppercase fs-12 ls-05">
                             {match.team2Name}
                           </h6>
                         </div>
@@ -742,31 +672,22 @@ export default function MatchDetailPage() {
                             return (
                               <div
                                 key={i}
-                                className="bg-dark bg-opacity-30 border border-secondary border-opacity-10 rounded-3 d-flex justify-content-between align-items-center hover-card-effect p-3"
-                                style={{ transition: "all 0.2s" }}
+                                className="bg-dark bg-opacity-30 border border-secondary border-opacity-10 rounded-3 d-flex justify-content-between align-items-center hover-card-effect p-3 transition-fast"
                               >
                                 <div className="d-flex align-items-center gap-3">
                                   <div
-                                    className="d-flex align-items-center justify-content-center rounded-circle fw-bold font-monospace"
-                                    style={{
-                                      width: "36px",
-                                      height: "36px",
-                                      fontSize: "13px",
-                                      backgroundColor: "rgba(255, 255, 255, 0.06)",
-                                      color: "#e2e8f0",
-                                      border: "1px solid rgba(255, 255, 255, 0.1)"
-                                    }}
+                                    className="d-flex align-items-center justify-content-center rounded-circle fw-bold font-monospace w-36px h-36px fs-13 bg-rgba255255255006 text-e2e8f0 border-1pxsolidrgba25525525501"
                                   >
                                     {firstChar}
                                   </div>
                                   <div>
-                                    <div className="text-white fw-bold" style={{ fontSize: "14px" }}>{p.name}</div>
-                                    <div className="text-muted" style={{ fontSize: "11px" }}>{p.role}</div>
+                                    <div className="text-white fw-bold fs-14">{p.name}</div>
+                                    <div className="text-muted fs-11">{p.role}</div>
                                   </div>
                                 </div>
                                 <div className="text-end font-monospace">
-                                  <div className="text-light fw-bold" style={{ fontSize: "13.5px" }}>{p.metric1}</div>
-                                  <div className="text-muted" style={{ fontSize: "11px" }}>{p.metric2}</div>
+                                  <div className="text-light fw-bold fs-13-5">{p.metric1}</div>
+                                  <div className="text-muted fs-11">{p.metric2}</div>
                                 </div>
                               </div>
                             );
@@ -785,8 +706,7 @@ export default function MatchDetailPage() {
                 ) : (
                   <div className="card bg-card border border-dark rounded-3 p-4">
                     <h5
-                      className="text-white fw-bold mb-4 border-start border-success border-4 ps-3"
-                      style={{ fontSize: "18px", fontFamily: "var(--font-space-grotesk)", letterSpacing: "-0.2px" }}
+                      className="text-white fw-bold mb-4 border-start border-success border-4 ps-3 fs-18 font-space-grotesk ls-minus-02"
                     >
                       Starting Formations & Squads
                     </h5>
@@ -799,10 +719,9 @@ export default function MatchDetailPage() {
                             src={match.team1Logo}
                             alt={match.team1Name}
                             width={32}
-                            height={32}
-                            style={{ objectFit: "contain" }}
+                            height={32} className="object-fit-contain"
                           />
-                          <h6 className="text-white fw-extrabold m-0" style={{ fontSize: "15px", fontFamily: "var(--font-space-grotesk)" }}>{match.team1Name}</h6>
+                          <h6 className="text-white fw-extrabold m-0 fs-15 font-space-grotesk">{match.team1Name}</h6>
                         </div>
 
                         <div className="d-flex flex-column">
@@ -813,37 +732,15 @@ export default function MatchDetailPage() {
                             return (
                               <div
                                 key={i}
-                                className="hover-card-effect"
-                                style={{
-                                  display: "flex",
-                                  flexWrap: "wrap",
-                                  gap: "10px",
-                                  alignItems: "center",
-                                  justifyContent: "space-between",
-                                  padding: "12px 16px",
-                                  backgroundColor: "rgba(255, 255, 255, 0.01)",
-                                  borderBottom: "1px solid rgba(255, 255, 255, 0.04)",
-                                  transition: "all 0.15s"
-                                }}
+                                className="hover-card-effect display-flex flex-wrap-wrap gap-10px align-items-center justify-content-space-between padding-12px16px bg-rgba255255255001 border-bottom-1pxsolidrgba255255255004 transition-all015s"
                               >
                                 <div className="d-flex align-items-center gap-3">
                                   <div
-                                    className="font-monospace fw-bold"
-                                    style={{
-                                      width: "26px",
-                                      height: "26px",
-                                      fontSize: "11px",
-                                      backgroundColor: isCaptain ? "rgba(26, 140, 61, 0.12)" : "rgba(255, 255, 255, 0.04)",
-                                      color: isCaptain ? "var(--accent-green)" : "#8a94a6",
-                                      borderRadius: "50%",
-                                      display: "flex",
-                                      alignItems: "center",
-                                      justifyContent: "center"
-                                    }}
+                                    className={`font-monospace fw-bold ${`player-avatar-base ${isCaptain ? "avatar-captain-1" : "avatar-normal-1"}`}`}
                                   >
                                     {i + 1}
                                   </div>
-                                  <span className={`small ${isCaptain ? "text-success fw-bold" : "text-light"}`} style={{ fontSize: "13.5px" }}>
+                                  <span className={`small ${isCaptain ? "text-success fw-bold" : "text-light"} fs-13-5`}>
                                     {player}
                                   </span>
                                 </div>
@@ -851,26 +748,14 @@ export default function MatchDetailPage() {
                                 <div className="d-flex align-items-center gap-2">
                                   {isCaptain && (
                                     <span
-                                      className="badge px-2 py-1"
-                                      style={{
-                                        fontSize: "9px",
-                                        backgroundColor: "rgba(26, 140, 61, 0.15)",
-                                        color: "#4ade80",
-                                        border: "1px solid rgba(26, 140, 61, 0.3)"
-                                      }}
+                                      className="badge px-2 py-1 fs-9 bg-rgba2614061015 text-4ade80 border-1pxsolidrgba261406103"
                                     >
                                       CAPT
                                     </span>
                                   )}
                                   {isWK && (
                                     <span
-                                      className="badge px-2 py-1"
-                                      style={{
-                                        fontSize: "9px",
-                                        backgroundColor: "rgba(13, 202, 240, 0.15)",
-                                        color: "#22d3ee",
-                                        border: "1px solid rgba(13, 202, 240, 0.3)"
-                                      }}
+                                      className="badge px-2 py-1 fs-9 bg-rgba13202240015 text-22d3ee border-1pxsolidrgba1320224003"
                                     >
                                       WICKETKEEPER
                                     </span>
@@ -889,10 +774,9 @@ export default function MatchDetailPage() {
                             src={match.team2Logo}
                             alt={match.team2Name}
                             width={32}
-                            height={32}
-                            style={{ objectFit: "contain" }}
+                            height={32} className="object-fit-contain"
                           />
-                          <h6 className="text-white fw-extrabold m-0" style={{ fontSize: "15px", fontFamily: "var(--font-space-grotesk)" }}>{match.team2Name}</h6>
+                          <h6 className="text-white fw-extrabold m-0 fs-15 font-space-grotesk">{match.team2Name}</h6>
                         </div>
 
                         <div className="d-flex flex-column">
@@ -903,37 +787,15 @@ export default function MatchDetailPage() {
                             return (
                               <div
                                 key={i}
-                                className="hover-card-effect"
-                                style={{
-                                  display: "flex",
-                                  flexWrap: "wrap",
-                                  gap: "10px",
-                                  alignItems: "center",
-                                  justifyContent: "space-between",
-                                  padding: "12px 16px",
-                                  backgroundColor: "rgba(255, 255, 255, 0.01)",
-                                  borderBottom: "1px solid rgba(255, 255, 255, 0.04)",
-                                  transition: "all 0.15s"
-                                }}
+                                className="hover-card-effect display-flex flex-wrap-wrap gap-10px align-items-center justify-content-space-between padding-12px16px bg-rgba255255255001 border-bottom-1pxsolidrgba255255255004 transition-all015s"
                               >
                                 <div className="d-flex align-items-center gap-3">
                                   <div
-                                    className="font-monospace fw-bold"
-                                    style={{
-                                      width: "26px",
-                                      height: "26px",
-                                      fontSize: "11px",
-                                      backgroundColor: isCaptain ? "rgba(255, 255, 255, 0.08)" : "rgba(255, 255, 255, 0.04)",
-                                      color: isCaptain ? "#fff" : "#8a94a6",
-                                      borderRadius: "50%",
-                                      display: "flex",
-                                      alignItems: "center",
-                                      justifyContent: "center"
-                                    }}
+                                    className={`font-monospace fw-bold ${`player-avatar-base ${isCaptain ? "avatar-captain-2" : "avatar-normal-2"}`}`}
                                   >
                                     {i + 1}
                                   </div>
-                                  <span className={`small ${isCaptain ? "text-white fw-bold" : "text-light"}`} style={{ fontSize: "13.5px" }}>
+                                  <span className={`small ${isCaptain ? "text-white fw-bold" : "text-light"} fs-13-5`}>
                                     {player}
                                   </span>
                                 </div>
@@ -941,26 +803,14 @@ export default function MatchDetailPage() {
                                 <div className="d-flex align-items-center gap-2">
                                   {isCaptain && (
                                     <span
-                                      className="badge px-2 py-1"
-                                      style={{
-                                        fontSize: "9px",
-                                        backgroundColor: "rgba(255, 255, 255, 0.08)",
-                                        color: "#ffffff",
-                                        border: "1px solid rgba(255, 255, 255, 0.15)"
-                                      }}
+                                      className="badge px-2 py-1 fs-9 bg-rgba255255255008 text-ffffff border-1pxsolidrgba255255255015"
                                     >
                                       CAPT
                                     </span>
                                   )}
                                   {isWK && (
                                     <span
-                                      className="badge px-2 py-1"
-                                      style={{
-                                        fontSize: "9px",
-                                        backgroundColor: "rgba(13, 202, 240, 0.15)",
-                                        color: "#22d3ee",
-                                        border: "1px solid rgba(13, 202, 240, 0.3)"
-                                      }}
+                                      className="badge px-2 py-1 fs-9 bg-rgba13202240015 text-22d3ee border-1pxsolidrgba1320224003"
                                     >
                                       WICKETKEEPER
                                     </span>
@@ -980,8 +830,7 @@ export default function MatchDetailPage() {
               {activeSubTab === "timeline" && (
                 <div className="card bg-card border border-dark rounded-3 p-4">
                   <h5
-                    className="text-white fw-bold mb-4 border-start border-success border-4 ps-3"
-                    style={{ fontSize: "18px", fontFamily: "var(--font-space-grotesk)", letterSpacing: "-0.2px" }}
+                    className="text-white fw-bold mb-4 border-start border-success border-4 ps-3 fs-18 font-space-grotesk ls-minus-02"
                   >
                     Match Events Timeline
                   </h5>
@@ -993,17 +842,17 @@ export default function MatchDetailPage() {
                     <div className="position-relative ps-4 py-2 border-start border-secondary border-opacity-15 border-2 ms-2 d-flex flex-column gap-4">
                       {details?.events.map((e, i) => {
                         let iconClass = "bi-info-circle-fill text-muted";
-                        let itemBorder = "1px solid rgba(255, 255, 255, 0.04)";
+                        let borderClass = "border-event-default";
 
                         if (e.type === "goal" || e.type === "touchdown") {
                           iconClass = "bi-football text-success";
-                          itemBorder = "1px solid rgba(26, 140, 61, 0.2)";
+                          borderClass = "border-event-success";
                         } else if (e.type === "wicket") {
                           iconClass = "bi-x-circle text-danger";
-                          itemBorder = "1px solid rgba(220, 53, 69, 0.15)";
+                          borderClass = "border-event-danger";
                         } else if (e.type === "card") {
                           iconClass = "bi-file-fill text-warning";
-                          itemBorder = "1px solid rgba(255, 193, 7, 0.15)";
+                          borderClass = "border-event-warning";
                         } else if (e.type === "point") {
                           iconClass = "bi-star-fill text-info";
                         }
@@ -1012,54 +861,34 @@ export default function MatchDetailPage() {
                           <div key={i} className="position-relative">
                             {/* Timeline Dot Indicator */}
                             <span
-                              className="position-absolute d-flex align-items-center justify-content-center rounded-circle animate-pulse-subtle"
-                              style={{
-                                width: "30px",
-                                height: "30px",
-                                left: "-40px",
-                                top: "6px",
-                                backgroundColor: "#070b12",
-                                border: `2px solid ${e.team === 1 ? "var(--accent-green)" : e.team === 2 ? "#3a4356" : "#2a303c"}`,
-                                zIndex: 10,
-                              }}
+                              className={`position-absolute d-flex align-items-center justify-content-center rounded-circle animate-pulse-subtle ${`timeline-dot-v2 ${e.team === 1 ? "timeline-border-1" : e.team === 2 ? "timeline-border-2" : "timeline-border-3"}`}`}
                             >
-                              <i className={`bi ${iconClass}`} style={{ fontSize: "12px" }}></i>
+                              <i className={`bi ${iconClass} fs-12`}></i>
                             </span>
 
                             {/* Event Details Card - Spacing & Overlaps Fixed */}
                             <div
-                              className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center rounded-3 p-3"
-                              style={{
-                                backgroundColor: "rgba(17, 24, 34, 0.5)",
-                                border: itemBorder,
-                                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-                              }}
+                              className={`d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center rounded-3 p-3 timeline-card-base-v2 ${borderClass}`}
                             >
                               <div>
                                 {/* Explicit Gap & Flex Layout prevents overlaps */}
                                 <div className="d-flex align-items-center gap-3 flex-wrap">
                                   <span
-                                    className="font-monospace rounded text-success fw-extrabold flex-shrink-0"
-                                    style={{
-                                      fontSize: "11px",
-                                      backgroundColor: "rgba(26, 140, 61, 0.08)",
-                                      border: "1px solid rgba(26, 140, 61, 0.2)",
-                                      padding: "3px 8px"
-                                    }}
+                                    className="font-monospace rounded text-success fw-extrabold flex-shrink-0 fs-11 bg-rgba2614061008 border-1pxsolidrgba261406102 padding-3px8px"
                                   >
                                     {e.time}
                                   </span>
-                                  <span className="text-white fw-bold" style={{ fontSize: "14px" }}>
+                                  <span className="text-white fw-bold fs-14">
                                     {e.title}
                                   </span>
                                 </div>
-                                <div className="text-muted small mt-2" style={{ lineHeight: "1.5", fontSize: "13px" }}>
+                                <div className="text-muted small mt-2 fs-13 lh-15">
                                   {e.detail}
                                 </div>
                               </div>
 
                               {e.team && (
-                                <span className="badge bg-dark bg-opacity-40 border border-secondary border-opacity-10 text-muted mt-2 mt-sm-0 font-monospace px-2 py-1" style={{ fontSize: "9px" }}>
+                                <span className="badge bg-dark bg-opacity-40 border border-secondary border-opacity-10 text-muted mt-2 mt-sm-0 font-monospace px-2 py-1 fs-9">
                                   {e.team === 1 ? match.team1Name : match.team2Name}
                                 </span>
                               )}
@@ -1076,8 +905,7 @@ export default function MatchDetailPage() {
               {activeSubTab === "commentary" && (
                 <div className="card bg-card border border-dark rounded-3 p-4">
                   <h5
-                    className="text-white fw-bold mb-4 border-start border-success border-4 ps-3"
-                    style={{ fontSize: "18px", fontFamily: "var(--font-space-grotesk)", letterSpacing: "-0.2px" }}
+                    className="text-white fw-bold mb-4 border-start border-success border-4 ps-3 fs-18 font-space-grotesk ls-minus-02"
                   >
                     Live Text Commentary
                   </h5>
@@ -1090,33 +918,16 @@ export default function MatchDetailPage() {
                       return (
                         <React.Fragment key={i}>
                           <div
-                            className="d-flex flex-column flex-sm-row gap-3 align-items-start"
-                            style={{
-                              padding: "16px 20px",
-                              backgroundColor: c.highlight ? "rgba(26, 140, 61, 0.06)" : "rgba(255, 255, 255, 0.02)",
-                              border: c.highlight ? "1px solid rgba(26, 140, 61, 0.2)" : "1px solid rgba(255, 255, 255, 0.04)",
-                              borderRadius: "10px",
-                              boxShadow: c.highlight ? "0 4px 15px rgba(26, 140, 61, 0.03)" : "none",
-                              transition: "all 0.2s"
-                            }}
+                            className={`d-flex flex-column flex-sm-row gap-3 align-items-start ${`commentary-card-base ${c.highlight ? "commentary-highlight" : "commentary-normal"}`}`}
                           >
                             {/* Fixed commentary spacing and overflow issues */}
                             <div
-                              className="font-monospace text-success fw-bold text-center flex-shrink-0"
-                              style={{
-                                width: "56px",
-                                fontSize: "12px",
-                                backgroundColor: "rgba(26, 140, 61, 0.1)",
-                                border: "1px solid rgba(26, 140, 61, 0.25)",
-                                borderRadius: "6px",
-                                padding: "3px 6px"
-                              }}
+                              className="font-monospace text-success fw-bold text-center flex-shrink-0 w-56px fs-12 br-6px bg-rgba261406101 border-1pxsolidrgba2614061025 padding-3px6px"
                             >
                               {c.time}
                             </div>
                             <div
-                              className={`small m-0 ${c.highlight ? "text-light fw-bold" : "text-muted"}`}
-                              style={{ lineHeight: "1.5", fontSize: "13.5px" }}
+                              className={`small m-0 ${c.highlight ? "text-light fw-bold" : "text-muted"} fs-13-5 lh-15`}
                             >
                               {c.text}
                             </div>
@@ -1132,8 +943,7 @@ export default function MatchDetailPage() {
                     {details?.commentary && details.commentary.length > 6 && (
                       <div className="text-center mt-3 pt-2">
                         <button
-                          className="btn btn-outline-success btn-sm px-4 py-2 fw-semibold text-uppercase"
-                          style={{ fontSize: "12px", letterSpacing: "0.5px" }}
+                          className="btn btn-outline-success btn-sm px-4 py-2 fw-semibold text-uppercase fs-12 ls-05"
                           onClick={() => setShowAllCommentary(!showAllCommentary)}
                         >
                           {showAllCommentary ? "See Less" : "See More"}
@@ -1190,17 +1000,14 @@ function OverSummaryBox({ overNum }: { overNum: string }) {
 
   return (
     <div
-      className="card bg-dark bg-opacity-40 border border-secondary border-opacity-15 rounded-3 p-3 my-3 shadow-sm"
-      style={{
-        backdropFilter: "blur(8px)"
-      }}
+      className="card bg-dark bg-opacity-40 border border-secondary border-opacity-15 rounded-3 p-3 my-3 shadow-sm backdrop-filter-blur8px"
     >
       {/* Header Info */}
       <div className="d-flex flex-wrap justify-content-between align-items-center gap-2 pb-2 mb-3 border-bottom border-secondary border-opacity-10">
         <div className="d-flex align-items-center gap-2">
-          <span className="text-white fw-bold" style={{ fontSize: "14px" }}>Over {overNum}</span>
-          <span className="text-muted" style={{ fontSize: "12px" }}>|</span>
-          <span className="text-white fw-bold" style={{ fontSize: "14px" }}>{score}</span>
+          <span className="text-white fw-bold fs-14">Over {overNum}</span>
+          <span className="text-muted fs-12">|</span>
+          <span className="text-white fw-bold fs-14">{score}</span>
         </div>
         <div className="d-flex align-items-center gap-2 flex-wrap">
           <div className="d-flex gap-1">
@@ -1222,15 +1029,7 @@ function OverSummaryBox({ overNum }: { overNum: string }) {
               return (
                 <span
                   key={idx}
-                  className="d-flex align-items-center justify-content-center rounded-circle font-monospace fw-bold"
-                  style={{
-                    width: "20px",
-                    height: "20px",
-                    fontSize: "10px",
-                    backgroundColor: bg,
-                    color: color,
-                    border: border
-                  }}
+                  className="d-flex align-items-center justify-content-center rounded-circle font-monospace fw-bold w-20px h-20px fs-10"
                 >
                   {b}
                 </span>
@@ -1248,9 +1047,9 @@ function OverSummaryBox({ overNum }: { overNum: string }) {
           <div className="d-flex flex-column gap-2">
             {batsmen.map((bat, idx) => (
               <div key={idx} className="d-flex justify-content-between align-items-center pe-sm-3">
-                <span className="text-muted" style={{ fontSize: "13px" }}>{bat.name}</span>
-                <span className="text-light fw-semibold font-monospace" style={{ fontSize: "13px" }}>
-                  {bat.runs} <span className="text-muted" style={{ fontSize: "11px" }}>({bat.balls})</span>
+                <span className="text-muted fs-13">{bat.name}</span>
+                <span className="text-light fw-semibold font-monospace fs-13">
+                  {bat.runs} <span className="text-muted fs-11">({bat.balls})</span>
                 </span>
               </div>
             ))}
@@ -1260,8 +1059,8 @@ function OverSummaryBox({ overNum }: { overNum: string }) {
         {/* Bowler Column */}
         <div className="col-12 col-sm-6 ps-sm-3">
           <div className="d-flex justify-content-between align-items-center">
-            <span className="text-muted" style={{ fontSize: "13px" }}>{bowler.name}</span>
-            <span className="text-light fw-semibold font-monospace" style={{ fontSize: "13px" }}>
+            <span className="text-muted fs-13">{bowler.name}</span>
+            <span className="text-light fw-semibold font-monospace fs-13">
               {bowler.figures}
             </span>
           </div>
@@ -1272,19 +1071,17 @@ function OverSummaryBox({ overNum }: { overNum: string }) {
       <div className="d-flex gap-3 justify-content-start">
         <a
           href="#over-summary"
-          className="text-success text-decoration-none fw-semibold d-flex align-items-center gap-1 hover-opacity-80"
-          style={{ fontSize: "12px", color: "#4ade80" }}
+          className="text-success text-decoration-none fw-semibold d-flex align-items-center gap-1 hover-opacity-80 fs-12 text-4ade80"
           onClick={(e) => e.preventDefault()}
         >
-          Over Summary <i className="bi bi-chevron-right" style={{ fontSize: "10px" }}></i>
+          Over Summary <i className="bi bi-chevron-right fs-10"></i>
         </a>
         <a
           href="#all-overs"
-          className="text-success text-decoration-none fw-semibold d-flex align-items-center gap-1 hover-opacity-80"
-          style={{ fontSize: "12px", color: "#4ade80" }}
+          className="text-success text-decoration-none fw-semibold d-flex align-items-center gap-1 hover-opacity-80 fs-12 text-4ade80"
           onClick={(e) => e.preventDefault()}
         >
-          View all overs <i className="bi bi-chevron-right" style={{ fontSize: "10px" }}></i>
+          View all overs <i className="bi bi-chevron-right fs-10"></i>
         </a>
       </div>
     </div>
@@ -1319,16 +1116,16 @@ function CricbuzzLiveDashboard({ match, details }: { match: any; details: any })
       {/* Top Header Row */}
       <div className="d-flex flex-wrap justify-content-between align-items-center gap-3 pb-3 mb-4 border-bottom border-secondary border-opacity-10">
         <div className="d-flex align-items-baseline gap-3">
-          <h4 className="text-white fw-bold m-0 font-monospace" style={{ fontSize: "20px" }}>
+          <h4 className="text-white fw-bold m-0 font-monospace fs-20">
             {match.team1Name} {match.team1Score}
           </h4>
           <span className="text-muted small font-monospace">({match.team1Overs || "19.1"} Ov)</span>
         </div>
         <div className="d-flex align-items-center gap-3">
-          <span className="badge bg-dark bg-opacity-40 border border-secondary border-opacity-15 font-monospace text-muted py-2 px-3" style={{ fontSize: "12px" }}>
+          <span className="badge bg-dark bg-opacity-40 border border-secondary border-opacity-15 font-monospace text-muted py-2 px-3 fs-12">
             CRR: {match.team1Score ? (parseFloat(match.team1Score.split("/")[0]) / 19.1).toFixed(2) : "9.11"}
           </span>
-          <span className="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-20 font-monospace py-2 px-3" style={{ fontSize: "12px" }}>
+          <span className="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-20 font-monospace py-2 px-3 fs-12">
             {match.note || "Live"}
           </span>
         </div>
@@ -1342,12 +1139,7 @@ function CricbuzzLiveDashboard({ match, details }: { match: any; details: any })
           <div className="mb-4">
             {/* Headers */}
             <div
-              className="d-grid text-muted text-uppercase fw-semibold pb-2 mb-2 border-bottom border-secondary border-opacity-10"
-              style={{
-                gridTemplateColumns: "2.5fr 1fr 1fr 1fr 1fr 1.2fr",
-                fontSize: "11px",
-                letterSpacing: "0.5px"
-              }}
+              className="d-grid text-muted text-uppercase fw-semibold pb-2 mb-2 border-bottom border-secondary border-opacity-10 fs-11 ls-05 grid-template-columns-25fr1fr1fr1fr1fr12fr"
             >
               <div>Batter</div>
               <div className="text-end">R</div>
@@ -1362,11 +1154,7 @@ function CricbuzzLiveDashboard({ match, details }: { match: any; details: any })
               {batters.map((bat: any, idx: number) => (
                 <div
                   key={idx}
-                  className="d-grid align-items-center py-2 border-bottom border-secondary border-opacity-5"
-                  style={{
-                    gridTemplateColumns: "2.5fr 1fr 1fr 1fr 1fr 1.2fr",
-                    fontSize: "13px"
-                  }}
+                  className="d-grid align-items-center py-2 border-bottom border-secondary border-opacity-5 fs-13 grid-template-columns-25fr1fr1fr1fr1fr12fr"
                 >
                   <div className="fw-semibold text-light">{bat.name}</div>
                   <div className="text-end font-monospace text-white">{bat.runs}</div>
@@ -1383,12 +1171,7 @@ function CricbuzzLiveDashboard({ match, details }: { match: any; details: any })
           <div>
             {/* Headers */}
             <div
-              className="d-grid text-muted text-uppercase fw-semibold pb-2 mb-2 border-bottom border-secondary border-opacity-10"
-              style={{
-                gridTemplateColumns: "2.5fr 1fr 1fr 1fr 1fr 1.2fr",
-                fontSize: "11px",
-                letterSpacing: "0.5px"
-              }}
+              className="d-grid text-muted text-uppercase fw-semibold pb-2 mb-2 border-bottom border-secondary border-opacity-10 fs-11 ls-05 grid-template-columns-25fr1fr1fr1fr1fr12fr"
             >
               <div>Bowler</div>
               <div className="text-end">O</div>
@@ -1403,11 +1186,7 @@ function CricbuzzLiveDashboard({ match, details }: { match: any; details: any })
               {bowlers.map((bowl: any, idx: number) => (
                 <div
                   key={idx}
-                  className="d-grid align-items-center py-2 border-bottom border-secondary border-opacity-5"
-                  style={{
-                    gridTemplateColumns: "2.5fr 1fr 1fr 1fr 1fr 1.2fr",
-                    fontSize: "13px"
-                  }}
+                  className="d-grid align-items-center py-2 border-bottom border-secondary border-opacity-5 fs-13 grid-template-columns-25fr1fr1fr1fr1fr12fr"
                 >
                   <div className="fw-semibold text-light">{bowl.name}</div>
                   <div className="text-end font-monospace text-muted">{bowl.overs}</div>
@@ -1424,18 +1203,18 @@ function CricbuzzLiveDashboard({ match, details }: { match: any; details: any })
         {/* Right Side: Key Stats Card */}
         <div className="col-12 col-lg-5">
           <div className="h-100 bg-dark bg-opacity-40 border border-secondary border-opacity-10 rounded-3 p-4">
-            <h6 className="text-white fw-bold mb-3 border-start border-success px-2 border-3 ps-2.5" style={{ fontSize: "14px" }}>
+            <h6 className="text-white fw-bold mb-3 border-start border-success px-2 border-3 ps-2.5 fs-14">
               Key Stats
             </h6>
 
-            <div className="d-flex flex-column gap-3" style={{ fontSize: "13px" }}>
+            <div className="d-flex flex-column gap-3 fs-13">
               <div className="d-flex justify-content-between align-items-start gap-2 border-bottom border-secondary border-opacity-5 pb-2">
                 <span className="text-muted fw-medium">Partnership</span>
                 <span className="text-light fw-bold font-monospace">{keyStats.partnership}</span>
               </div>
               <div className="d-flex flex-column gap-1 border-bottom border-secondary border-opacity-5 pb-2">
                 <span className="text-muted fw-medium">Last Wicket</span>
-                <span className="text-light small" style={{ lineHeight: "1.4" }}>{keyStats.lastWkt}</span>
+                <span className="text-light small lh-14">{keyStats.lastWkt}</span>
               </div>
               <div className="d-flex justify-content-between align-items-center border-bottom border-secondary border-opacity-5 pb-2">
                 <span className="text-muted fw-medium">Last 10 Overs</span>
@@ -1456,50 +1235,35 @@ function CricbuzzLiveDashboard({ match, details }: { match: any; details: any })
         <div className="row align-items-center g-3">
           <div className="col-12 col-md-6">
             <div className="d-flex align-items-center gap-2">
-              <span className="font-monospace fw-bold" style={{ fontSize: "11px", color: t1Color }}>{match.team1Name} {winProbability.team1}%</span>
-              <div className="flex-grow-1 d-flex rounded-pill overflow-hidden" style={{ height: "8px", backgroundColor: "rgba(255, 255, 255, 0.08)" }}>
-                <div style={{ width: `${winProbability.team1}%`, backgroundColor: t1Color, transition: "width 0.5s ease" }}></div>
-                <div style={{ width: `${winProbability.team2}%`, backgroundColor: t2Color, transition: "width 0.5s ease" }}></div>
+              <span className="font-monospace fw-bold fs-12 text-light">{match.team1Name} {winProbability.team1}%</span>
+              <div className="flex-grow-1 d-flex rounded-pill overflow-hidden h-8px bg-rgba255255255008">
+                <div className="transition-width" style={{ width: `${winProbability.team1}%`, backgroundColor: t1Color }}></div>
+                <div className="transition-width" style={{ width: `${winProbability.team2}%`, backgroundColor: t2Color }}></div>
               </div>
-              <span className="font-monospace fw-bold" style={{ fontSize: "11px", color: t2Color }}>{winProbability.team2}% {match.team2Name}</span>
+              <span className="font-monospace fw-bold fs-12 text-light">{winProbability.team2}% {match.team2Name}</span>
             </div>
           </div>
 
           {/* Recent Balls */}
           <div className="col-12 col-md-6 d-flex align-items-center justify-content-md-end gap-2 flex-wrap">
-            <span className="text-muted small fw-medium">Recent:</span>
+            <span className="text-light opacity-75 fw-semibold fs-13">Recent:</span>
             <div className="d-flex align-items-center gap-1.5 flex-wrap">
               {["1", "1", "W", "2", "1", "6", "|", "0", "1", "W", "1", "1", "4"].map((b, idx) => {
                 if (b === "|") {
                   return <span key={idx} className="text-secondary mx-1 fw-bold">|</span>;
                 }
 
-                let bg = "rgba(255, 255, 255, 0.05)";
-                let color = "#8a94a6";
-                let border = "1px solid rgba(255, 255, 255, 0.08)";
-
+                let ballClass = "ball-recent-normal";
                 if (b === "W") {
-                  bg = "rgba(220, 53, 69, 0.15)";
-                  color = "#ff5b5b";
-                  border = "1px solid rgba(220, 53, 69, 0.3)";
+                  ballClass = "ball-recent-wicket";
                 } else if (b === "6" || b === "4") {
-                  bg = "rgba(26, 140, 61, 0.15)";
-                  color = "#4ade80";
-                  border = "1px solid rgba(26, 140, 61, 0.3)";
+                  ballClass = "ball-recent-boundary";
                 }
 
                 return (
                   <span
                     key={idx}
-                    className="d-flex align-items-center justify-content-center rounded-circle font-monospace fw-bold"
-                    style={{
-                      width: "22px",
-                      height: "22px",
-                      fontSize: "11px",
-                      backgroundColor: bg,
-                      color: color,
-                      border: border
-                    }}
+                    className={`d-flex align-items-center justify-content-center rounded-circle font-monospace fw-bold w-22px h-22px fs-11 ${ballClass}`}
                   >
                     {b}
                   </span>
@@ -1519,10 +1283,7 @@ function FootballLiveDashboard({ match }: { match: any }) {
   const stats = match.footballStats;
 
   const renderCard = (color: string) => (
-    <span style={{
-      display: "inline-block", width: "10px", height: "14px",
-      backgroundColor: color, borderRadius: "2px", verticalAlign: "middle",
-    }} />
+    <span className="w-10px h-14px br-2px display-inline-block vertical-align-middle" />
   );
 
   return (
@@ -1530,16 +1291,15 @@ function FootballLiveDashboard({ match }: { match: any }) {
       {/* Match Events Summary */}
       {summary && (
         <div className="card bg-card border border-dark rounded-3 p-4">
-          <h5 className="text-white fw-bold mb-4 border-start border-success border-4 ps-3"
-            style={{ fontSize: "18px", fontFamily: "var(--font-space-grotesk)" }}>
+          <h5 className="text-white fw-bold mb-4 border-start border-success border-4 ps-3 fs-18 font-space-grotesk">
             Match Events Summary
           </h5>
           <div className="row g-3">
             {/* Goals */}
             <div className="col-12 col-md-6">
               <div className="bg-dark bg-opacity-40 border border-secondary border-opacity-10 rounded-3 p-3">
-                <div className="text-muted fw-semibold text-uppercase mb-3 d-flex align-items-center gap-1.5" style={{ fontSize: "10px", letterSpacing: "0.5px" }}>
-                  <span style={{ fontFamily: "'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif", fontSize: "12px" }}>⚽</span> Goals
+                <div className="text-muted fw-semibold text-uppercase mb-3 d-flex align-items-center gap-1.5 fs-10 ls-05">
+                  <span className="fs-12 font-family-segoeuiemojiapplecoloremojinotocoloremojisans-serif">⚽</span> Goals
                 </div>
                 {summary.goals.length === 0 ? (
                   <span className="text-muted small">No goals yet</span>
@@ -1547,12 +1307,12 @@ function FootballLiveDashboard({ match }: { match: any }) {
                   <div className="d-flex flex-column gap-2">
                     {summary.goals.map((g: any, i: number) => (
                       <div key={i} className="d-flex justify-content-between align-items-center">
-                        <span className="text-light" style={{ fontSize: "13px" }}>
+                        <span className="text-light fs-13">
                           {g.player}
                           {g.isOwnGoal && <span className="text-danger ms-1 small">(OG)</span>}
                           {g.isPenalty && <span className="text-warning ms-1 small">(P)</span>}
                         </span>
-                        <span className="font-monospace text-success fw-bold" style={{ fontSize: "12px" }}>{g.minute}</span>
+                        <span className="font-monospace text-success fw-bold fs-12">{g.minute}</span>
                       </div>
                     ))}
                   </div>
@@ -1562,7 +1322,7 @@ function FootballLiveDashboard({ match }: { match: any }) {
             {/* Cards */}
             <div className="col-12 col-md-6">
               <div className="bg-dark bg-opacity-40 border border-secondary border-opacity-10 rounded-3 p-3">
-                <div className="text-muted fw-semibold text-uppercase mb-3" style={{ fontSize: "10px", letterSpacing: "0.5px" }}>Cards</div>
+                <div className="text-muted fw-semibold text-uppercase mb-3 fs-10 ls-05">Cards</div>
                 {(summary.yellowCards.length === 0 && summary.redCards.length === 0) ? (
                   <span className="text-muted small">No cards</span>
                 ) : (
@@ -1571,18 +1331,18 @@ function FootballLiveDashboard({ match }: { match: any }) {
                       <div key={`y-${i}`} className="d-flex justify-content-between align-items-center gap-2">
                         <div className="d-flex align-items-center gap-2">
                           {renderCard("#facc15")}
-                          <span className="text-light" style={{ fontSize: "13px" }}>{c.player}</span>
+                          <span className="text-light fs-13">{c.player}</span>
                         </div>
-                        <span className="font-monospace text-muted" style={{ fontSize: "12px" }}>{c.minute}</span>
+                        <span className="font-monospace text-muted fs-12">{c.minute}</span>
                       </div>
                     ))}
                     {summary.redCards.map((c: any, i: number) => (
                       <div key={`r-${i}`} className="d-flex justify-content-between align-items-center gap-2">
                         <div className="d-flex align-items-center gap-2">
                           {renderCard("#ef4444")}
-                          <span className="text-light" style={{ fontSize: "13px" }}>{c.player}</span>
+                          <span className="text-light fs-13">{c.player}</span>
                         </div>
-                        <span className="font-monospace text-muted" style={{ fontSize: "12px" }}>{c.minute}</span>
+                        <span className="font-monospace text-muted fs-12">{c.minute}</span>
                       </div>
                     ))}
                   </div>
@@ -1593,14 +1353,14 @@ function FootballLiveDashboard({ match }: { match: any }) {
             {summary.varDecisions.length > 0 && (
               <div className="col-12">
                 <div className="bg-dark bg-opacity-40 border border-secondary border-opacity-10 rounded-3 p-3">
-                  <div className="text-muted fw-semibold text-uppercase mb-3" style={{ fontSize: "10px", letterSpacing: "0.5px" }}>
-                    <span style={{ color: "#c084fc" }}>▣ VAR Decisions</span>
+                  <div className="text-muted fw-semibold text-uppercase mb-3 fs-10 ls-05">
+                    <span className="text-c084fc">▣ VAR Decisions</span>
                   </div>
                   <div className="d-flex flex-column gap-2">
                     {summary.varDecisions.map((v: any, i: number) => (
                       <div key={i} className="d-flex justify-content-between align-items-center">
-                        <span className="text-light" style={{ fontSize: "13px" }}>{v.decision}</span>
-                        <span className="font-monospace" style={{ fontSize: "12px", color: "#c084fc" }}>{v.minute}</span>
+                        <span className="text-light fs-13">{v.decision}</span>
+                        <span className="font-monospace fs-12 text-c084fc">{v.minute}</span>
                       </div>
                     ))}
                   </div>
@@ -1610,15 +1370,15 @@ function FootballLiveDashboard({ match }: { match: any }) {
             {/* Substitutions & Injury Time */}
             <div className="col-12 col-md-6">
               <div className="bg-dark bg-opacity-40 border border-secondary border-opacity-10 rounded-3 p-3 h-100">
-                <div className="text-muted fw-semibold text-uppercase mb-3" style={{ fontSize: "10px", letterSpacing: "0.5px" }}>🔄 Substitutions</div>
+                <div className="text-muted fw-semibold text-uppercase mb-3 fs-10 ls-05">🔄 Substitutions</div>
                 <div className="d-flex justify-content-between">
                   <div className="text-center">
-                    <div className="text-white fw-bold" style={{ fontSize: "22px", fontFamily: "var(--font-space-grotesk)" }}>{summary.substitutions.team1Count}</div>
-                    <div className="text-muted" style={{ fontSize: "11px" }}>{match.team1Name}</div>
+                    <div className="text-white fw-bold fs-22 font-space-grotesk">{summary.substitutions.team1Count}</div>
+                    <div className="text-muted fs-11">{match.team1Name}</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-white fw-bold" style={{ fontSize: "22px", fontFamily: "var(--font-space-grotesk)" }}>{summary.substitutions.team2Count}</div>
-                    <div className="text-muted" style={{ fontSize: "11px" }}>{match.team2Name}</div>
+                    <div className="text-white fw-bold fs-22 font-space-grotesk">{summary.substitutions.team2Count}</div>
+                    <div className="text-muted fs-11">{match.team2Name}</div>
                   </div>
                 </div>
               </div>
@@ -1626,15 +1386,15 @@ function FootballLiveDashboard({ match }: { match: any }) {
             {summary.injuryTime && (
               <div className="col-12 col-md-6">
                 <div className="bg-dark bg-opacity-40 border border-secondary border-opacity-10 rounded-3 p-3 h-100">
-                  <div className="text-muted fw-semibold text-uppercase mb-3" style={{ fontSize: "10px", letterSpacing: "0.5px" }}>⏱ Injury Time</div>
+                  <div className="text-muted fw-semibold text-uppercase mb-3 fs-10 ls-05">⏱ Injury Time</div>
                   <div className="d-flex justify-content-between">
                     <div className="text-center">
-                      <div className="fw-bold text-warning font-monospace" style={{ fontSize: "20px" }}>{summary.injuryTime.firstHalf}</div>
-                      <div className="text-muted" style={{ fontSize: "11px" }}>1st Half</div>
+                      <div className="fw-bold text-warning font-monospace fs-20">{summary.injuryTime.firstHalf}</div>
+                      <div className="text-muted fs-11">1st Half</div>
                     </div>
                     <div className="text-center">
-                      <div className="fw-bold text-warning font-monospace" style={{ fontSize: "20px" }}>{summary.injuryTime.secondHalf}</div>
-                      <div className="text-muted" style={{ fontSize: "11px" }}>2nd Half</div>
+                      <div className="fw-bold text-warning font-monospace fs-20">{summary.injuryTime.secondHalf}</div>
+                      <div className="text-muted fs-11">2nd Half</div>
                     </div>
                   </div>
                 </div>
@@ -1647,19 +1407,18 @@ function FootballLiveDashboard({ match }: { match: any }) {
       {/* Match Statistics */}
       {stats && (
         <div className="card bg-card border border-dark rounded-3 p-4">
-          <h5 className="text-white fw-bold mb-4 border-start border-success border-4 ps-3"
-            style={{ fontSize: "18px", fontFamily: "var(--font-space-grotesk)" }}>
+          <h5 className="text-white fw-bold mb-4 border-start border-success border-4 ps-3 fs-18 font-space-grotesk">
             Match Statistics
           </h5>
           {/* Team headers */}
           <div className="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom border-dark">
             <div className="d-flex align-items-center gap-2">
-              <img src={match.team1Logo} alt={match.team1Name} width={20} height={20} style={{ objectFit: "contain" }} />
-              <span className="text-white fw-bold" style={{ fontSize: "12px" }}>{match.team1Name}</span>
+              <img src={match.team1Logo} alt={match.team1Name} width={20} height={20} className="object-fit-contain" />
+              <span className="text-white fw-bold fs-12">{match.team1Name}</span>
             </div>
             <div className="d-flex align-items-center gap-2">
-              <span className="text-white fw-bold" style={{ fontSize: "12px" }}>{match.team2Name}</span>
-              <img src={match.team2Logo} alt={match.team2Name} width={20} height={20} style={{ objectFit: "contain" }} />
+              <span className="text-white fw-bold fs-12">{match.team2Name}</span>
+              <img src={match.team2Logo} alt={match.team2Name} width={20} height={20} className="object-fit-contain" />
             </div>
           </div>
           <div className="d-flex flex-column gap-4">
@@ -1678,17 +1437,17 @@ function FootballLiveDashboard({ match }: { match: any }) {
               return (
                 <div key={i}>
                   <div className="d-flex justify-content-between align-items-center mb-2">
-                    <span className="font-monospace fw-bold text-white" style={{ fontSize: "13px" }}>{s.t1}</span>
-                    <span className="text-muted text-uppercase font-monospace" style={{ fontSize: "10px", letterSpacing: "1px" }}>{s.label}</span>
-                    <span className="font-monospace fw-bold text-white" style={{ fontSize: "13px" }}>{s.t2}</span>
+                    <span className="font-monospace fw-bold text-white fs-13">{s.t1}</span>
+                    <span className="text-muted text-uppercase font-monospace fs-10 ls-1">{s.label}</span>
+                    <span className="font-monospace fw-bold text-white fs-13">{s.t2}</span>
                   </div>
-                  <div className="d-flex align-items-center gap-1" style={{ height: "6px" }}>
-                    <div className="flex-grow-1 d-flex justify-content-end rounded-start overflow-hidden" style={{ backgroundColor: "rgba(255,255,255,0.06)" }}>
-                      <div style={{ width: `${pct1}%`, backgroundColor: "var(--accent-green, #22c55e)", transition: "width 0.5s" }} />
+                  <div className="d-flex align-items-center gap-1 h-6px">
+                    <div className="flex-grow-1 d-flex justify-content-end rounded-start overflow-hidden bg-rgba255255255006">
+                      <div className="transition-width bg-accent-green" style={getWidthStyle(pct1)} />
                     </div>
-                    <div className="bg-secondary rounded-circle" style={{ width: "4px", height: "4px", opacity: 0.3, flexShrink: 0 }} />
-                    <div className="flex-grow-1 rounded-end overflow-hidden" style={{ backgroundColor: "rgba(255,255,255,0.06)" }}>
-                      <div style={{ width: `${pct2}%`, backgroundColor: "#3a4356", transition: "width 0.5s" }} />
+                    <div className="bg-secondary rounded-circle w-4px h-4px opacity-30 flex-shrink-0" />
+                    <div className="flex-grow-1 rounded-end overflow-hidden bg-rgba255255255006">
+                      <div className="transition-width bg-dark-slate" style={getWidthStyle(pct2)} />
                     </div>
                   </div>
                 </div>
@@ -1708,40 +1467,38 @@ function FootballLineupsTab({ match }: { match: any }) {
 
   const renderPlayer = (p: any, teamColor: string) => (
     <div key={p.number}
-      className="d-flex align-items-center justify-content-between hover-card-effect"
-      style={{ padding: "10px 14px", borderBottom: "1px solid rgba(255,255,255,0.04)", transition: "background 0.15s" }}>
+      className="d-flex align-items-center justify-content-between hover-card-effect padding-10px14px border-bottom-1pxsolidrgba255255255004 transition-background015s">
       <div className="d-flex align-items-center gap-3">
-        <div className="font-monospace fw-bold d-flex align-items-center justify-content-center rounded-circle"
-          style={{ width: "28px", height: "28px", fontSize: "11px", backgroundColor: "rgba(255,255,255,0.05)", color: "#8a94a6", flexShrink: 0 }}>
+        <div className="font-monospace fw-bold d-flex align-items-center justify-content-center rounded-circle w-28px h-28px fs-11 bg-rgba255255255005 text-8a94a6 flex-shrink-0">
           {p.number}
         </div>
-        <span className={`${p.substituted ? "text-muted" : "text-light"} fw-semibold`} style={{ fontSize: "13.5px" }}>
+        <span className={`${p.substituted ? "text-muted" : "text-light"} fw-semibold fs-13-5`}>
           {p.name}
         </span>
-        <span className="text-muted" style={{ fontSize: "11px" }}>{p.position}</span>
+        <span className="text-muted fs-11">{p.position}</span>
       </div>
       <div className="d-flex align-items-center gap-2">
         {p.goals > 0 && (
           <div className="d-flex align-items-center gap-1" title="Goal">
-            <span style={{ fontFamily: "'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif", fontSize: "13px" }}>⚽</span>
-            {p.goals > 1 && <span className="fw-bold text-white" style={{ fontSize: "10px" }}>{p.goals}</span>}
+            <span className="fs-13 font-family-segoeuiemojiapplecoloremojinotocoloremojisans-serif">⚽</span>
+            {p.goals > 1 && <span className="fw-bold text-white fs-10">{p.goals}</span>}
           </div>
         )}
         {p.isCaptain && (
-          <span className="badge px-1 py-0 d-flex align-items-center justify-content-center fw-bold" style={{ fontSize: "9px", height: "16px", minWidth: "16px", backgroundColor: "rgba(26,140,61,0.15)", color: "#4ade80", border: "1px solid rgba(26,140,61,0.3)" }}>C</span>
+          <span className="badge px-1 py-0 d-flex align-items-center justify-content-center fw-bold fs-9 h-16px min-width-16px bg-rgba2614061015 text-4ade80 border-1pxsolidrgba261406103">C</span>
         )}
         {p.yellowCard && (
           <div className="d-flex align-items-center justify-content-center" title="Yellow Card">
-            <div style={{ width: "9px", height: "13px", backgroundColor: "#facc15", borderRadius: "1px", border: "1px solid rgba(0,0,0,0.2)" }}></div>
+            <div className="w-9px h-13px br-1px bg-facc15 border-1pxsolidrgba00002"></div>
           </div>
         )}
         {p.redCard && (
           <div className="d-flex align-items-center justify-content-center" title="Red Card">
-            <div style={{ width: "9px", height: "13px", backgroundColor: "#ef4444", borderRadius: "1px", border: "1px solid rgba(0,0,0,0.2)" }}></div>
+            <div className="w-9px h-13px br-1px bg-ef4444 border-1pxsolidrgba00002"></div>
           </div>
         )}
         {p.substituted && (
-          <i className="bi bi-arrow-left-right text-info ms-1" style={{ fontSize: "12px" }} title="Substituted"></i>
+          <i className="bi bi-arrow-left-right text-info ms-1 fs-12" title="Substituted"></i>
         )}
       </div>
     </div>
@@ -1751,25 +1508,24 @@ function FootballLineupsTab({ match }: { match: any }) {
     <div className="d-flex flex-column gap-4">
       {/* Formation Banner */}
       <div className="card bg-card border border-dark rounded-3 p-4">
-        <h5 className="text-white fw-bold mb-4 border-start border-success border-4 ps-3"
-          style={{ fontSize: "18px", fontFamily: "var(--font-space-grotesk)" }}>
+        <h5 className="text-white fw-bold mb-4 border-start border-success border-4 ps-3 fs-18 font-space-grotesk">
           Team Formations
         </h5>
         <div className="row g-3 text-center">
           <div className="col-6">
             <div className="bg-dark bg-opacity-40 border border-secondary border-opacity-10 rounded-3 p-3">
-              <img src={match.team1Logo} alt={match.team1Name} width={36} height={36} style={{ objectFit: "contain" }} className="mb-2" />
-              <div className="text-white fw-bold" style={{ fontSize: "13px" }}>{match.team1Name}</div>
-              <div className="text-success fw-bold font-monospace mt-1" style={{ fontSize: "20px", letterSpacing: "-0.5px" }}>{t1.formation}</div>
-              <div className="text-muted mt-1" style={{ fontSize: "11px" }}>Coach: {t1.coach}</div>
+              <img src={match.team1Logo} alt={match.team1Name} width={36} height={36} className="object-fit-contain mb-2" />
+              <div className="text-white fw-bold fs-13">{match.team1Name}</div>
+              <div className="text-success fw-bold font-monospace mt-1 fs-20 ls-minus-05">{t1.formation}</div>
+              <div className="text-muted mt-1 fs-11">Coach: {t1.coach}</div>
             </div>
           </div>
           <div className="col-6">
             <div className="bg-dark bg-opacity-40 border border-secondary border-opacity-10 rounded-3 p-3">
-              <img src={match.team2Logo} alt={match.team2Name} width={36} height={36} style={{ objectFit: "contain" }} className="mb-2" />
-              <div className="text-white fw-bold" style={{ fontSize: "13px" }}>{match.team2Name}</div>
-              <div className="text-success fw-bold font-monospace mt-1" style={{ fontSize: "20px", letterSpacing: "-0.5px" }}>{t2.formation}</div>
-              <div className="text-muted mt-1" style={{ fontSize: "11px" }}>Coach: {t2.coach}</div>
+              <img src={match.team2Logo} alt={match.team2Name} width={36} height={36} className="object-fit-contain mb-2" />
+              <div className="text-white fw-bold fs-13">{match.team2Name}</div>
+              <div className="text-success fw-bold font-monospace mt-1 fs-20 ls-minus-05">{t2.formation}</div>
+              <div className="text-muted mt-1 fs-11">Coach: {t2.coach}</div>
             </div>
           </div>
         </div>
@@ -1780,15 +1536,15 @@ function FootballLineupsTab({ match }: { match: any }) {
         {/* Team 1 XI */}
         <div className="col-12 col-md-6">
           <div className="card bg-card border border-dark rounded-3 overflow-hidden">
-            <div className="d-flex align-items-center gap-3 p-3 border-bottom border-dark" style={{ backgroundColor: "rgba(26,140,61,0.06)" }}>
-              <img src={match.team1Logo} alt={match.team1Name} width={24} height={24} style={{ objectFit: "contain" }} />
-              <h6 className="text-white fw-extrabold m-0" style={{ fontSize: "14px", fontFamily: "var(--font-space-grotesk)" }}>{match.team1Name}</h6>
-              <span className="ms-auto text-success font-monospace" style={{ fontSize: "12px" }}>{t1.formation}</span>
+            <div className="d-flex align-items-center gap-3 p-3 border-bottom border-dark bg-rgba2614061006">
+              <img src={match.team1Logo} alt={match.team1Name} width={24} height={24} className="object-fit-contain" />
+              <h6 className="text-white fw-extrabold m-0 fs-14 font-space-grotesk">{match.team1Name}</h6>
+              <span className="ms-auto text-success font-monospace fs-12">{t1.formation}</span>
             </div>
             <div className="px-1 py-1">
-              <div className="text-muted fw-semibold text-uppercase px-3 py-2" style={{ fontSize: "9px", letterSpacing: "0.5px" }}>Starting XI</div>
+              <div className="text-muted fw-semibold text-uppercase px-3 py-2 fs-9 ls-05">Starting XI</div>
               {t1.startingXI.map((p: any) => renderPlayer(p, "#22c55e"))}
-              <div className="text-muted fw-semibold text-uppercase px-3 pt-3 pb-1" style={{ fontSize: "9px", letterSpacing: "0.5px", borderTop: "1px solid rgba(255,255,255,0.05)", marginTop: "8px" }}>Bench</div>
+              <div className="text-muted fw-semibold text-uppercase px-3 pt-3 pb-1 fs-9 ls-05 border-top-1pxsolidrgba255255255005 margin-top-8px">Bench</div>
               {t1.bench.map((p: any) => renderPlayer(p, "#8a94a6"))}
             </div>
           </div>
@@ -1796,15 +1552,15 @@ function FootballLineupsTab({ match }: { match: any }) {
         {/* Team 2 XI */}
         <div className="col-12 col-md-6">
           <div className="card bg-card border border-dark rounded-3 overflow-hidden">
-            <div className="d-flex align-items-center gap-3 p-3 border-bottom border-dark" style={{ backgroundColor: "rgba(255,255,255,0.02)" }}>
-              <img src={match.team2Logo} alt={match.team2Name} width={24} height={24} style={{ objectFit: "contain" }} />
-              <h6 className="text-white fw-extrabold m-0" style={{ fontSize: "14px", fontFamily: "var(--font-space-grotesk)" }}>{match.team2Name}</h6>
-              <span className="ms-auto text-muted font-monospace" style={{ fontSize: "12px" }}>{t2.formation}</span>
+            <div className="d-flex align-items-center gap-3 p-3 border-bottom border-dark bg-rgba255255255002">
+              <img src={match.team2Logo} alt={match.team2Name} width={24} height={24} className="object-fit-contain" />
+              <h6 className="text-white fw-extrabold m-0 fs-14 font-space-grotesk">{match.team2Name}</h6>
+              <span className="ms-auto text-muted font-monospace fs-12">{t2.formation}</span>
             </div>
             <div className="px-1 py-1">
-              <div className="text-muted fw-semibold text-uppercase px-3 py-2" style={{ fontSize: "9px", letterSpacing: "0.5px" }}>Starting XI</div>
+              <div className="text-muted fw-semibold text-uppercase px-3 py-2 fs-9 ls-05">Starting XI</div>
               {t2.startingXI.map((p: any) => renderPlayer(p, "#8a94a6"))}
-              <div className="text-muted fw-semibold text-uppercase px-3 pt-3 pb-1" style={{ fontSize: "9px", letterSpacing: "0.5px", borderTop: "1px solid rgba(255,255,255,0.05)", marginTop: "8px" }}>Bench</div>
+              <div className="text-muted fw-semibold text-uppercase px-3 pt-3 pb-1 fs-9 ls-05 border-top-1pxsolidrgba255255255005 margin-top-8px">Bench</div>
               {t2.bench.map((p: any) => renderPlayer(p, "#8a94a6"))}
             </div>
           </div>
@@ -1822,17 +1578,17 @@ function FootballTimeline({ match }: { match: any }) {
 
   const getEventConfig = (type: string) => {
     switch (type) {
-      case "goal": return { icon: <span style={{ fontFamily: "'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif", fontSize: "12px", lineHeight: 1 }}>⚽</span>, label: "Goal", border: "rgba(26,140,61,0.3)", bg: "rgba(26,140,61,0.06)", dotBg: "#22c55e" };
-      case "yellow_card": return { icon: <div style={{ width: "9px", height: "13px", backgroundColor: "#facc15", borderRadius: "1px", border: "1px solid rgba(0,0,0,0.2)" }}></div>, label: "Yellow Card", border: "rgba(250,204,21,0.25)", bg: "rgba(250,204,21,0.04)", dotBg: "#facc15" };
-      case "red_card": return { icon: <div style={{ width: "9px", height: "13px", backgroundColor: "#ef4444", borderRadius: "1px", border: "1px solid rgba(0,0,0,0.2)" }}></div>, label: "Red Card", border: "rgba(239,68,68,0.3)", bg: "rgba(239,68,68,0.06)", dotBg: "#ef4444" };
-      case "substitution": return { icon: <i className="bi bi-arrow-left-right text-info" style={{ fontSize: "11px" }}></i>, label: "Substitution", border: "rgba(34,211,238,0.2)", bg: "rgba(34,211,238,0.03)", dotBg: "#22d3ee" };
-      case "penalty": return { icon: <i className="bi bi-bullseye text-warning" style={{ fontSize: "12px" }}></i>, label: "Penalty", border: "rgba(249,115,22,0.3)", bg: "rgba(249,115,22,0.06)", dotBg: "#fb923c" };
-      case "var": return { icon: <i className="bi bi-display" style={{ fontSize: "11px" }}></i>, label: "VAR", border: "rgba(168,85,247,0.3)", bg: "rgba(168,85,247,0.06)", dotBg: "#c084fc" };
-      case "own_goal": return { icon: <span style={{ fontFamily: "'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif", fontSize: "12px", lineHeight: 1 }}>⚽</span>, label: "Own Goal", border: "rgba(239,68,68,0.25)", bg: "rgba(239,68,68,0.04)", dotBg: "#f87171" };
+      case "goal": return { icon: <span className="fs-12 font-family-segoeuiemojiapplecoloremojinotocoloremojisans-serif lh-1">⚽</span>, label: "Goal", border: "rgba(26,140,61,0.3)", bg: "rgba(26,140,61,0.06)", dotBg: "#22c55e" };
+      case "yellow_card": return { icon: <div className="w-9px h-13px br-1px bg-facc15 border-1pxsolidrgba00002"></div>, label: "Yellow Card", border: "rgba(250,204,21,0.25)", bg: "rgba(250,204,21,0.04)", dotBg: "#facc15" };
+      case "red_card": return { icon: <div className="w-9px h-13px br-1px bg-ef4444 border-1pxsolidrgba00002"></div>, label: "Red Card", border: "rgba(239,68,68,0.3)", bg: "rgba(239,68,68,0.06)", dotBg: "#ef4444" };
+      case "substitution": return { icon: <i className="bi bi-arrow-left-right text-info fs-11"></i>, label: "Substitution", border: "rgba(34,211,238,0.2)", bg: "rgba(34,211,238,0.03)", dotBg: "#22d3ee" };
+      case "penalty": return { icon: <i className="bi bi-bullseye text-warning fs-12"></i>, label: "Penalty", border: "rgba(249,115,22,0.3)", bg: "rgba(249,115,22,0.06)", dotBg: "#fb923c" };
+      case "var": return { icon: <i className="bi bi-display fs-11"></i>, label: "VAR", border: "rgba(168,85,247,0.3)", bg: "rgba(168,85,247,0.06)", dotBg: "#c084fc" };
+      case "own_goal": return { icon: <span className="fs-12 font-family-segoeuiemojiapplecoloremojinotocoloremojisans-serif lh-1">⚽</span>, label: "Own Goal", border: "rgba(239,68,68,0.25)", bg: "rgba(239,68,68,0.04)", dotBg: "#f87171" };
       case "half_time":
-      case "full_time": return { icon: <i className="bi bi-stopwatch text-info" style={{ fontSize: "12px" }}></i>, label: type === "full_time" ? "Full Time" : "Half Time", border: "rgba(52,152,219,0.25)", bg: "rgba(52,152,219,0.05)", dotBg: "#3498db" };
-      case "injury_time": return { icon: <i className="bi bi-plus" style={{ fontSize: "14px" }}></i>, label: "Injury Time", border: "rgba(255,255,255,0.06)", bg: "transparent", dotBg: "#4b5563" };
-      default: return { icon: <i className="bi bi-circle-fill text-muted" style={{ fontSize: "6px" }}></i>, label: type, border: "rgba(255,255,255,0.06)", bg: "transparent", dotBg: "#4b5563" };
+      case "full_time": return { icon: <i className="bi bi-stopwatch text-info fs-12"></i>, label: type === "full_time" ? "Full Time" : "Half Time", border: "rgba(52,152,219,0.25)", bg: "rgba(52,152,219,0.05)", dotBg: "#3498db" };
+      case "injury_time": return { icon: <i className="bi bi-plus fs-14"></i>, label: "Injury Time", border: "rgba(255,255,255,0.06)", bg: "transparent", dotBg: "#4b5563" };
+      default: return { icon: <i className="bi bi-circle-fill text-muted fs-6"></i>, label: type, border: "rgba(255,255,255,0.06)", bg: "transparent", dotBg: "#4b5563" };
     }
   };
 
@@ -1846,40 +1602,37 @@ function FootballTimeline({ match }: { match: any }) {
         return (
           <div key={i} className="position-relative">
             {/* Timeline dot */}
-            <span className="position-absolute d-flex align-items-center justify-content-center rounded-circle"
-              style={{ width: "28px", height: "28px", left: "-42px", top: "8px", backgroundColor: "#070b12", border: `2px solid ${cfg.dotBg}`, zIndex: 10, fontSize: "11px" }}>
+            <span className="position-absolute d-flex align-items-center justify-content-center rounded-circle timeline-dot-v2" style={{ border: `2px solid ${cfg.dotBg}` }}>
               {e.type === "var" ? (
-                <span style={{ fontSize: "8px", fontWeight: 700, color: "#c084fc" }}>VAR</span>
+                <span className="fs-8 font-weight-700 text-c084fc">VAR</span>
               ) : (
                 <span>{cfg.icon}</span>
               )}
             </span>
 
             {/* Event card */}
-            <div className="rounded-3 p-3"
-              style={{ backgroundColor: cfg.bg, border: `1px solid ${cfg.border}`, boxShadow: isHighlight ? `0 4px 15px ${cfg.dotBg}18` : "none" }}>
+            <div className="rounded-3 p-3 timeline-card-base-v2" style={{ backgroundColor: cfg.bg, border: `1px solid ${cfg.border}`, boxShadow: isHighlight ? `0 4px 15px ${cfg.dotBg}18` : "none" }}>
               <div className="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-1">
                 <div className="d-flex align-items-center gap-2 flex-wrap">
-                  <span className="font-monospace fw-bold rounded text-success"
-                    style={{ fontSize: "10px", backgroundColor: "rgba(26,140,61,0.08)", border: "1px solid rgba(26,140,61,0.2)", padding: "2px 7px" }}>
+                  <span className="font-monospace fw-bold rounded text-success fs-10 bg-rgba2614061008 border-1pxsolidrgba261406102 padding-2px7px">
                     {e.minute}
                   </span>
-                  <span className="text-white fw-bold" style={{ fontSize: "14px" }}>
+                  <span className="text-white fw-bold fs-14">
                     {e.type === "substitution" ? `${e.player} ↑  ${e.playerOut} ↓` : e.player || cfg.label}
                   </span>
                 </div>
                 {teamName && (
-                  <span className="badge bg-dark border border-secondary border-opacity-10 text-muted font-monospace px-2 py-1" style={{ fontSize: "9px" }}>
+                  <span className="badge bg-dark border border-secondary border-opacity-10 text-muted font-monospace px-2 py-1 fs-9">
                     {teamName}
                   </span>
                 )}
               </div>
               {e.detail && (
-                <div className="text-muted small" style={{ fontSize: "12.5px", lineHeight: "1.5" }}>{e.detail}</div>
+                <div className="text-muted small fs-12-5 lh-15">{e.detail}</div>
               )}
               {e.varDecision && (
                 <div className="mt-1">
-                  <span style={{ fontSize: "11px", fontWeight: 700, color: "#c084fc", backgroundColor: "rgba(168,85,247,0.12)", border: "1px solid rgba(168,85,247,0.3)", borderRadius: "4px", padding: "2px 8px" }}>
+                  <span className="fs-11 br-4px font-weight-700 text-c084fc bg-rgba16885247012 border-1pxsolidrgba1688524703 padding-2px8px">
                     ✓ {e.varDecision}
                   </span>
                 </div>
@@ -1979,22 +1732,9 @@ function ScorecardTab({ match }: { match: any }) {
   const d = activeInnings === 1 ? innings1 : innings2;
 
 
-  const card = {
-    backgroundColor: "rgba(255,255,255,0.03)",
-    border: "1px solid rgba(255,255,255,0.07)",
-    borderRadius: "10px",
-  } as React.CSSProperties;
 
-  const sectionHead = {
-    backgroundColor: "rgba(255,255,255,0.05)",
-    borderRadius: "6px 6px 0 0",
-    padding: "8px 14px",
-    fontSize: "12px",
-    fontWeight: 700,
-    letterSpacing: "0.4px",
-    color: "#cbd5e1",
-    textTransform: "uppercase" as const,
-  };
+
+
 
   const teal = "#4ade80";
   const mutedGray = "#8a94a6";
@@ -2014,17 +1754,7 @@ function ScorecardTab({ match }: { match: any }) {
             <button
               key={inn}
               onClick={() => setActiveInnings(inn)}
-              style={{
-                fontSize: "13px",
-                fontWeight: 600,
-                padding: "8px 18px",
-                borderRadius: "20px",
-                cursor: "pointer",
-                transition: "all 0.18s",
-                backgroundColor: active ? "rgba(26,140,61,0.18)" : "rgba(255,255,255,0.04)",
-                border: active ? "1px solid rgba(26,140,61,0.45)" : "1px solid rgba(255,255,255,0.09)",
-                color: active ? teal : mutedGray,
-              }}
+              className={`subtab-base ${active ? "subtab-active" : "subtab-inactive"}`}
             >
               {label}
             </button>
@@ -2034,29 +1764,24 @@ function ScorecardTab({ match }: { match: any }) {
 
 
       <div
-        className="d-flex align-items-center justify-content-between px-4 py-3 rounded-3"
-        style={{ background: "linear-gradient(135deg,#1a8c3d 0%,#15703a 100%)" }}
+        className="d-flex align-items-center justify-content-between px-4 py-3 rounded-3 background-linear-gradient135deg1a8c3d015703a100"
       >
-        <div className="text-white fw-bold" style={{ fontSize: "16px", fontFamily: "var(--font-space-grotesk)" }}>
+        <div className="text-white fw-bold fs-16 font-space-grotesk">
           {d.team}
         </div>
         <div className="text-end">
-          <div className="text-white fw-bold font-monospace" style={{ fontSize: "20px", letterSpacing: "-0.5px" }}>
-            {d.score} <span style={{ fontSize: "13px", opacity: 0.8 }}>({d.overs} Ov)</span>
+          <div className="text-white fw-bold font-monospace fs-20 ls-minus-05">
+            {d.score} <span className="fs-13 opacity-80">({d.overs} Ov)</span>
           </div>
-          <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.7)" }}>RR: {d.rr}</div>
+          <div className="fs-11 text-rgba25525525507">RR: {d.rr}</div>
         </div>
       </div>
 
 
-      <div style={card}>
+      <div className="cricket-score-card-bg">
         {/* Header Row */}
         <div
-          className="d-grid fw-semibold text-uppercase"
-          style={{
-            ...sectionHead,
-            gridTemplateColumns: "2.6fr 2.8fr 0.8fr 0.8fr 0.7fr 0.7fr 1.1fr",
-          }}
+          className="d-grid fw-semibold text-uppercase custom-section-head grid-26-28"
         >
           <div>Batter</div>
           <div />
@@ -2071,83 +1796,67 @@ function ScorecardTab({ match }: { match: any }) {
         {d.batters.map((b: any, i: number) => (
           <div
             key={i}
-            className="d-grid align-items-start px-3 py-2"
-            style={{
-              gridTemplateColumns: "2.6fr 2.8fr 0.8fr 0.8fr 0.7fr 0.7fr 1.1fr",
-              borderBottom: rowBorder,
-              fontSize: "13px",
-            }}
+            className="d-grid align-items-start px-3 py-2 fs-13 grid-template-columns-26fr28fr08fr08fr07fr07fr11fr"
           >
             {/* Name */}
             <div>
-              <span style={{ color: b.out ? "#cbd5e1" : teal, fontWeight: 600 }}>{b.name}</span>
+              <span className={`fw-600 ${b.out ? "text-cbd5e1" : "text-teal"}`}>{b.name}</span>
               {!b.out && (
                 <span
-                  className="ms-2"
-                  style={{
-                    fontSize: "9px", fontWeight: 700, padding: "2px 6px", borderRadius: "4px",
-                    backgroundColor: "rgba(74,222,128,0.15)", border: "1px solid rgba(74,222,128,0.3)",
-                    color: teal, letterSpacing: "0.3px",
-                  }}
+                  className="ms-2 fs-9 br-4px ls-03 font-weight-700 padding-2px6px bg-rgba74222128015 border-1pxsolidrgba7422212803"
                 >
                   Not Out
                 </span>
               )}
             </div>
             {/* Dismissal */}
-            <div style={{ color: mutedGray, fontSize: "12px", lineHeight: 1.4 }}>{b.dismissed}</div>
+            <div className="fs-12 lh-14">{b.dismissed}</div>
             {/* Stats */}
-            <div className="text-end font-monospace" style={{ color: "#f1f5f9", fontWeight: 700 }}>{b.r}</div>
-            <div className="text-end font-monospace" style={{ color: mutedGray }}>{b.b}</div>
-            <div className="text-end font-monospace" style={{ color: mutedGray }}>{b.f}</div>
-            <div className="text-end font-monospace" style={{ color: mutedGray }}>{b.s}</div>
-            <div className="text-end font-monospace" style={{ color: mutedGray }}>{b.sr}</div>
+            <div className="text-end font-monospace text-f1f5f9 font-weight-700">{b.r}</div>
+            <div className="text-end font-monospace text-muted-gray">{b.b}</div>
+            <div className="text-end font-monospace text-muted-gray">{b.f}</div>
+            <div className="text-end font-monospace text-muted-gray">{b.s}</div>
+            <div className="text-end font-monospace text-muted-gray">{b.sr}</div>
 
           </div>
         ))}
 
         {/* Extras */}
         <div
-          className="d-flex align-items-center justify-content-between px-3 py-2"
-          style={{ borderBottom: rowBorder, fontSize: "13px" }}
+          className="d-flex align-items-center justify-content-between px-3 py-2 fs-13"
         >
-          <span style={{ color: "#94a3b8", fontWeight: 600 }}>
+          <span className="text-94a3b8 font-weight-600">
             Extras&nbsp;
-            <span style={{ color: mutedGray, fontSize: "11.5px", fontWeight: 400 }}>
+            <span className="fs-11-5 font-weight-400">
               (b {d.extras.b}, lb {d.extras.lb}, w {d.extras.w}, nb {d.extras.nb}, p {d.extras.p})
             </span>
           </span>
-          <span className="font-monospace" style={{ color: "#f1f5f9", fontWeight: 700 }}>{d.extras.total}</span>
+          <span className="font-monospace text-f1f5f9 font-weight-700">{d.extras.total}</span>
         </div>
 
         {/* Total */}
         <div
-          className="d-flex align-items-center justify-content-between px-3 py-2"
-          style={{ fontSize: "13.5px", borderBottom: rowBorder }}
+          className="d-flex align-items-center justify-content-between px-3 py-2 fs-13-5"
         >
-          <span style={{ color: "#f1f5f9", fontWeight: 700 }}>Total</span>
-          <span className="font-monospace" style={{ color: "#f1f5f9", fontWeight: 700 }}>
+          <span className="text-f1f5f9 font-weight-700">Total</span>
+          <span className="font-monospace text-f1f5f9 font-weight-700">
             {d.score} ({d.overs} Overs, RR: {d.rr})
           </span>
         </div>
 
         {/* Yet to Bat */}
-        <div className="px-3 py-2" style={{ fontSize: "13px" }}>
-          <span style={{ color: "#94a3b8", fontWeight: 600 }}>Yet to Bat&nbsp;&nbsp;</span>
-          <span style={{ color: teal }}>
+        <div className="px-3 py-2 fs-13">
+          <span className="text-94a3b8 font-weight-600">Yet to Bat&nbsp;&nbsp;</span>
+          <span className="text-teal">
             {d.yetToBat.join(", ")}
           </span>
         </div>
       </div>
 
       {/* â”€â”€ Bowling Card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
-      <div style={card}>
+      <div className="cricket-score-card-bg">
         <div
-          className="d-grid fw-semibold text-uppercase"
-          style={{
-            ...sectionHead,
-            gridTemplateColumns: "2.2fr 0.8fr 0.7fr 0.8fr 0.7fr 0.8fr 0.8fr 1fr",
-          }}
+          className="d-grid fw-semibold text-uppercase custom-section-head grid-22-08"
         >
           <div>Bowler</div>
           <div className="text-end">O</div>
@@ -2162,22 +1871,17 @@ function ScorecardTab({ match }: { match: any }) {
         {d.bowlers.map((bw: any, i: number) => (
           <div
             key={i}
-            className="d-grid align-items-center px-3 py-2"
-            style={{
-              gridTemplateColumns: "2.2fr 0.8fr 0.7fr 0.8fr 0.7fr 0.8fr 0.8fr 1fr",
-              borderBottom: rowBorder, fontSize: "13px",
-            }}
+            className="d-grid align-items-center px-3 py-2 fs-13 grid-template-columns-22fr08fr07fr08fr07fr08fr08fr1fr"
           >
-            <div style={{ color: teal, fontWeight: 600 }}>{bw.name}</div>
-            <div className="text-end font-monospace" style={{ color: mutedGray }}>{bw.o}</div>
-            <div className="text-end font-monospace" style={{ color: mutedGray }}>{bw.m}</div>
-            <div className="text-end font-monospace" style={{ color: mutedGray }}>{bw.r}</div>
-            <div className="text-end font-monospace fw-bold" style={{ color: bw.w > 0 ? teal : mutedGray }}>{bw.w}</div>
-            <div className="text-end font-monospace" style={{ color: mutedGray }}>{bw.nb}</div>
-            <div className="text-end font-monospace" style={{ color: mutedGray }}>{bw.wd}</div>
+            <div className="text-teal fw-600">{bw.name}</div>
+            <div className="text-end font-monospace text-muted-gray">{bw.o}</div>
+            <div className="text-end font-monospace text-muted-gray">{bw.m}</div>
+            <div className="text-end font-monospace text-muted-gray">{bw.r}</div>
+            <div className={`text-end font-monospace fw-bold ${ bw.w > 0 ? "text-teal" : "text-muted-gray" }`}>{bw.w}</div>
+            <div className="text-end font-monospace text-muted-gray">{bw.nb}</div>
+            <div className="text-end font-monospace text-muted-gray">{bw.wd}</div>
             <div
-              className="text-end font-monospace"
-              style={{ color: parseFloat(bw.eco) > 10 ? "#f97316" : mutedGray }}
+              className={`text-end font-monospace ${ parseFloat(bw.eco) > 10 ? "text-danger" : "text-muted-gray" }`}
             >
               {bw.eco}
             </div>
@@ -2187,10 +1891,9 @@ function ScorecardTab({ match }: { match: any }) {
       </div>
 
       {/* â”€â”€ Fall of Wickets â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
-      <div style={card}>
+      <div className="cricket-score-card-bg">
         <div
-          className="d-grid fw-semibold text-uppercase"
-          style={{ ...sectionHead, gridTemplateColumns: "2fr 1fr 1fr" }}
+          className="d-grid fw-semibold text-uppercase custom-section-head grid-2-1-1"
         >
           <div>Fall of Wickets</div>
           <div className="text-center">Score</div>
@@ -2199,67 +1902,55 @@ function ScorecardTab({ match }: { match: any }) {
         {d.fow.map((f: any, i: number) => (
           <div
             key={i}
-            className="d-grid align-items-center px-3 py-2"
-            style={{ gridTemplateColumns: "2fr 1fr 1fr", borderBottom: rowBorder, fontSize: "13px" }}
+            className="d-grid align-items-center px-3 py-2 fs-13 grid-template-columns-2fr1fr1fr"
           >
-            <div style={{ color: teal, fontWeight: 600 }}>{f.batter}</div>
-            <div className="text-center font-monospace" style={{ color: "#f1f5f9" }}>{f.score}</div>
-            <div className="text-end font-monospace" style={{ color: mutedGray }}>{f.over}</div>
+            <div className="text-teal fw-600">{f.batter}</div>
+            <div className="text-center font-monospace text-f1f5f9">{f.score}</div>
+            <div className="text-end font-monospace text-muted-gray">{f.over}</div>
           </div>
         ))}
       </div>
 
       {/* â”€â”€ Powerplays â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
-      <div style={card}>
+      <div className="cricket-score-card-bg">
         <div
-          className="d-grid fw-semibold text-uppercase"
-          style={{ ...sectionHead, gridTemplateColumns: "1fr 1fr 1fr" }}
+          className="d-grid fw-semibold text-uppercase custom-section-head grid-1-1-1"
         >
           <div>Powerplays</div>
           <div className="text-center">Overs</div>
           <div className="text-end">Runs</div>
         </div>
         <div
-          className="d-grid align-items-center px-3 py-2"
-          style={{ gridTemplateColumns: "1fr 1fr 1fr", fontSize: "13px" }}
+          className="d-grid align-items-center px-3 py-2 fs-13 grid-template-columns-1fr1fr1fr"
         >
-          <div style={{ color: "#cbd5e1" }}>{d.powerplay.label}</div>
-          <div className="text-center font-monospace" style={{ color: mutedGray }}>{d.powerplay.overs}</div>
-          <div className="text-end font-monospace" style={{ color: "#f1f5f9", fontWeight: 700 }}>{d.powerplay.runs}</div>
+          <div className="text-cbd5e1">{d.powerplay.label}</div>
+          <div className="text-center font-monospace text-muted-gray">{d.powerplay.overs}</div>
+          <div className="text-end font-monospace text-f1f5f9 font-weight-700">{d.powerplay.runs}</div>
         </div>
       </div>
 
       {/* â”€â”€ Partnerships â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
-      <div style={card}>
-        <div style={sectionHead}>Partnerships</div>
+      <div className="cricket-score-card-bg">
+        <div className="cricket-scorecard-section-head">Partnerships</div>
         {d.partnerships.map((p: any, i: number) => (
           <div
             key={i}
-            className="d-grid align-items-center px-3 py-2"
-            style={{ gridTemplateColumns: "1fr auto 1fr", borderBottom: rowBorder, gap: "12px", fontSize: "13px" }}
+            className="d-grid align-items-center px-3 py-2 fs-13 grid-template-columns-1frauto1fr gap-12px"
           >
-            <div style={{ color: teal }}>{p.b1}</div>
+            <div className="text-teal">{p.b1}</div>
             <div
-              className="text-center font-monospace fw-bold"
-              style={{
-                color: "#f1f5f9",
-                backgroundColor: "rgba(255,255,255,0.05)",
-                border: "1px solid rgba(255,255,255,0.08)",
-                borderRadius: "6px",
-                padding: "2px 10px",
-                whiteSpace: "nowrap" as const,
-              }}
+              className="text-center font-monospace fw-bold br-6px text-f1f5f9 bg-rgba255255255005 border-1pxsolidrgba255255255008 padding-2px10px white-space-nowrap"
             >
               {p.total}
             </div>
-            <div className="text-end" style={{ color: teal }}>{p.b2}</div>
+            <div className="text-end text-teal">{p.b2}</div>
           </div>
         ))}
       </div>
 
 
-      <div style={{ ...card, overflow: "hidden" }}>
-        <div style={sectionHead}>Info</div>
+      <div className="custom-card overflow-hidden">
+        <div className="cricket-scorecard-section-head">Info</div>
         {[
           { label: "Match", val: `${match.team2Name.split(" ").pop()} vs ${match.team1Name.split(" ").pop()} “ ${match.competitionName}` },
           { label: "Series", val: match.competitionName },
@@ -2269,11 +1960,10 @@ function ScorecardTab({ match }: { match: any }) {
         ].map((row, i) => (
           <div
             key={i}
-            className="d-flex px-3 py-2"
-            style={{ borderBottom: rowBorder, fontSize: "13px", gap: "16px" }}
+            className="d-flex px-3 py-2 fs-13 gap-16px"
           >
-            <div style={{ color: mutedGray, fontWeight: 600, minWidth: "80px" }}>{row.label}</div>
-            <div style={{ color: "#cbd5e1" }}>{row.val}</div>
+            <div className="text-muted-gray fw-600 min-w-80px">{row.label}</div>
+            <div className="text-cbd5e1">{row.val}</div>
           </div>
         ))}
       </div>

@@ -41,7 +41,7 @@ export default function AFLNews() {
               <p className="text-muted small mb-3 lh-sm">
                 {item.description}
               </p>
-              <div className="text-muted mt-auto" style={{ fontSize: "11px" }}>
+              <div className="text-muted mt-auto fs-11">
                 {item.date}
               </div>
             </div>

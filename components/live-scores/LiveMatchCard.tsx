@@ -34,33 +34,19 @@ export default function LiveMatchCard({ match }: LiveMatchCardProps) {
 
   return (
     <div
-      className="card bg-card border border-dark rounded-3 mb-4 p-4 position-relative overflow-hidden"
-      style={{
-        transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.borderColor = "var(--accent-green)";
-        e.currentTarget.style.transform = "translateY(-3px)";
-        e.currentTarget.style.boxShadow = "0 12px 30px rgba(57, 255, 20, 0.05)";
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.borderColor = "var(--border-dark)";
-        e.currentTarget.style.transform = "none";
-        e.currentTarget.style.boxShadow = "none";
-      }}
+      className="card bg-card border border-dark rounded-3 mb-4 p-4 position-relative overflow-hidden live-match-card"
     >
       {/* Top Section: Competition & Sport Tag */}
       <div className="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom border-secondary border-opacity-10">
         <div className="d-flex align-items-center gap-2">
           <span
-            className="d-flex align-items-center justify-content-center text-success bg-success bg-opacity-10 rounded-circle"
-            style={{ width: "24px", height: "24px" }}
+            className="d-flex align-items-center justify-content-center text-success bg-success bg-opacity-10 rounded-circle w-24px h-24px"
           >
-            <i className={`bi ${getSportIcon(match.sport)}`} style={{ fontSize: "12px" }}></i>
+            <i className={`bi ${getSportIcon(match.sport)} fs-12`}></i>
           </span>
           <span className="fw-semibold text-light small uppercase">{match.competitionName}</span>
         </div>
-        <div className="d-flex align-items-center gap-2 text-muted" style={{ fontSize: "11px" }}>
+        <div className="d-flex align-items-center gap-2 text-muted fs-11">
           <i className="bi bi-clock-history"></i>
           <span>Updated {match.lastUpdated}</span>
         </div>
@@ -76,60 +62,56 @@ export default function LiveMatchCard({ match }: LiveMatchCardProps) {
         {/* Teams List (Column Left) */}
         <div className="col-12 col-md-8 d-flex flex-column gap-3">
           {/* Team 1 */}
-          <div className="d-flex align-items-center justify-content-between gap-2">
-            <div className="d-flex align-items-center gap-3 overflow-hidden">
+          <div className="d-flex align-items-center justify-content-between gap-2 w-100">
+            <div className="d-flex align-items-center gap-2 overflow-hidden min-w-0 flex-grow-1">
               <div
-                className="d-flex align-items-center justify-content-center bg-dark rounded p-1 border border-secondary border-opacity-10 flex-shrink-0"
-                style={{ width: "32px", height: "32px", position: "relative" }}
+                className="d-flex align-items-center justify-content-center bg-dark rounded p-1 border border-secondary border-opacity-10 flex-shrink-0 w-32px h-32px position-relative"
               >
                 <Image
                   src={match.team1Logo}
                   alt={match.team1Name}
                   width={24}
-                  height={24}
-                  style={{ objectFit: "contain" }}
+                  height={24} className="object-fit-contain"
                 />
               </div>
-              <span className="fw-semibold text-white text-truncate">{match.team1Name}</span>
+              <span className="fw-semibold text-white text-truncate flex-grow-1">{match.team1Name}</span>
               {match.team1Overs && (
-                <span className="text-muted small text-nowrap">({match.team1Overs} ov)</span>
+                <span className="text-muted small text-nowrap flex-shrink-0">({match.team1Overs} ov)</span>
               )}
             </div>
-            <div className="fs-5 fw-bold text-success font-monospace">{match.team1Score}</div>
+            <div className="fs-5 fw-bold text-success font-monospace flex-shrink-0 ps-2">{match.team1Score}</div>
           </div>
 
           {/* Team 2 */}
-          <div className="d-flex align-items-center justify-content-between gap-2">
-            <div className="d-flex align-items-center gap-3 overflow-hidden">
+          <div className="d-flex align-items-center justify-content-between gap-2 w-100">
+            <div className="d-flex align-items-center gap-2 overflow-hidden min-w-0 flex-grow-1">
               <div
-                className="d-flex align-items-center justify-content-center bg-dark rounded p-1 border border-secondary border-opacity-10 flex-shrink-0"
-                style={{ width: "32px", height: "32px", position: "relative" }}
+                className="d-flex align-items-center justify-content-center bg-dark rounded p-1 border border-secondary border-opacity-10 flex-shrink-0 w-32px h-32px position-relative"
               >
                 <Image
                   src={match.team2Logo}
                   alt={match.team2Name}
                   width={24}
-                  height={24}
-                  style={{ objectFit: "contain" }}
+                  height={24} className="object-fit-contain"
                 />
               </div>
-              <span className="fw-semibold text-white text-truncate">{match.team2Name}</span>
+              <span className="fw-semibold text-white text-truncate flex-grow-1">{match.team2Name}</span>
               {match.team2Overs && (
-                <span className="text-muted small text-nowrap">({match.team2Overs} ov)</span>
+                <span className="text-muted small text-nowrap flex-shrink-0">({match.team2Overs} ov)</span>
               )}
             </div>
-            <div className="fs-5 fw-bold text-success font-monospace">{match.team2Score}</div>
+            <div className="fs-5 fw-bold text-success font-monospace flex-shrink-0 ps-2">{match.team2Score}</div>
           </div>
         </div>
 
         {/* Status Box (Column Right on Desktop, wraps on Mobile) */}
         <div className="col-12 col-md-4 d-flex flex-row flex-md-column align-items-center justify-content-between justify-content-md-center gap-2 border-start-md ps-md-4">
           <div className="d-flex flex-column align-items-md-center">
-            <span className="text-muted d-none d-md-block mb-1" style={{ fontSize: "11px" }}>STATUS</span>
+            <span className="text-muted d-none d-md-block mb-1 fs-11">STATUS</span>
             <StatusBadge status={match.matchStatus} />
           </div>
           <div className="text-start text-md-center mt-2 mt-md-0 d-flex flex-row flex-md-column align-items-center gap-2">
-            <span className="text-muted d-none d-md-block mb-0.5" style={{ fontSize: "11px" }}>TIME</span>
+            <span className="text-muted d-none d-md-block mb-0.5 fs-11">TIME</span>
             <div className="small font-monospace text-light">{match.matchTime}</div>
           </div>
         </div>
@@ -145,14 +127,13 @@ export default function LiveMatchCard({ match }: LiveMatchCardProps) {
 
       {/* Bottom Metadata & Button */}
       <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3 pt-3 border-top border-secondary border-opacity-10">
-        <div className="d-flex align-items-center gap-2 text-muted" style={{ fontSize: "12px" }}>
+        <div className="d-flex align-items-center gap-2 text-muted fs-12">
           <i className="bi bi-geo-alt"></i>
-          <span className="text-truncate" style={{ maxWidth: "250px" }}>{match.venue}</span>
+          <span className="text-truncate max-w-250px">{match.venue}</span>
         </div>
         <Link
           href={`/live-scores/${match.id}`}
-          className="btn btn-outline-success btn-sm w-100 w-sm-auto px-4 py-2 fw-semibold text-uppercase"
-          style={{ fontSize: "12px", letterSpacing: "0.5px" }}
+          className="btn btn-outline-success btn-sm w-100 w-sm-auto px-4 py-2 fw-semibold text-uppercase fs-12 ls-05"
         >
           View Match Details
         </Link>

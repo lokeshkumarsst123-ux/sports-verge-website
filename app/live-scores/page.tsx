@@ -76,12 +76,11 @@ export default function LiveScoresPage() {
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
           <div>
             <h1
-              className="fw-bold text-white mb-2"
-              style={{ fontFamily: "var(--font-space-grotesk)", letterSpacing: "-0.5px" }}
+              className="fw-bold text-white mb-2 font-space-grotesk ls-minus-05"
             >
               Live <span className="text-success">Scores</span>
             </h1>
-            <p className="text-muted mb-0 fs-6">Real-time scores from all supported sports.</p>
+            <p className="text-muted mb-0 fs-14">Real-time scores from all supported sports.</p>
           </div>
 
           {/* Interactive Simulation Controls */}
@@ -98,30 +97,21 @@ export default function LiveScoresPage() {
               {/* Search Bar Row */}
               <div className="w-100">
                 <div
-                  className={`input-group rounded-3 overflow-hidden bg-dark border ${
-                    isSearchFocused ? "border-success" : "border-secondary border-opacity-25"
+                  className={`input-group rounded-3 overflow-hidden bg-dark border search-box-wrapper ${
+                    isSearchFocused ? "border-success focused" : "border-secondary border-opacity-25"
                   }`}
-                  style={{
-                    transition: "all 0.2s ease",
-                    boxShadow: isSearchFocused ? "0 0 0 0.25rem rgba(26, 140, 61, 0.15)" : "none",
-                  }}
                 >
                   <span className="input-group-text bg-transparent border-0 text-muted pe-1">
                     <i className="bi bi-search"></i>
                   </span>
                   <input
                     type="text"
-                    className="form-control bg-transparent border-0 text-light ps-2 py-2"
+                    className="form-control bg-transparent border-0 text-light ps-2 py-2 search-input"
                     placeholder="Search teams, leagues, venues..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onFocus={() => setIsSearchFocused(true)}
                     onBlur={() => setIsSearchFocused(false)}
-                    style={{
-                      fontSize: "14px",
-                      boxShadow: "none",
-                      outline: "none",
-                    }}
                   />
                   {searchQuery !== "" && (
                     <button
@@ -146,23 +136,20 @@ export default function LiveScoresPage() {
             <LoadingSkeleton />
           ) : error ? (
             <div
-              className="card bg-card border border-danger border-opacity-30 rounded-3 p-5 text-center d-flex flex-column align-items-center justify-content-center my-4"
-              style={{ minHeight: "320px" }}
+              className="card bg-card border border-danger border-opacity-30 rounded-3 p-5 text-center d-flex flex-column align-items-center justify-content-center my-4 min-h-320px"
             >
               <div
-                className="d-flex align-items-center justify-content-center text-danger bg-danger bg-opacity-10 rounded-circle mb-4"
-                style={{ width: "64px", height: "64px" }}
+                className="d-flex align-items-center justify-content-center text-danger bg-danger bg-opacity-10 rounded-circle mb-4 w-64px h-64px"
               >
-                <i className="bi bi-cloud-slash text-danger" style={{ fontSize: "28px" }}></i>
+                <i className="bi bi-cloud-slash text-danger fs-28"></i>
               </div>
               <h5 className="text-white fw-bold mb-2">Sync Error</h5>
-              <p className="text-muted mb-4 mx-auto" style={{ maxWidth: "420px", fontSize: "14px", lineHeight: "1.6" }}>
+              <p className="text-muted mb-4 mx-auto max-w-420px fs-14 lh-1-6">
                 {error}
               </p>
               <button
-                className="btn btn-danger px-4 py-2 fw-semibold text-uppercase"
+                className="btn btn-danger px-4 py-2 fw-semibold text-uppercase fs-13 ls-05"
                 onClick={loadData}
-                style={{ fontSize: "13px", letterSpacing: "0.5px" }}
               >
                 Retry Sync
               </button>

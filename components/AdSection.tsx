@@ -12,8 +12,7 @@ export default function AdSection() {
           alt="Advertisement Background"
           fill
           sizes="(max-width: 991px) 100vw, 320px"
-          style={{ objectFit: "cover" }}
-          className="ad-bg-img"
+          className="object-fit-cover ad-bg-img"
         />
       </Link>
     </aside>

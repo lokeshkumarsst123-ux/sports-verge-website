@@ -122,8 +122,7 @@ export default function Standings() {
             <ul
               ref={fbScrollRef}
               onScroll={checkFbScroll}
-              className="nav nav-tabs border-0 flex-nowrap gap-1 overflow-x-auto px-3"
-              style={{ scrollbarWidth: "none" }}
+              className="nav nav-tabs border-0 flex-nowrap gap-1 overflow-x-auto px-3 scrollbar-none"
             >
               <li className="nav-item">
                 <button
@@ -180,7 +179,7 @@ export default function Standings() {
 
           <div className="tab-content">
             {activeFootballTab === "pl" ? (
-              <div className="table-responsive text-light" style={{ scrollbarWidth: "none" }}>
+              <div className="table-responsive text-light scrollbar-none">
                 <table
                   className="table table-dark table-borderless align-middle m-0 standings-table"
                   style={{ "--bs-table-bg": "transparent" } as React.CSSProperties}
@@ -197,7 +196,7 @@ export default function Standings() {
                       <th scope="col" className="text-end" style={{ width: "13%" }}>Pts</th>
                     </tr>
                   </thead>
-                  <tbody style={{ fontSize: "13px" }}>
+                  <tbody className="fs-13">
                     {footballPLData.map((row: StandingFootballRow, idx: number) => (
                       <tr key={idx}>
                         <td className="fw-semibold text-muted">{row.rank}</td>
@@ -243,8 +242,7 @@ export default function Standings() {
             <ul
               ref={crScrollRef}
               onScroll={checkCrScroll}
-              className="nav nav-tabs border-0 flex-nowrap gap-1 overflow-x-auto px-3"
-              style={{ scrollbarWidth: "none" }}
+              className="nav nav-tabs border-0 flex-nowrap gap-1 overflow-x-auto px-3 scrollbar-none"
             >
               <li className="nav-item">
                 <button
@@ -285,7 +283,7 @@ export default function Standings() {
 
           <div className="tab-content">
             {activeCricketTab === "ipl" ? (
-              <div className="table-responsive text-light" style={{ scrollbarWidth: "none" }}>
+              <div className="table-responsive text-light scrollbar-none">
                 <table
                   className="table table-dark table-borderless align-middle m-0 standings-table"
                   style={{ "--bs-table-bg": "transparent" } as React.CSSProperties}
@@ -302,7 +300,7 @@ export default function Standings() {
                       <th scope="col" className="text-end" style={{ width: "13%" }}>Pts</th>
                     </tr>
                   </thead>
-                  <tbody style={{ fontSize: "13px" }}>
+                  <tbody className="fs-13">
                     {cricketIPLData.map((row: StandingCricketRow, idx: number) => (
                       <tr key={idx}>
                         <td className="fw-semibold text-muted">{row.rank}</td>
@@ -340,8 +338,7 @@ export default function Standings() {
 
       <Link
         href="#"
-        className="btn btn-outline-success w-100 mt-3 p-2 rounded-3 text-capitalize fw-medium"
-        style={{ fontSize: "13px" }}
+        className="btn btn-outline-success w-100 mt-3 p-2 rounded-3 text-capitalize fw-medium fs-13"
       >
         All Standings
       </Link>

@@ -54,12 +54,12 @@ export default function UpcomingFixtures() {
         <h2 className="h5 m-0 fw-semibold border-start border-success border-3 ps-2">
           Upcoming Fixtures
         </h2>
-        <Link href="/live-scores" className="text-success text-decoration-none small">
-          View All
+        <Link href="/live-scores" className="text-success text-decoration-none small fw-semibold d-inline-flex align-items-center gap-1 hover-opacity">
+          View All <i className="bi bi-chevron-right fs-08em"></i>
         </Link>
       </div>
 
-      <ul className="nav nav-pills custom-tabs mb-4">
+      <ul className="nav nav-pills custom-tabs mb-4 flex-nowrap gap-2">
         {(["all", "cricket", "football", "NFL", "AFL"] as const).map((tab) => (
           <li className="nav-item" key={tab}>
             <button
@@ -130,7 +130,7 @@ export default function UpcomingFixtures() {
                 <div className="text-center">
                   <div className="small text-light">{match.day}</div>
                   <div className="fw-bold text-light">{match.time}</div>
-                  <div className="text-muted" style={{ fontSize: 11 }}>
+                  <div className="text-muted fs-11">
                     {match.venue}
                   </div>
                 </div>

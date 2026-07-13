@@ -106,7 +106,7 @@ export default function LiveScores() {
                   )}
 
                   {match.venue && (
-                    <div className="text-muted mt-2" style={{ fontSize: "11px" }}>
+                    <div className="text-muted mt-2 fs-11">
                       {match.venue}
                     </div>
                   )}
@@ -118,8 +118,7 @@ export default function LiveScores() {
 
             <Link
               href="/live-scores"
-              className="btn btn-outline-success w-100 mt-2 p-3 rounded-3 text-uppercase fw-medium"
-              style={{ fontSize: "13px" }}
+              className="btn btn-outline-success w-100 mt-2 p-3 rounded-3 text-uppercase fw-medium fs-13"
             >
               View All Live Scores
             </Link>

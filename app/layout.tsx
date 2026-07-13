@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Preloader from "@/components/Preloader";
+import ThemeProvider from "@/components/ThemeProvider";
 import Script from "next/script";
 
 const outfit = Outfit({
@@ -30,7 +31,7 @@ export const metadata: Metadata = {
   keywords: "sports analytics, real-time sports, live sports statistics, sports verge",
   authors: [{ name: "SportsVerge Team" }],
   icons: {
-    icon: "/assets/imgs/favicon.png",
+    icon: "/assets/imgs/favicon.svg",
   },
 };
 
@@ -42,7 +43,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${outfit.variable} ${spaceGrotesk.variable} ${inter.variable}`}>
       <head>
-        <link rel="icon" href="/assets/imgs/favicon.png" type="image/png" />
+        <link rel="icon" href="/assets/imgs/favicon.svg" type="image/png" />
 
         {/* Lower precedence for external libraries */}
         <link
@@ -70,10 +71,12 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <Preloader />
-        <Header />
-        {children}
-        <Footer />
+        <ThemeProvider>
+          <Preloader />
+          <Header />
+          {children}
+          <Footer />
+        </ThemeProvider>
         <Script
           src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
           strategy="afterInteractive"

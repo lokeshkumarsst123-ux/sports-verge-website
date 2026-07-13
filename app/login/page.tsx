@@ -76,7 +76,7 @@ export default function LoginPage() {
           verified: true,
         };
         sessionStorage.setItem("user_session", JSON.stringify(sessionUser));
-        router.push("/dashboard");
+        router.push("/profile");
       }
     }, 1200);
   };
@@ -94,36 +94,18 @@ export default function LoginPage() {
 
   return (
     <main
-      className="min-vh-100 d-flex align-items-center justify-content-center py-5 px-3 position-relative overflow-hidden"
-      style={{
-        backgroundColor: "#070b12",
-      }}
+      className="min-vh-100 d-flex align-items-center justify-content-center py-5 px-3 position-relative overflow-hidden auth-main-bg"
+      
     >
       {/* Background Mesh Glows */}
       <div
-        className="position-absolute rounded-circle"
-        style={{
-          width: "400px",
-          height: "400px",
-          background: "radial-gradient(circle, rgba(57, 255, 20, 0.05) 0%, transparent 70%)",
-          top: "-100px",
-          left: "-100px",
-          zIndex: 1,
-        }}
+        className="position-absolute rounded-circle auth-glow-top-left"
       ></div>
       <div
-        className="position-absolute rounded-circle"
-        style={{
-          width: "450px",
-          height: "450px",
-          background: "radial-gradient(circle, rgba(26, 140, 61, 0.04) 0%, transparent 70%)",
-          bottom: "-150px",
-          right: "-150px",
-          zIndex: 1,
-        }}
+        className="position-absolute rounded-circle auth-glow-bottom-right"
       ></div>
 
-      <div className="w-100 position-relative" style={{ maxWidth: "460px", zIndex: 10 }}>
+      <div className="w-100 position-relative auth-card-wrapper">
         {/* Logo Header */}
         <div className="text-center mb-4">
           <Link href="/" className="d-inline-block">
@@ -140,7 +122,7 @@ export default function LoginPage() {
 
         {/* Card Body */}
         <div className="card bg-card border border-dark rounded-4 p-4 p-md-5 mb-4">
-          <h3 className="text-white fw-bold mb-1">Sign In</h3>
+          <h3 className="text-white fw-semibold mb-1">Sign In</h3>
           <p className="text-muted small mb-4">
             Enter your credentials to access your sports dashboard.
           </p>
@@ -157,14 +139,14 @@ export default function LoginPage() {
                 <i className={`bi ${resendOption ? "bi-envelope-exclamation" : "bi-shield-slash"}`}></i>
                 <span>{resendOption ? "Verification Required" : "Authentication Alert"}</span>
               </div>
-              <div className="text-muted text-opacity-80" style={{ fontSize: "12px", color: "inherit" }}>
+              <div className="text-muted text-opacity-80 fs-12 text-inherit">
                 {globalError}
               </div>
               {resendOption && (
                 <button
                   type="button"
                   onClick={() => alert("Simulated verification link resent to your inbox.")}
-                  className="btn btn-link text-warning text-decoration-none small p-0 fw-bold mt-1 align-baseline"
+                  className="btn btn-link text-warning text-decoration-none small p-0 fw-semibold mt-1 align-baseline"
                 >
                   Resend Verification Email
                 </button>
@@ -180,10 +162,10 @@ export default function LoginPage() {
                 name="email"
                 value={formData.email}
                 onChange={handleInputChange}
-                className={`form-control bg-dark text-white border-0 ${
+                className={`form-control bg-dark text-white fw-medium border-0 ${
                   errors.email ? "is-invalid" : ""
                 }`}
-                style={{ padding: "11px 16px", fontSize: "14px" }}
+                
                 placeholder="john@example.com"
               />
               {errors.email && (
@@ -196,8 +178,7 @@ export default function LoginPage() {
                 <label className="form-label text-muted small fw-medium m-0">PASSWORD</label>
                 <Link
                   href="/forgot-password"
-                  className="text-success text-decoration-none small"
-                  style={{ fontSize: "12px" }}
+                  className="text-success text-decoration-none small fs-12"
                 >
                   Forgot Password?
                 </Link>
@@ -208,10 +189,10 @@ export default function LoginPage() {
                   name="password"
                   value={formData.password}
                   onChange={handleInputChange}
-                  className={`form-control bg-dark text-white border-0 pe-5 ${
+                  className={`form-control bg-dark text-white fw-medium border-0 pe-5 ${
                     errors.password ? "is-invalid" : ""
                   }`}
-                  style={{ padding: "11px 16px", fontSize: "14px" }}
+                  
                   placeholder="••••••••"
                 />
                 <button
@@ -229,8 +210,8 @@ export default function LoginPage() {
 
             <button
               type="submit"
-              className="btn btn-signup w-100 fw-semibold text-uppercase py-2.5 mt-3"
-              style={{ letterSpacing: "0.5px" }}
+              className="btn btn-signup w-100 fw-semibold text-uppercase py-2.5 mt-3 ls-05"
+              
               disabled={loading}
             >
               {loading ? (
