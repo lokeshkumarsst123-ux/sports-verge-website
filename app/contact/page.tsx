@@ -167,7 +167,7 @@ export default function ContactPage() {
           {/* Left Column: Form Section */}
           <div className="col-lg-7">
             <div className="card border-0 rounded-3 p-4 contact-card">
-              <h4 className="text-white fw-bold mb-4 d-flex align-items-center gap-2">
+              <h4 className="text-white fw-normal mb-4 d-flex align-items-center gap-2">
                 <i className="bi bi-envelope-paper-fill text-success"></i>
                 Send Us a Message
               </h4>
@@ -178,9 +178,9 @@ export default function ContactPage() {
                     <i className="bi bi-check-circle-fill text-success fs-5"></i>
                     <span>{successMessage}</span>
                   </div>
-                  <button 
-                    type="button" 
-                    className="btn btn-sm btn-outline-success border-0 px-2 text-white" 
+                  <button
+                    type="button"
+                    className="btn btn-sm btn-outline-success border-0 px-2 text-white"
                     onClick={() => setShowEmailModal(true)}
                   >
                     View Email Receipt <i className="bi bi-eye ms-1"></i>
@@ -294,11 +294,11 @@ export default function ContactPage() {
           <div className="col-lg-5">
             {/* Quick Contact info */}
             <div className="card border-0 rounded-3 p-4 contact-card mb-4">
-              <h4 className="text-white fw-bold mb-4 d-flex align-items-center gap-2">
+              <h4 className="text-white fw-normal mb-4 d-flex align-items-center gap-2">
                 <i className="bi bi-info-circle-fill text-success"></i>
                 Support Center
               </h4>
-              
+
               <div className="d-flex flex-column gap-3">
                 <div className="d-flex align-items-start gap-3">
                   <div className="contact-info-icon bg-success bg-opacity-10 text-success rounded p-2.5 flex-shrink-0">
@@ -338,12 +338,12 @@ export default function ContactPage() {
             {/* Inquiries History Section */}
             <div className="card border-0 rounded-3 p-4 contact-card">
               <div className="d-flex justify-content-between align-items-center mb-4">
-                <h4 className="text-white fw-bold mb-0 d-flex align-items-center gap-2">
+                <h4 className="text-white fw-normal mb-0 d-flex align-items-center gap-2">
                   <i className="bi bi-clock-history text-success"></i>
                   Your Sent Inquiries
                 </h4>
                 {inquiries.length > 0 && (
-                  <button 
+                  <button
                     onClick={clearHistory}
                     className="btn btn-sm btn-outline-danger border-0 py-0.5 px-2 fs-11 fw-semibold"
                   >
@@ -371,7 +371,7 @@ export default function ContactPage() {
                       <p className="text-muted fs-11 text-truncate mb-2">{inq.message}</p>
                       <div className="d-flex justify-content-between align-items-center pt-2 border-top border-white-05">
                         <span className="text-muted text-xs">{inq.date}</span>
-                        <button 
+                        <button
                           onClick={() => {
                             setLastSubmittedInquiry(inq);
                             setShowEmailModal(true);
@@ -400,9 +400,9 @@ export default function ContactPage() {
                   <i className="bi bi-envelope-check-fill text-info"></i>
                   Simulated Confirmation Email
                 </h5>
-                <button 
-                  type="button" 
-                  className="btn-close btn-close-white" 
+                <button
+                  type="button"
+                  className="btn-close btn-close-white"
                   onClick={() => setShowEmailModal(false)}
                   aria-label="Close"
                 ></button>
@@ -450,9 +450,9 @@ export default function ContactPage() {
                 </div>
               </div>
               <div className="modal-footer border-top border-white-05 px-4 py-3">
-                <button 
-                  type="button" 
-                  className="btn btn-success fw-semibold px-4" 
+                <button
+                  type="button"
+                  className="btn btn-success fw-semibold px-4"
                   onClick={() => setShowEmailModal(false)}
                 >
                   Close Receipt
