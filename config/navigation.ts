@@ -28,10 +28,10 @@ export const mainMenuItems: MenuItem[] = [
     title: "Football",
     href: "#",
     children: [
-      { title: "Premier League", href: "/news?search=Premier%20League" },
-      { title: "La Liga", href: "/news?search=La%20Liga" },
-      { title: "Champions League", href: "/news?search=Champions%20League" },
-      { title: "Transfer Rumors", href: "/news?search=Transfer" },
+      { title: "Premier League", href: "/premier-league" },
+      { title: "La Liga", href: "/la-liga" },
+      { title: "Champions League", href: "/champions-league" },
+      { title: "Transfer Rumors", href: "/transfer-rumors" },
     ],
   },
   {
