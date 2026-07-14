@@ -48,19 +48,7 @@ export default function Hero() {
           {heroSlides.map((item: SlideItem, index: number) => (
             <div
               key={index}
-              className={`carousel-item ${index === activeIndex ? "active" : ""}`}
-              style={{
-                display: "block",
-                position: index === activeIndex ? "relative" : "absolute",
-                top: 0,
-                left: 0,
-                width: "100%",
-                height: "100%",
-                opacity: index === activeIndex ? 1 : 0,
-                pointerEvents: index === activeIndex ? "auto" : "none",
-                transition: "opacity 0.8s ease-in-out",
-                zIndex: index === activeIndex ? 1 : 0,
-              }}
+              className={`carousel-item custom-carousel-item ${index === activeIndex ? "active" : ""}`}
             >
               <Link href="#" className="d-block text-decoration-none">
                 <Image
@@ -68,8 +56,10 @@ export default function Hero() {
                   alt={item.title}
                   width={1200}
                   height={650}
-                  className="featured-img w-100"
+                  className="featured-img w-100 featured-img-cover"
                   priority={index === 0}
+                  fetchPriority={index === 0 ? "high" : "auto"}
+                  sizes="(max-width: 768px) 100vw, 1200px"
                 />
 
                 <div className="featured-overlay"></div>

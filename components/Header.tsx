@@ -3,13 +3,27 @@
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import NavigationMenu from "./NavigationMenu";
 
 export default function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [user, setUser] = useState<{ firstName: string; lastName: string; email: string } | null>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const searchWrapperRef = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
+  const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      setIsSearchOpen(false);
+      setSearchQuery("");
+    }
+  };
 
   useEffect(() => {
     if (isSearchOpen && searchInputRef.current) {
@@ -18,6 +32,19 @@ export default function Header() {
       }, 100);
     }
   }, [isSearchOpen]);
+
+  useEffect(() => {
+    const session = sessionStorage.getItem("user_session");
+    if (session) {
+      try {
+        setUser(JSON.parse(session));
+      } catch (e) {
+        // Handle invalid JSON
+      }
+    } else {
+      setUser(null);
+    }
+  }, [pathname]);
 
   useEffect(() => {
     const handleOutsideClick = (e: MouseEvent) => {
@@ -34,6 +61,10 @@ export default function Header() {
       document.removeEventListener("mousedown", handleOutsideClick);
     };
   }, [isSearchOpen]);
+
+  if (["/login", "/register", "/forgot-password"].includes(pathname)) {
+    return null;
+  }
 
   return (
     <header className="site-header sticky-top">
@@ -65,23 +96,26 @@ export default function Header() {
                   setIsSearchOpen(!isSearchOpen);
                 }}
               >
+                <span className="visually-hidden">Toggle search</span>
                 <i className={`bi ${isSearchOpen ? "bi-x-lg" : "bi-search"}`}></i>
               </Link>
 
               <div
-                className="search-dropdown"
+                className={`search-dropdown ${isSearchOpen ? "d-block" : "d-none"}`}
                 id="searchBox"
-                style={{ display: isSearchOpen ? "block" : "none" }}
               >
-                <form className="d-flex">
+                <form onSubmit={handleSearchSubmit} className="d-flex">
                   <input
                     ref={searchInputRef}
                     className="form-control search-input"
                     type="text"
                     placeholder="Search news, teams..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
                   />
 
                   <button className="btn btn-search" type="submit">
+                    <span className="visually-hidden">Submit search</span>
                     <i className="bi bi-search"></i>
                   </button>
                 </form>
@@ -89,10 +123,10 @@ export default function Header() {
             </div>
 
             <Link
-              href="#"
+              href="/notifications"
               className="control-icon text-white position-relative ms-3 ms-xl-4"
-              onClick={(e) => e.preventDefault()}
             >
+              <span className="visually-hidden">Notifications</span>
               <i className="bi bi-bell"></i>
 
               <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success notification-badge">
@@ -101,9 +135,23 @@ export default function Header() {
             </Link>
 
             <div className="d-none d-xl-flex align-items-center">
-              <Link href="/" className="btn btn-signup ms-4">
-                Login
-              </Link>
+              {user ? (
+                <Link href="/profile" className="d-flex align-items-center text-decoration-none ms-4">
+                  <div className="d-flex flex-column text-end me-3">
+                    <span className="text-white fw-semibold small lh-1-2">{user.firstName} {user.lastName}</span>
+                    <span className="text-success fs-11">{user.email}</span>
+                  </div>
+                  <div 
+                    className="rounded-circle d-flex align-items-center justify-content-center text-white shadow-sm header-user-avatar"
+                  >
+                    {user.firstName.charAt(0)}{user.lastName.charAt(0)}
+                  </div>
+                </Link>
+              ) : (
+                <Link href="/login" className="btn btn-signup ms-4">
+                  Login
+                </Link>
+              )}
             </div>
           </div>
 
@@ -116,6 +164,7 @@ export default function Header() {
             aria-controls="mainNav"
             aria-expanded={isMenuOpen}
           >
+            <span className="visually-hidden">Toggle navigation</span>
             <span className="navbar-toggler-icon"></span>
           </button>
 
@@ -125,9 +174,23 @@ export default function Header() {
             <NavigationMenu />
 
             <div className="d-xl-none d-flex flex-column mt-3 pb-3 border-top border-secondary pt-3">
-              <Link href="/" className="btn btn-signup w-100">
-                Login
-              </Link>
+              {user ? (
+                <Link href="/profile" className="d-flex align-items-center text-decoration-none px-3 py-3 bg-dark rounded-3 border border-secondary border-opacity-25">
+                  <div 
+                    className="rounded-circle d-flex align-items-center justify-content-center text-white me-3 shadow-sm header-user-avatar-mobile"
+                  >
+                    {user.firstName.charAt(0)}{user.lastName.charAt(0)}
+                  </div>
+                  <div className="d-flex flex-column">
+                    <span className="text-white fw-bold">{user.firstName} {user.lastName}</span>
+                    <span className="text-success small">{user.email}</span>
+                  </div>
+                </Link>
+              ) : (
+                <Link href="/login" className="btn btn-signup w-100">
+                  Login
+                </Link>
+              )}
             </div>
           </div>
         </div>

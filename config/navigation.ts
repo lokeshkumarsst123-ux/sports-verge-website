@@ -38,7 +38,7 @@ export const mainMenuItems: MenuItem[] = [
     title: "NFL",
     href: "#",
     children: [
-      { title: "Live Scores", href: "#" },
+      { title: "Live Scores", href: "/live-scores" },
       { title: "Draft News", href: "#" },
       { title: "Teams", href: "#" },
     ],
@@ -53,7 +53,7 @@ export const mainMenuItems: MenuItem[] = [
     ],
   },
   { title: "News", href: "#" },
-  { title: "Live Scores", href: "#" },
+  { title: "Live Scores", href: "/live-scores" },
   { title: "Fixtures", href: "#" },
   {
     title: "More",

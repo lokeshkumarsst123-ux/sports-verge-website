@@ -3,26 +3,26 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 export default function Footer() {
+  const pathname = usePathname();
+
+  if (["/login", "/register", "/forgot-password"].includes(pathname)) {
+    return null;
+  }
+
   return (
-    <footer
-      className="footer-section mt-5"
-      style={{
-        backgroundColor: "#050b14",
-        borderTop: "1px solid var(--border-dark)",
-      }}
-    >
+    <footer className="footer-section mt-5">
       <div className="container py-5">
         <div className="row gy-4 mb-5">
           {/* Logo and Description */}
           <div className="col-lg-3 pe-lg-4">
-            <div className="mb-3" style={{ position: "relative", width: "180px", height: "40px" }}>
+            <div className="mb-3 footer-logo-wrapper">
               <Image
                 src="/assets/imgs/logo-white.svg"
                 alt="The SportsVerge"
-                fill
-                style={{ objectFit: "contain" }}
+                fill className="object-fit-contain"
               />
             </div>
             <p className="text-muted small mb-4 lh-lg">
@@ -30,19 +30,19 @@ export default function Footer() {
             </p>
             <h6 className="footer-title text-white fw-semibold small mb-3">FOLLOW US</h6>
             <div className="d-flex gap-2">
-              <Link href="#" className="social-icon">
+              <Link href="#" className="social-icon" aria-label="Facebook">
                 <i className="bi bi-facebook"></i>
               </Link>
-              <Link href="#" className="social-icon">
+              <Link href="#" className="social-icon" aria-label="X (formerly Twitter)">
                 <i className="bi bi-twitter-x"></i>
               </Link>
-              <Link href="#" className="social-icon">
+              <Link href="#" className="social-icon" aria-label="Instagram">
                 <i className="bi bi-instagram"></i>
               </Link>
-              <Link href="#" className="social-icon">
+              <Link href="#" className="social-icon" aria-label="YouTube">
                 <i className="bi bi-youtube"></i>
               </Link>
-              <Link href="#" className="social-icon">
+              <Link href="#" className="social-icon" aria-label="Discord">
                 <i className="bi bi-discord"></i>
               </Link>
             </div>
@@ -165,12 +165,11 @@ export default function Footer() {
                 </span>
                 <input
                   type="email"
-                  className="form-control bg-dark py-2 border-0 text-light border-start-0 ps-2"
+                  className="form-control bg-dark py-2 border-0 text-light border-start-0 ps-2 fs-13"
                   placeholder="Enter your email address"
                   required
-                  style={{ fontSize: "13px" }}
                 />
-                <button className="btn btn-success fw-medium px-3" type="submit" style={{ fontSize: "13px" }}>
+                <button className="btn btn-success fw-medium px-3 fs-13" type="submit">
                   Subscribe
                 </button>
               </div>
@@ -180,8 +179,7 @@ export default function Footer() {
 
         {/* Feature Icons Row */}
         <div
-          className="row row-cols-1 row-cols-sm-2 row-cols-md-4 gy-4 border-bottom border-secondary pb-4 mb-4"
-          style={{ "--bs-border-opacity": ".2" } as React.CSSProperties}
+          className="row row-cols-1 row-cols-sm-2 row-cols-md-4 gy-4 border-bottom border-secondary-20 pb-4 mb-4"
         >
           <div className="col">
             <div className="d-flex align-items-center gap-3">
@@ -190,7 +188,7 @@ export default function Footer() {
               </div>
               <div>
                 <div className="text-light fw-semibold small lh-1 mb-1">Real-time Scores</div>
-                <div className="text-muted" style={{ fontSize: "11px" }}>
+                <div className="text-muted fs-11">
                   Lightning fast updates
                 </div>
               </div>
@@ -204,7 +202,7 @@ export default function Footer() {
               </div>
               <div>
                 <div className="text-light fw-semibold small lh-1 mb-1">Stats & Insights</div>
-                <div className="text-muted" style={{ fontSize: "11px" }}>
+                <div className="text-muted fs-11">
                   Detailed sports statistics
                 </div>
               </div>
@@ -218,7 +216,7 @@ export default function Footer() {
               </div>
               <div>
                 <div className="text-light fw-semibold small lh-1 mb-1">In-depth Coverage</div>
-                <div className="text-muted" style={{ fontSize: "11px" }}>
+                <div className="text-muted fs-11">
                   News, analysis & more
                 </div>
               </div>
@@ -232,7 +230,7 @@ export default function Footer() {
               </div>
               <div>
                 <div className="text-light fw-semibold small lh-1 mb-1">Personalized</div>
-                <div className="text-muted" style={{ fontSize: "11px" }}>
+                <div className="text-muted fs-11">
                   Tailored to your favorites
                 </div>
               </div>

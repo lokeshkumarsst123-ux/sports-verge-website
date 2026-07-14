@@ -9,6 +9,13 @@ import { liveScoresData } from "@/data/mockData";
 export default function LiveScores() {
   const [activeTab, setActiveTab] = useState<"all" | "cricket" | "football" | "NFL" | "AFL">("all");
 
+  const getMatchLink = (match: LiveScoreMatch) => {
+    if (match.id) return `/live-scores/${match.id}`;
+    if (match.sport === "football") return "/live-scores/match-2";
+    if (match.sport === "NFL") return "/live-scores/match-3";
+    return "/live-scores/match-1";
+  };
+
   const filteredMatches = activeTab === "all"
     ? liveScoresData
     : liveScoresData.filter((match) => match.sport === activeTab);
@@ -16,8 +23,8 @@ export default function LiveScores() {
   return (
     <aside className="live-scores-section bg-card rounded-3 py-4 px-3 border border-dark">
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h5 className="m-0 fw-semibold">Live Scores</h5>
-        <Link href="#" className="text-success text-decoration-none small fw-medium">
+        <h2 className="h5 m-0 fw-semibold">Live Scores</h2>
+        <Link href="/live-scores" className="text-success text-decoration-none small fw-medium">
           View All
         </Link>
       </div>
@@ -44,7 +51,7 @@ export default function LiveScores() {
               filteredMatches.map((match: LiveScoreMatch, idx: number) => (
                 <Link
                   key={idx}
-                  href="#"
+                  href={getMatchLink(match)}
                   className="score-box d-block text-decoration-none rounded-3 p-3 mb-3 border border-dark"
                 >
                   <div className="d-flex justify-content-between align-items-center mb-2">
@@ -99,7 +106,7 @@ export default function LiveScores() {
                   )}
 
                   {match.venue && (
-                    <div className="text-muted mt-2" style={{ fontSize: "11px" }}>
+                    <div className="text-muted mt-2 fs-11">
                       {match.venue}
                     </div>
                   )}
@@ -110,9 +117,8 @@ export default function LiveScores() {
             )}
 
             <Link
-              href="#"
-              className="btn btn-outline-success w-100 mt-2 p-3 rounded-3 text-uppercase fw-medium"
-              style={{ fontSize: "13px" }}
+              href="/live-scores"
+              className="btn btn-outline-success w-100 mt-2 p-3 rounded-3 text-uppercase fw-medium fs-13"
             >
               View All Live Scores
             </Link>

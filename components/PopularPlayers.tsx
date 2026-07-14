@@ -44,9 +44,9 @@ export default function PopularPlayers() {
   return (
     <section className="popular-players bg-card rounded-3 p-4 border border-dark mt-4">
       <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
-        <h5 className="m-0 fw-semibold border-start border-success border-3 ps-2">
+        <h2 className="h5 m-0 fw-semibold border-start border-success border-3 ps-2">
           Popular Players
-        </h5>
+        </h2>
         <Link href="#" className="text-success text-decoration-none small fw-medium">
           View All
         </Link>
@@ -100,14 +100,12 @@ export default function PopularPlayers() {
 
                 <div className="player-info p-2">
                   <div
-                    className="fw-semibold text-light text-truncate"
-                    style={{ fontSize: 13 }}
+                    className="fw-semibold text-light text-truncate fs-13"
                   >
                     {player.name}
                   </div>
                   <div
-                    className="text-muted text-truncate"
-                    style={{ fontSize: 11 }}
+                    className="text-muted text-truncate fs-11"
                   >
                     {player.team}
                   </div>
