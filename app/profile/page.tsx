@@ -643,7 +643,7 @@ export default function ProfileDashboard() {
                       {userFixtures.map((match: FixtureItem, idx: number) => (
                         <div key={idx} className="col-md-6 col-lg-4">
                           <Link href={getMatchLink(match)} className="text-decoration-none">
-                            <div className="fixture-card h-100 rounded-3 border border-dark p-3 d-flex flex-column justify-content-between hover-bg-dark transition-all">
+                            <div className="fixture-card fixture-card-grid h-100 rounded-3 border border-dark p-3 d-flex flex-column justify-content-between hover-bg-dark transition-all">
                               <div>
                                 <div className="d-flex justify-content-between align-items-center mb-3">
                                   <span className="badge bg-dark text-muted fs-10 px-2 py-1 text-truncate" style={{ maxWidth: "150px" }}>
@@ -654,14 +654,18 @@ export default function ProfileDashboard() {
                                   </span>
                                 </div>
                                 <div className="d-flex justify-content-between align-items-center mb-3 px-1">
-                                  <div className="d-flex align-items-center gap-2">
-                                    <Image src={match.homeLogo} width={20} height={20} alt={match.home} />
-                                    <span className={`text-light small ${isFavoriteTeam(match.home) ? "fw-bold text-warning" : ""}`}>{match.home}</span>
+                                  <div className="d-flex align-items-center gap-2 text-truncate" style={{ maxWidth: "42%" }}>
+                                    <div className="flex-shrink-0">
+                                      <Image src={match.homeLogo} width={20} height={20} alt={match.home} />
+                                    </div>
+                                    <span className={`text-light small text-truncate ${isFavoriteTeam(match.home) ? "fw-bold text-warning" : ""}`}>{match.home}</span>
                                   </div>
-                                  <span className="text-muted small">vs</span>
-                                  <div className="d-flex align-items-center gap-2">
-                                    <span className={`text-light small ${isFavoriteTeam(match.away) ? "fw-bold text-warning" : ""}`}>{match.away}</span>
-                                    <Image src={match.awayLogo} width={20} height={20} alt={match.away} />
+                                  <span className="text-muted small px-1 flex-shrink-0">vs</span>
+                                  <div className="d-flex align-items-center gap-2 text-truncate justify-content-end" style={{ maxWidth: "42%" }}>
+                                    <span className={`text-light small text-truncate ${isFavoriteTeam(match.away) ? "fw-bold text-warning" : ""}`}>{match.away}</span>
+                                    <div className="flex-shrink-0">
+                                      <Image src={match.awayLogo} width={20} height={20} alt={match.away} />
+                                    </div>
                                   </div>
                                 </div>
                               </div>
@@ -691,7 +695,7 @@ export default function ProfileDashboard() {
                       {userResults.map((item: ResultItem, idx: number) => (
                         <div key={idx} className="col-md-6 col-lg-4">
                           <Link href={getMatchLink(item)} className="text-decoration-none">
-                            <div className="fixture-card h-100 rounded-3 border border-dark p-3 d-flex flex-column justify-content-between hover-bg-dark transition-all">
+                            <div className="fixture-card fixture-card-grid h-100 rounded-3 border border-dark p-3 d-flex flex-column justify-content-between hover-bg-dark transition-all">
                               <div>
                                 <div className="d-flex justify-content-between align-items-center mb-3">
                                   <span className="badge bg-dark text-muted fs-10 px-2 py-1 text-truncate" style={{ maxWidth: "150px" }}>
@@ -705,30 +709,38 @@ export default function ProfileDashboard() {
                                 {item.type === "cricket" ? (
                                   <div className="d-flex flex-column gap-2 mb-2">
                                     <div className="d-flex justify-content-between align-items-center">
-                                      <div className="d-flex align-items-center gap-2">
-                                        <Image src={item.homeLogo} width={18} height={18} alt={item.home} />
-                                        <span className={`text-light small ${isFavoriteTeam(item.home) ? "fw-bold text-warning" : ""}`}>{item.home}</span>
+                                      <div className="d-flex align-items-center gap-2 text-truncate" style={{ maxWidth: "75%" }}>
+                                        <div className="flex-shrink-0">
+                                          <Image src={item.homeLogo} width={18} height={18} alt={item.home} />
+                                        </div>
+                                        <span className={`text-light small text-truncate ${isFavoriteTeam(item.home) ? "fw-bold text-warning" : ""}`}>{item.home}</span>
                                       </div>
-                                      <span className="text-white small fw-bold">{item.homeScore}</span>
+                                      <span className="text-white small fw-bold flex-shrink-0">{item.homeScore}</span>
                                     </div>
                                     <div className="d-flex justify-content-between align-items-center">
-                                      <div className="d-flex align-items-center gap-2">
-                                        <Image src={item.awayLogo} width={18} height={18} alt={item.away} />
-                                        <span className={`text-light small ${isFavoriteTeam(item.away) ? "fw-bold text-warning" : ""}`}>{item.away}</span>
+                                      <div className="d-flex align-items-center gap-2 text-truncate" style={{ maxWidth: "75%" }}>
+                                        <div className="flex-shrink-0">
+                                          <Image src={item.awayLogo} width={18} height={18} alt={item.away} />
+                                        </div>
+                                        <span className={`text-light small text-truncate ${isFavoriteTeam(item.away) ? "fw-bold text-warning" : ""}`}>{item.away}</span>
                                       </div>
-                                      <span className="text-white small fw-bold">{item.awayScore}</span>
+                                      <span className="text-white small fw-bold flex-shrink-0">{item.awayScore}</span>
                                     </div>
                                   </div>
                                 ) : (
                                   <div className="d-flex justify-content-between align-items-center mb-3 px-1">
-                                    <div className="d-flex align-items-center gap-2">
-                                      <Image src={item.homeLogo} width={18} height={18} alt={item.home} />
-                                      <span className={`text-light small ${isFavoriteTeam(item.home) ? "fw-bold text-warning" : ""}`}>{item.home}</span>
+                                    <div className="d-flex align-items-center gap-2 text-truncate" style={{ maxWidth: "42%" }}>
+                                      <div className="flex-shrink-0">
+                                        <Image src={item.homeLogo} width={18} height={18} alt={item.home} />
+                                      </div>
+                                      <span className={`text-light small text-truncate ${isFavoriteTeam(item.home) ? "fw-bold text-warning" : ""}`}>{item.home}</span>
                                     </div>
-                                    <span className="text-success small fw-bold fs-14">{item.score}</span>
-                                    <div className="d-flex align-items-center gap-2">
-                                      <span className={`text-light small ${isFavoriteTeam(item.away) ? "fw-bold text-warning" : ""}`}>{item.away}</span>
-                                      <Image src={item.awayLogo} width={18} height={18} alt={item.away} />
+                                    <span className="text-success small fw-bold fs-14 px-1 flex-shrink-0">{item.score}</span>
+                                    <div className="d-flex align-items-center gap-2 text-truncate justify-content-end" style={{ maxWidth: "42%" }}>
+                                      <span className={`text-light small text-truncate ${isFavoriteTeam(item.away) ? "fw-bold text-warning" : ""}`}>{item.away}</span>
+                                      <div className="flex-shrink-0">
+                                        <Image src={item.awayLogo} width={18} height={18} alt={item.away} />
+                                      </div>
                                     </div>
                                   </div>
                                 )}
