@@ -8,6 +8,7 @@ import { LiveScoreMatchDetail } from "@/types";
 import StatusBadge from "@/components/live-scores/StatusBadge";
 import NFLMatchDetail from "@/components/live-scores/NFLMatchDetail";
 import AFLMatchDetail from "@/components/live-scores/AFLMatchDetail";
+import { useAds } from "@/components/AdContext";
 
 const getWidthStyle = (w: number | string | undefined) => ({ width: `${w}%` });
 
@@ -46,6 +47,8 @@ export default function MatchDetailPage() {
   const [loading, setLoading] = useState(true);
   const [activeSubTab, setActiveSubTab] = useState<"overview" | "scorecard" | "stats" | "lineups" | "timeline" | "commentary">("overview");
   const [showAllCommentary, setShowAllCommentary] = useState(false);
+  const { getAdByType } = useAds();
+  const [matchAd, setMatchAd] = useState<any>(null);
 
   useEffect(() => {
     const foundMatch = liveScoresDetailData.find((m) => m.id === id);
@@ -53,7 +56,10 @@ export default function MatchDetailPage() {
       setMatch(foundMatch);
     }
     setLoading(false);
-  }, [id]);
+    if (getAdByType) {
+      setMatchAd(getAdByType("Match Page Advertisement"));
+    }
+  }, [id, getAdByType]);
 
   if (loading) {
     return (
@@ -432,6 +438,23 @@ export default function MatchDetailPage() {
             )}
           </div>
         </div>
+
+        {/* Dynamic Match Page Advertisement */}
+        {matchAd && (
+          <aside className="ad-section rounded-3 border border-dark overflow-hidden mb-4 position-relative d-flex align-items-end" style={{ minHeight: "140px" }}>
+            <a href={matchAd.redirectUrl} target="_blank" rel="noopener noreferrer" className="w-100 h-100 d-block position-relative" style={{ minHeight: "140px" }}>
+              <img
+                src={matchAd.image}
+                alt={matchAd.title}
+                className="w-100 h-100 object-fit-cover ad-bg-img"
+                style={{ position: "absolute", inset: 0 }}
+              />
+            </a>
+            <span className="position-absolute top-0 end-0 badge bg-dark text-muted font-monospace fs-10 border border-secondary border-opacity-10 m-2 z-1">
+              SPONSOR
+            </span>
+          </aside>
+        )}
 
         {match.sport === "NFL" ? (
           <NFLMatchDetail match={match} />

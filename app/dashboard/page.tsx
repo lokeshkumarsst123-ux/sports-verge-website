@@ -45,7 +45,7 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <main className="min-vh-100 d-flex align-items-center justify-content-center bg-dark text-white">
+      <main className="min-vh-100 d-flex align-items-center justify-content-center text-white" style={{ background: "var(--bg-dark)" }}>
         <div className="spinner-border text-success" role="status">
           <span className="visually-hidden">Loading...</span>
         </div>
@@ -56,7 +56,7 @@ export default function DashboardPage() {
   if (!user) return null;
 
   return (
-    <main className="min-vh-100 py-5">
+    <main className="min-vh-100 py-5" style={{ background: "var(--bg-dark)", color: "var(--text-light)" }}>
       <div className="container custom-container">
         {/* Upper Breadcrumb/Header */}
         <div className="d-flex justify-content-between align-items-center mb-5 pb-3 border-bottom border-secondary border-opacity-10">

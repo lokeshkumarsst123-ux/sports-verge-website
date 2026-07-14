@@ -12,6 +12,7 @@ import {
   popularTeamsData,
   liveScoresDetailData
 } from "@/data/mockData";
+import { newsArticles } from "@/data/newsData";
 
 // ─── Data Extraction & Indexing ─────────────────────────────────────────────
 
@@ -338,39 +339,48 @@ function SearchContent() {
                   News Articles
                 </h4>
                 <div className="row g-4">
-                  {results.news.map((item, idx) => (
-                    <div key={idx} className="col-md-6">
-                      <div className="card bg-card border border-dark rounded-3 h-100 overflow-hidden transition-all hover-glow">
-                        <div className="row g-0 h-100">
-                          {item.image && (
-                            <div className="col-sm-4 position-relative min-h-120px bg-dark">
-                              <img
-                                src={item.image}
-                                alt=""
-                                className="w-100 h-100 object-fit-cover position-absolute"
-                              />
-                            </div>
-                          )}
-                          <div className={item.image ? "col-sm-8" : "col-12"}>
-                            <div className="card-body p-4 d-flex flex-column h-100">
-                              <div className="d-flex justify-content-between align-items-center mb-2">
-                                <span className="badge-sport-tag">
-                                  {item.category}
-                                </span>
-                                <span className="text-muted fs-11">{item.date}</span>
+                  {results.news.map((item, idx) => {
+                    const matchingArticle = newsArticles.find(
+                      (a) => a.title.toLowerCase().trim() === item.title.toLowerCase().trim()
+                    );
+                    const articleUrl = matchingArticle ? `/news/${matchingArticle.id}` : "/news";
+
+                    return (
+                      <div key={idx} className="col-md-6">
+                        <Link href={articleUrl} className="text-decoration-none h-100 d-block">
+                          <div className="card bg-card border border-dark rounded-3 h-100 overflow-hidden transition-all hover-glow">
+                            <div className="row g-0 h-100">
+                              {item.image && (
+                                <div className="col-sm-4 position-relative min-h-120px bg-dark">
+                                  <img
+                                    src={item.image}
+                                    alt=""
+                                    className="w-100 h-100 object-fit-cover position-absolute"
+                                  />
+                                </div>
+                              )}
+                              <div className={item.image ? "col-sm-8" : "col-12"}>
+                                <div className="card-body p-4 d-flex flex-column h-100">
+                                  <div className="d-flex justify-content-between align-items-center mb-2">
+                                    <span className="badge-sport-tag">
+                                      {item.category}
+                                    </span>
+                                    <span className="text-muted fs-11">{item.date}</span>
+                                  </div>
+                                  <h5 className="text-white fw-semibold mb-2 fs-15 lh-1-4 hover-text-success transition-all">
+                                    {item.title}
+                                  </h5>
+                                  <p className="text-muted small mb-0 text-truncate-3">
+                                    {item.description}
+                                  </p>
+                                </div>
                               </div>
-                              <h5 className="text-white fw-semibold mb-2 fs-15 lh-1-4">
-                                {item.title}
-                              </h5>
-                              <p className="text-muted small mb-0 text-truncate-3">
-                                {item.description}
-                              </p>
                             </div>
                           </div>
-                        </div>
+                        </Link>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             )}

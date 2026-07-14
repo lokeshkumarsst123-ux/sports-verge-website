@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import Preloader from "@/components/Preloader";
 import ThemeProvider from "@/components/ThemeProvider";
 import FavoritesProvider from "@/components/FavoritesContext";
+import AdProvider from "@/components/AdContext";
 import Script from "next/script";
 
 const outfit = Outfit({
@@ -74,10 +75,12 @@ export default function RootLayout({
       <body>
         <ThemeProvider>
           <FavoritesProvider>
-            <Preloader />
-            <Header />
-            {children}
-            <Footer />
+            <AdProvider>
+              <Preloader />
+              <Header />
+              {children}
+              <Footer />
+            </AdProvider>
           </FavoritesProvider>
         </ThemeProvider>
         <Script

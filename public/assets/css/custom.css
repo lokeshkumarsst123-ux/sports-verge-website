@@ -1,6 +1,8 @@
 /* Custom CSS for SportsVerge */
 :root {
   --custom-primary: #198754; /* dark green */
+  --bs-breadcrumb-divider-color: #6b7280;
+  --bs-breadcrumb-item-active-color: #6b7280;
 }
 
 

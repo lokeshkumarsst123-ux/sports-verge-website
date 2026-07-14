@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useAds } from "@/components/AdContext";
 
 interface Inquiry {
   id: string;
@@ -15,6 +16,9 @@ interface Inquiry {
 }
 
 export default function ContactPage() {
+  const { getAdByType } = useAds();
+  const [contactAd, setContactAd] = useState<any>(null);
+
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -26,21 +30,13 @@ export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showEmailModal, setShowEmailModal] = useState(false);
   const [lastSubmittedInquiry, setLastSubmittedInquiry] = useState<Inquiry | null>(null);
-  const [inquiries, setInquiries] = useState<Inquiry[]>([]);
-  const [consoleLogs, setConsoleLogs] = useState<string[]>([]);
   const [successMessage, setSuccessMessage] = useState("");
 
-  // Load inquiries from localStorage
   useEffect(() => {
-    const saved = localStorage.getItem("sportsverge_contact_inquiries");
-    if (saved) {
-      try {
-        setInquiries(JSON.parse(saved));
-      } catch (e) {
-        console.error("Failed to load inquiries", e);
-      }
+    if (getAdByType) {
+      setContactAd(getAdByType("Sidebar Advertisement"));
     }
-  }, []);
+  }, [getAdByType]);
 
   // Validate form
   const validateForm = () => {
@@ -91,9 +87,8 @@ export default function ContactPage() {
     if (!validateForm()) return;
 
     setIsSubmitting(true);
-    setConsoleLogs([]);
 
-    // Step 1: Simulate inquiry processing and storage
+    // Simulate inquiry processing and storage
     setTimeout(() => {
       const ticketId = `SV-${Math.floor(100000 + Math.random() * 900000)}`;
       const newInquiry: Inquiry = {
@@ -107,47 +102,29 @@ export default function ContactPage() {
       };
 
       // Store in localStorage
-      const updatedInquiries = [newInquiry, ...inquiries];
+      const saved = typeof window !== "undefined" ? localStorage.getItem("sportsverge_contact_inquiries") : null;
+      let currentInquiries: Inquiry[] = [];
+      if (saved) {
+        try {
+          currentInquiries = JSON.parse(saved);
+        } catch (e) { }
+      }
+      const updatedInquiries = [newInquiry, ...currentInquiries];
       localStorage.setItem("sportsverge_contact_inquiries", JSON.stringify(updatedInquiries));
-      setInquiries(updatedInquiries);
       setLastSubmittedInquiry(newInquiry);
 
-      setConsoleLogs((prev) => [...prev, `[SYSTEM] Inquiry stored successfully under Ticket #${ticketId}.`]);
+      setIsSubmitting(false);
+      setSuccessMessage(`Thank you, ${formData.fullName}! Your message has been sent successfully.`);
+      setShowEmailModal(true);
 
-      // Step 2: Simulate administrator notification dispatch
-      setTimeout(() => {
-        setConsoleLogs((prev) => [
-          ...prev,
-          `[ADMIN NOTIFICATION] Alert sent to system administrators: New ticket #${ticketId} created by ${formData.fullName} (${formData.email}) - Category: "${formData.subject}". Routing to support queue...`,
-        ]);
-
-        // Step 3: Simulate customer confirmation email delivery
-        setTimeout(() => {
-          setConsoleLogs((prev) => [
-            ...prev,
-            `[EMAIL DISPATCH] Confirmation email generated. Dispatched to user inbox: ${formData.email}.`,
-          ]);
-          setIsSubmitting(false);
-          setSuccessMessage(`Thank you, ${formData.fullName}! Your message has been sent successfully.`);
-          setShowEmailModal(true);
-
-          // Clear form fields
-          setFormData({
-            fullName: "",
-            email: "",
-            subject: "",
-            message: "",
-          });
-        }, 1000);
-
-      }, 1000);
-
-    }, 1200);
-  };
-
-  const clearHistory = () => {
-    localStorage.removeItem("sportsverge_contact_inquiries");
-    setInquiries([]);
+      // Clear form fields
+      setFormData({
+        fullName: "",
+        email: "",
+        subject: "",
+        message: "",
+      });
+    }, 800);
   };
 
   return (
@@ -197,7 +174,7 @@ export default function ContactPage() {
                       name="fullName"
                       value={formData.fullName}
                       onChange={handleInputChange}
-                      className={`form-control bg-dark text-white fw-medium border-0 custom-input px-3 py-2.5 ${formErrors.fullName ? "is-invalid" : ""}`}
+                      className={`form-control bg-dark text-white fw-normal border-0 custom-input px-3 py-2.5 ${formErrors.fullName ? "is-invalid" : ""}`}
                       placeholder="e.g. John Doe"
                     />
                     {formErrors.fullName && <div className="invalid-feedback d-block small mt-1">{formErrors.fullName}</div>}
@@ -210,33 +187,33 @@ export default function ContactPage() {
                       name="email"
                       value={formData.email}
                       onChange={handleInputChange}
-                      className={`form-control bg-dark text-white fw-medium border-0 custom-input px-3 py-2.5 ${formErrors.email ? "is-invalid" : ""}`}
+                      className={`form-control bg-dark text-white fw-normal border-0 custom-input px-3 py-2.5 ${formErrors.email ? "is-invalid" : ""}`}
                       placeholder="e.g. john@example.com"
                     />
                     {formErrors.email && <div className="invalid-feedback d-block small mt-1">{formErrors.email}</div>}
                   </div>
 
                   <div className="col-12">
-                    <label className="form-label text-muted small fw-medium mb-1 text-uppercase">Subject <span className="text-danger">*</span></label>
+                    <label className="form-label text-muted small fw-normal mb-1 text-uppercase">Subject <span className="text-danger">*</span></label>
                     <input
                       type="text"
                       name="subject"
                       value={formData.subject}
                       onChange={handleInputChange}
-                      className={`form-control bg-dark text-white fw-medium border-0 custom-input px-3 py-2.5 ${formErrors.subject ? "is-invalid" : ""}`}
+                      className={`form-control bg-dark text-white fw-normal border-0 custom-input px-3 py-2.5 ${formErrors.subject ? "is-invalid" : ""}`}
                       placeholder="What is this inquiry regarding?"
                     />
                     {formErrors.subject && <div className="invalid-feedback d-block small mt-1">{formErrors.subject}</div>}
                   </div>
 
                   <div className="col-12">
-                    <label className="form-label text-muted small fw-medium mb-1 text-uppercase">Message Content <span className="text-danger">*</span></label>
+                    <label className="form-label text-muted small fw-normal mb-1 text-uppercase">Message Content <span className="text-danger">*</span></label>
                     <textarea
                       name="message"
                       rows={5}
                       value={formData.message}
                       onChange={handleInputChange}
-                      className={`form-control bg-dark text-white fw-medium border-0 custom-input px-3 py-2.5 ${formErrors.message ? "is-invalid" : ""}`}
+                      className={`form-control bg-dark text-white fw-normal border-0 custom-input px-3 py-2.5 ${formErrors.message ? "is-invalid" : ""}`}
                       placeholder="Describe your issue or feedback in detail..."
                     ></textarea>
                     {formErrors.message && <div className="invalid-feedback d-block small mt-1">{formErrors.message}</div>}
@@ -262,31 +239,6 @@ export default function ContactPage() {
                   </div>
                 </div>
               </form>
-
-              {/* Console log simulator */}
-              {(isSubmitting || consoleLogs.length > 0) && (
-                <div className="mt-4 pt-3 border-top border-white-05">
-                  <div className="d-flex align-items-center justify-content-between mb-2">
-                    <span className="text-muted text-xs text-uppercase fw-semibold d-flex align-items-center gap-1">
-                      <i className="bi bi-terminal-fill text-success"></i> Real-time Server Log
-                    </span>
-                    <span className="badge bg-dark text-success font-monospace px-2 py-0.5 rounded border border-success border-opacity-10 fs-10">
-                      {isSubmitting ? "ONLINE" : "STANDBY"}
-                    </span>
-                  </div>
-                  <div className="bg-dark p-3 rounded border border-dark font-monospace small text-start overflow-auto max-h-180" style={{ backgroundColor: "#04070c !important" }}>
-                    {consoleLogs.map((log, idx) => (
-                      <div key={idx} className="mb-1">
-                        <span className="text-success font-monospace me-1">&gt;</span>
-                        <span className={log.includes("ADMIN") ? "text-warning" : log.includes("EMAIL") ? "text-info" : "text-light"}>{log}</span>
-                      </div>
-                    ))}
-                    {isSubmitting && (
-                      <div className="text-muted fs-11 italic blink mt-1">Processing event stream...</div>
-                    )}
-                  </div>
-                </div>
-              )}
             </div>
           </div>
 
@@ -335,71 +287,32 @@ export default function ContactPage() {
               </div>
             </div>
 
-            {/* Inquiries History Section */}
-            <div className="card border-0 rounded-3 p-4 contact-card">
-              <div className="d-flex justify-content-between align-items-center mb-4">
-                <h4 className="text-white fw-normal mb-0 d-flex align-items-center gap-2">
-                  <i className="bi bi-clock-history text-success"></i>
-                  Your Sent Inquiries
-                </h4>
-                {inquiries.length > 0 && (
-                  <button
-                    onClick={clearHistory}
-                    className="btn btn-sm btn-outline-danger border-0 py-0.5 px-2 fs-11 fw-semibold"
-                  >
-                    Clear History
-                  </button>
-                )}
-              </div>
-
-              {inquiries.length === 0 ? (
-                <div className="text-center py-4 border border-dashed border-secondary border-opacity-25 rounded-3">
-                  <i className="bi bi-folder2-open text-muted fs-3 mb-2 d-block"></i>
-                  <span className="text-muted small">No past inquiries found on this device.</span>
-                </div>
-              ) : (
-                <div className="d-flex flex-column gap-3 overflow-auto max-h-350 pe-1">
-                  {inquiries.map((inq) => (
-                    <div key={inq.id} className="bg-dark p-3 rounded border border-dark hover-bg-dark transition-all position-relative" style={{ backgroundColor: "rgba(255,255,255,0.02)" }}>
-                      <div className="d-flex justify-content-between align-items-start mb-2">
-                        <span className="font-monospace text-success fw-bold fs-11">#{inq.id}</span>
-                        <span className="badge bg-success bg-opacity-15 text-success rounded-pill px-2 py-0.5 fs-10">
-                          {inq.status}
-                        </span>
-                      </div>
-                      <h6 className="text-white fw-bold small mb-1 text-truncate">{inq.subject}</h6>
-                      <p className="text-muted fs-11 text-truncate mb-2">{inq.message}</p>
-                      <div className="d-flex justify-content-between align-items-center pt-2 border-top border-white-05">
-                        <span className="text-muted text-xs">{inq.date}</span>
-                        <button
-                          onClick={() => {
-                            setLastSubmittedInquiry(inq);
-                            setShowEmailModal(true);
-                          }}
-                          className="btn btn-sm btn-link text-success p-0 fs-11 text-decoration-none fw-semibold"
-                        >
-                          View Receipt <i className="bi bi-arrow-right ms-0.5"></i>
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+            {/* Dynamic Ad Placement */}
+            {contactAd && (
+              <aside className="ad-section ad-1-contact-page rounded-3 border border-dark overflow-hidden mb-4 position-relative d-flex align-items-end" style={{ minHeight: "440px" }}>
+                <a href={contactAd.redirectUrl} target="_blank" rel="noopener noreferrer" className="w-100 h-100 d-block position-relative">
+                  <img
+                    src={contactAd.image}
+                    alt={contactAd.title}
+                    className="w-100 h-100 object-fit-cover ad-bg-img"
+                    style={{ position: "absolute", inset: 0 }}
+                  />
+                </a>
+                <span className="position-absolute top-0 end-0 badge bg-dark text-muted font-monospace fs-10 border border-secondary border-opacity-10 m-2 z-1">
+                  SPONSOR
+                </span>
+              </aside>
+            )}
           </div>
         </div>
       </div>
 
-      {/* Confirmation Email Receipt Modal Popup */}
+      {/* Success Confirmation Modal Popup */}
       {showEmailModal && lastSubmittedInquiry && (
-        <div className="modal show d-block" tabIndex={-1} style={{ backgroundColor: "rgba(0, 0, 0, 0.75)" }}>
-          <div className="modal-dialog modal-dialog-centered modal-lg">
-            <div className="modal-content bg-card border border-dark rounded-3 shadow-lg">
-              <div className="modal-header border-bottom border-white-05 px-4 py-3 d-flex justify-content-between align-items-center">
-                <h5 className="modal-title text-white fw-bold d-flex align-items-center gap-2">
-                  <i className="bi bi-envelope-check-fill text-info"></i>
-                  Simulated Confirmation Email
-                </h5>
+        <div className="modal show d-block" tabIndex={-1} style={{ backgroundColor: "rgba(0, 0, 0, 0.85)", backdropFilter: "blur(4px)" }}>
+          <div className="modal-dialog modal-dialog-centered" style={{ maxWidth: "450px" }}>
+            <div className="modal-content bg-card border border-dark rounded-4 shadow-lg text-center p-4">
+              <div className="modal-header border-0 p-0 justify-content-end">
                 <button
                   type="button"
                   className="btn-close btn-close-white"
@@ -407,55 +320,45 @@ export default function ContactPage() {
                   aria-label="Close"
                 ></button>
               </div>
-              <div className="modal-body p-4 bg-dark text-start" style={{ backgroundColor: "#06090e !important" }}>
-                {/* Simulated Email Header */}
-                <div className="email-client-wrapper border border-dark rounded-3 p-3 bg-card" style={{ backgroundColor: "#111822" }}>
-                  <div className="pb-3 border-bottom border-white-05">
-                    <div className="d-flex flex-column gap-1.5 fs-12">
-                      <div><strong className="text-muted">From:</strong> SportsVerge Support &lt;noreply@sportsverge.com&gt;</div>
-                      <div><strong className="text-muted">To:</strong> {lastSubmittedInquiry.fullName} &lt;{lastSubmittedInquiry.email}&gt;</div>
-                      <div><strong className="text-muted">Subject:</strong> Inquiry Confirmation: [{lastSubmittedInquiry.subject}] (Ticket #{lastSubmittedInquiry.id})</div>
-                      <div><strong className="text-muted">Date:</strong> {lastSubmittedInquiry.date}</div>
-                    </div>
+              <div className="modal-body p-0 mt-2">
+                {/* Success Animated Checkmark Icon */}
+                <div className="success-checkmark-wrapper mb-4 d-inline-flex align-items-center justify-content-center bg-success bg-opacity-10 text-success rounded-circle" style={{ width: "80px", height: "80px" }}>
+                  <i className="bi bi-patch-check-fill display-4 text-success"></i>
+                </div>
+
+                <h3 className="text-white fw-bold mb-2">Message Sent!</h3>
+                <p className="text-muted small px-3 mb-4">
+                  Thank you for reaching out to SportsVerge. Your inquiry has been logged in our system. A support administrator will contact you shortly.
+                </p>
+
+                {/* Ticket details summary */}
+                <div className="bg-dark bg-opacity-40 border border-dark rounded-3 px-3 py-1 mb-4 text-start">
+                  <div className="d-flex justify-content-between align-items-center py-2 border-bottom border-white-05">
+                    <span className="text-muted text-xs text-uppercase fw-semibold">Ticket ID</span>
+                    <span className="font-monospace text-success fw-bold text-end">#{lastSubmittedInquiry.id}</span>
                   </div>
-
-                  {/* Simulated Email Body */}
-                  <div className="py-4 text-light fs-13 lh-lg">
-                    <p className="mb-3">Hi <strong>{lastSubmittedInquiry.fullName}</strong>,</p>
-                    <p className="mb-3">
-                      We have successfully received your inquiry regarding <strong>"{lastSubmittedInquiry.subject}"</strong>. A support ticket has been created with ID <strong>#{lastSubmittedInquiry.id}</strong>.
-                    </p>
-                    <p className="mb-3">
-                      Our system administrators and support team have been notified. We will review your request and get back to you shortly (typically within 1 business day).
-                    </p>
-
-                    <div className="my-4 p-3 rounded bg-dark bg-opacity-30 border border-white-05 font-monospace text-xs">
-                      <div className="fw-bold mb-2 border-bottom border-white-05 pb-1 text-uppercase text-muted">Copy of Inquiry:</div>
-                      <div><strong className="text-muted">Ticket:</strong> #{lastSubmittedInquiry.id}</div>
-                      <div><strong className="text-muted">Sender:</strong> {lastSubmittedInquiry.fullName}</div>
-                      <div><strong className="text-muted">Subject:</strong> {lastSubmittedInquiry.subject}</div>
-                      <div className="mt-2 text-white border-start border-success border-3 ps-2 italic">{lastSubmittedInquiry.message}</div>
-                    </div>
-
-                    <p className="mb-0">
-                      Best regards,<br />
-                      <strong>SportsVerge Support Team</strong>
-                    </p>
+                  <div className="d-flex justify-content-between align-items-center py-2 border-bottom border-white-05">
+                    <span className="text-muted text-xs text-uppercase fw-semibold">Subject</span>
+                    <span className="text-white small fw-medium text-truncate text-end d-inline-block max-w-200px">{lastSubmittedInquiry.subject.trim()}</span>
                   </div>
-
-                  {/* Simulated Email Footer */}
-                  <div className="pt-3 border-top border-white-05 text-center text-muted fs-11">
-                    This is an automated receipt confirmation from SportsVerge Support. Please do not reply directly to this email.
+                  <div className="d-flex justify-content-between align-items-center py-2 border-bottom border-white-05">
+                    <span className="text-muted text-xs text-uppercase fw-semibold">Date Submitted</span>
+                    <span className="text-muted small text-end">{lastSubmittedInquiry.date.split(",")[0].trim()}</span>
+                  </div>
+                  <div className="d-flex justify-content-between align-items-center py-3">
+                    <span className="text-muted text-xs text-uppercase fw-semibold">Status</span>
+                    <span className="badge rounded-pill px-2.5 py-1 fs-11 text-end" style={{ backgroundColor: "rgba(25, 135, 84, 0.15)", color: "#2abf70", border: "1px solid rgba(42, 191, 112, 0.2)" }}>
+                      Received
+                    </span>
                   </div>
                 </div>
-              </div>
-              <div className="modal-footer border-top border-white-05 px-4 py-3">
+
                 <button
                   type="button"
-                  className="btn btn-success fw-semibold px-4"
+                  className="btn btn-success fw-bold px-5 py-2.5 rounded-1 w-100"
                   onClick={() => setShowEmailModal(false)}
                 >
-                  Close Receipt
+                  Done
                 </button>
               </div>
             </div>

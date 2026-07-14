@@ -21,21 +21,25 @@ export const heroSlides: SlideItem[] = [
     image: "/assets/imgs/banner/news-banner_1.webp",
     title: "Australia's Masterclass Powers Team to Thrilling Win",
     desc: "Australia clinch a nerve-wracking 6-run victory in a high-scoring ICC ODI against India.",
+    newsId: "cricket-hero-1",
   },
   {
     image: "/assets/imgs/banner/news-banner_2.webp",
     title: "TV channel, how to watch, kick-off time, live stream",
     desc: "Having eased past Jordan in their final group game to top Group J, Argentina reinforced.",
+    newsId: "football-hero-2",
   },
   {
     image: "/assets/imgs/banner/news-banner_3.webp",
     title: "ETPL crucial in making cricket a global sport",
     desc: "The former India allrounder believes that a short format like T20 cricket is key to the sport's success in Europe.",
+    newsId: "general-1",
   },
   {
     image: "/assets/imgs/banner/news-banner_4.webp",
     title: "Crows comeback falls short against Suns",
     desc: "Adelaide has fallen a goal short of a late comeback against Gold Coast in the Club's opening game of 2024.",
+    newsId: "afl-hero-4",
   },
 ];
 

@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useFavorites } from "@/components/FavoritesContext";
+import { useAds } from "@/components/AdContext";
 
 const initialNotifications = [
   {
@@ -50,6 +51,14 @@ const initialNotifications = [
 export default function NotificationsPage() {
   const { favoriteTeams } = useFavorites();
   const [notifications, setNotifications] = useState(initialNotifications);
+  const { getAdByType } = useAds();
+  const [notifAd, setNotifAd] = useState<any>(null);
+
+  useEffect(() => {
+    if (getAdByType) {
+      setNotifAd(getAdByType("Homepage Banner"));
+    }
+  }, [getAdByType]);
 
   useEffect(() => {
     const personalized: typeof initialNotifications = [];
@@ -142,40 +151,56 @@ export default function NotificationsPage() {
                 <p className="text-muted mt-3">You have no notifications at the moment.</p>
               </div>
             ) : (
-              notifications.map((notification) => (
-                <div 
-                  key={notification.id} 
-                  className={`card border-0 rounded-3 notification-card ${notification.isRead ? "read" : "unread"}`}
-                  onClick={() => markAsRead(notification.id)}
-                >
-                  <div className="card-body p-4 d-flex gap-3 align-items-center">
-                    <div 
-                      className={`rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 notification-icon-container ${notification.isRead ? 'bg-dark text-muted read' : 'bg-success text-white unread'}`}
-                    >
-                      <i className={`bi ${getIcon(notification.sport, notification.type)} fs-5`}></i>
-                    </div>
-                    <div className="flex-grow-1">
-                      <div className="d-flex justify-content-between align-items-start mb-1">
-                        <h6 className={`mb-0 ${notification.isRead ? 'text-white' : 'text-success fw-semibold'}`}>
-                          <Link href={notification.link} className="text-decoration-none text-inherit">
-                            {notification.title}
-                          </Link>
-                        </h6>
-                        <span className="text-muted small fs-12 text-nowrap">
-                          {notification.time}
-                        </span>
+              notifications.map((notification, index) => (
+                <React.Fragment key={notification.id}>
+                  {index === 2 && notifAd && (
+                    <aside className="ad-section rounded-3 border border-dark overflow-hidden mb-3 position-relative d-flex align-items-end" style={{ minHeight: "140px" }}>
+                      <a href={notifAd.redirectUrl} target="_blank" rel="noopener noreferrer" className="w-100 h-100 d-block position-relative" style={{ minHeight: "140px" }}>
+                        <img
+                          src={notifAd.image}
+                          alt={notifAd.title}
+                          className="w-100 h-100 object-fit-cover ad-bg-img"
+                          style={{ position: "absolute", inset: 0 }}
+                        />
+                      </a>
+                      <span className="position-absolute top-0 end-0 badge bg-dark text-muted font-monospace fs-10 border border-secondary border-opacity-10 m-2 z-1">
+                        SPONSOR
+                      </span>
+                    </aside>
+                  )}
+                  <div 
+                    className={`card border-0 rounded-3 notification-card ${notification.isRead ? "read" : "unread"}`}
+                    onClick={() => markAsRead(notification.id)}
+                  >
+                    <div className="card-body p-4 d-flex gap-3 align-items-center">
+                      <div 
+                        className={`rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 notification-icon-container ${notification.isRead ? 'bg-dark text-muted read' : 'bg-success text-white unread'}`}
+                      >
+                        <i className={`bi ${getIcon(notification.sport, notification.type)} fs-5`}></i>
                       </div>
-                      <p className={`mb-0 small ${notification.isRead ? 'text-muted' : 'text-light fw-medium'}`}>
-                        {notification.message}
-                      </p>
-                    </div>
-                    {!notification.isRead && (
-                      <div className="d-flex align-items-center ms-2">
-                        <div className="rounded-circle bg-success unread-dot"></div>
+                      <div className="flex-grow-1">
+                        <div className="d-flex justify-content-between align-items-start mb-1">
+                          <h6 className={`mb-0 ${notification.isRead ? 'text-white' : 'text-success fw-semibold'}`}>
+                            <Link href={notification.link} className="text-decoration-none text-inherit">
+                              {notification.title}
+                            </Link>
+                          </h6>
+                          <span className="text-muted small fs-12 text-nowrap">
+                            {notification.time}
+                          </span>
+                        </div>
+                        <p className={`mb-0 small ${notification.isRead ? 'text-muted' : 'text-light fw-medium'}`}>
+                          {notification.message}
+                        </p>
                       </div>
-                    )}
+                      {!notification.isRead && (
+                        <div className="d-flex align-items-center ms-2">
+                          <div className="rounded-circle bg-success unread-dot"></div>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
+                </React.Fragment>
               ))
             )}
           </div>
