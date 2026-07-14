@@ -74,7 +74,18 @@ export default function IplPage() {
                   <div>
                     <div className="d-flex justify-content-between align-items-center mb-3">
                       <span className="text-success fw-bold font-space-grotesk" style={{ fontSize: "11px", letterSpacing: "0.08em" }}>{m.match.toUpperCase()}</span>
-                      <span className={`badge rounded-pill ${m.status === "Completed" ? "bg-secondary bg-opacity-20 text-muted" : "bg-success bg-opacity-20 text-success"}`} style={{ fontSize: "10px" }}>{m.status}</span>
+                      <span
+                        className="rounded-pill px-3 py-1 font-space-grotesk fw-bold"
+                        style={{
+                          fontSize: "10px",
+                          background: m.status === "Completed" ? "rgba(255, 255, 255, 0.08)" : "rgba(34, 197, 94, 0.15)",
+                          color: m.status === "Completed" ? "#a0a5ad" : "#22c55e",
+                          border: m.status === "Completed" ? "1px solid rgba(255, 255, 255, 0.1)" : "1px solid rgba(34, 197, 94, 0.3)",
+                          letterSpacing: "0.05em",
+                        }}
+                      >
+                        {m.status.toUpperCase()}
+                      </span>
                     </div>
 
                     <div className="d-flex justify-content-between align-items-center my-3">
