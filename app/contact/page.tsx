@@ -151,17 +151,11 @@ export default function ContactPage() {
   };
 
   return (
-    <main className="min-vh-100 bg-dark-theme text-white py-5">
+    <main className="min-vh-100 bg-page text-white py-5 font-outfit">
       <div className="container py-4">
-        {/* Breadcrumb / Header */}
+        {/* Header */}
         <div className="row mb-5 text-center text-lg-start">
           <div className="col-12">
-            <nav aria-label="breadcrumb">
-              <ol className="breadcrumb justify-content-center justify-content-lg-start mb-2">
-                <li className="breadcrumb-item"><Link href="/" className="text-success text-decoration-none small">Home</Link></li>
-                <li className="breadcrumb-item active text-muted small" aria-current="page">Contact Us</li>
-              </ol>
-            </nav>
             <h1 className="text-white fw-extrabold display-5 mb-2">Get in Touch</h1>
             <p className="text-muted lead max-w-600">
               Have questions, feedback, or support inquiries? Fill out the form below and our administrators will get back to you shortly.

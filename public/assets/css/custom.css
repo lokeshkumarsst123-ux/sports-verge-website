@@ -1166,6 +1166,10 @@ body {
   color: #fff !important;
   transition: all 0.2s ease-in-out !important;
 }
+.custom-input::placeholder {
+  color: rgba(255, 255, 255, 0.4) !important;
+  opacity: 1 !important;
+}
 .custom-input:focus {
   background-color: #0b0f17 !important;
   border-color: #1a8c3d !important;
