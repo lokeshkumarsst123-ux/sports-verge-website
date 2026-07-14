@@ -642,7 +642,7 @@ export default function ProfileDashboard() {
                     <div className="row g-3">
                       {userFixtures.map((match: FixtureItem, idx: number) => (
                         <div key={idx} className="col-md-6 col-lg-4">
-                          <Link href={getMatchLink(match)} className="text-decoration-none">
+                          <Link href={getMatchLink(match)} className="text-decoration-none d-block w-100">
                             <div className="fixture-card fixture-card-grid h-100 rounded-3 border border-dark p-3 d-flex flex-column justify-content-between hover-bg-dark transition-all">
                               <div>
                                 <div className="d-flex justify-content-between align-items-center mb-3">
@@ -694,7 +694,7 @@ export default function ProfileDashboard() {
                     <div className="row g-3">
                       {userResults.map((item: ResultItem, idx: number) => (
                         <div key={idx} className="col-md-6 col-lg-4">
-                          <Link href={getMatchLink(item)} className="text-decoration-none">
+                          <Link href={getMatchLink(item)} className="text-decoration-none d-block w-100">
                             <div className="fixture-card fixture-card-grid h-100 rounded-3 border border-dark p-3 d-flex flex-column justify-content-between hover-bg-dark transition-all">
                               <div>
                                 <div className="d-flex justify-content-between align-items-center mb-3">
