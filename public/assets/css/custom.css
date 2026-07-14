@@ -1150,4 +1150,57 @@ body {
   width: 100% !important;
 }
 
+/* Contact Us Module Additions */
+.contact-card {
+  background: #111622 !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25) !important;
+  transition: transform 0.3s ease, border-color 0.3s ease !important;
+}
+.contact-card:hover {
+  border-color: rgba(26, 140, 61, 0.3) !important;
+}
+.custom-input {
+  background-color: #0b0f17 !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  color: #fff !important;
+  transition: all 0.2s ease-in-out !important;
+}
+.custom-input:focus {
+  background-color: #0b0f17 !important;
+  border-color: #1a8c3d !important;
+  box-shadow: 0 0 0 3px rgba(26, 140, 61, 0.15) !important;
+  color: #fff !important;
+  outline: none !important;
+}
+.contact-info-icon {
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  transition: transform 0.2s ease !important;
+}
+.contact-info-icon:hover {
+  transform: scale(1.1) !important;
+}
+.max-w-600 {
+  max-width: 600px !important;
+}
+.max-h-350 {
+  max-height: 350px !important;
+}
+.max-h-180 {
+  max-height: 180px !important;
+}
+.blink {
+  animation: blinker 1.5s linear infinite;
+}
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}
+
 

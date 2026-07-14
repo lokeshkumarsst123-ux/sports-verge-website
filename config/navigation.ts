@@ -67,6 +67,7 @@ export const mainMenuItems: MenuItem[] = [
       { title: "Podcasts & Video", href: "#" },
       { title: "Esports", href: "#" },
       { title: "Betting Odds", href: "#" },
+      { title: "Contact Us", href: "/contact" },
     ],
   },
 ];
