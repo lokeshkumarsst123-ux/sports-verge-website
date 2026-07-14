@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Preloader from "@/components/Preloader";
 import ThemeProvider from "@/components/ThemeProvider";
+import FavoritesProvider from "@/components/FavoritesContext";
 import Script from "next/script";
 
 const outfit = Outfit({
@@ -72,10 +73,12 @@ export default function RootLayout({
       </head>
       <body>
         <ThemeProvider>
-          <Preloader />
-          <Header />
-          {children}
-          <Footer />
+          <FavoritesProvider>
+            <Preloader />
+            <Header />
+            {children}
+            <Footer />
+          </FavoritesProvider>
         </ThemeProvider>
         <Script
           src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"

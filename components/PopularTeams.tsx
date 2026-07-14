@@ -1,18 +1,21 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { PopularTeamItem } from "@/types";
 import { popularTeamsData } from "@/data/mockData";
+import { useFavorites } from "@/components/FavoritesContext";
 
 export default function PopularTeams() {
-  const [bookmarkedIds, setBookmarkedIds] = useState<string[]>([]);
+  const { isFavoriteTeam, addFavoriteTeam, removeFavoriteTeam } = useFavorites();
 
-  const toggleBookmark = (id: string) => {
-    setBookmarkedIds((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
-    );
+  const toggleBookmark = (name: string) => {
+    if (isFavoriteTeam(name)) {
+      removeFavoriteTeam(name);
+    } else {
+      addFavoriteTeam(name);
+    }
   };
 
   return (
@@ -26,7 +29,7 @@ export default function PopularTeams() {
 
       <div className="popular-teams-list pe-4 popular-teams-scroll-list">
         {popularTeamsData.map((team: PopularTeamItem, idx: number) => {
-          const isBookmarked = bookmarkedIds.includes(team.id);
+          const isBookmarked = isFavoriteTeam(team.name);
           const isLastItem = idx === popularTeamsData.length - 1;
 
           return (
@@ -50,7 +53,7 @@ export default function PopularTeams() {
               </Link>
               <button
                 className={`btn btn-link p-0 star-toggle ${isBookmarked ? "active text-warning" : "text-muted"}`}
-                onClick={() => toggleBookmark(team.id)}
+                onClick={() => toggleBookmark(team.name)}
                 aria-label="Bookmark Team"
               >
                 <i className={`bi ${isBookmarked ? "bi-star-fill text-warning" : "bi-star"}`}></i>

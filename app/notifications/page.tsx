@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { useFavorites } from "@/components/FavoritesContext";
 
 const initialNotifications = [
   {
@@ -12,7 +13,7 @@ const initialNotifications = [
     type: "match",
     sport: "cricket",
     isRead: false,
-    link: "/live-scores/1"
+    link: "/live-scores/match-1"
   },
   {
     id: 2,
@@ -22,7 +23,7 @@ const initialNotifications = [
     type: "alert",
     sport: "football",
     isRead: false,
-    link: "/live-scores/3"
+    link: "/live-scores/match-2"
   },
   {
     id: 3,
@@ -47,7 +48,55 @@ const initialNotifications = [
 ];
 
 export default function NotificationsPage() {
+  const { favoriteTeams } = useFavorites();
   const [notifications, setNotifications] = useState(initialNotifications);
+
+  useEffect(() => {
+    const personalized: typeof initialNotifications = [];
+    
+    favoriteTeams.forEach((team, index) => {
+      const cleanTeam = team.trim();
+      const lowerTeam = cleanTeam.toLowerCase();
+      
+      if (lowerTeam === "csk") {
+        personalized.push({
+          id: 100 + index,
+          title: `🔥 Fan Alert: CSK Match Critical!`,
+          message: `Your favorite team CSK is in a thrilling finish. They need 12 runs from 5 balls to win!`,
+          time: "Just now",
+          type: "match",
+          sport: "cricket",
+          isRead: false,
+          link: "/live-scores/match-1"
+        });
+      } else if (lowerTeam === "manchester city" || lowerTeam === "man city") {
+        personalized.push({
+          id: 100 + index,
+          title: `⚽ Goal! Manchester City Scored`,
+          message: `Erling Haaland scored a clinical goal in the 55' against Arsenal! City leads 2-1.`,
+          time: "15 mins ago",
+          type: "alert",
+          sport: "football",
+          isRead: false,
+          link: "/live-scores/match-2"
+        });
+      } else {
+        // Generic customized notification for any other favorite team
+        personalized.push({
+          id: 100 + index,
+          title: `⭐ Favorite Team Alert: ${cleanTeam}`,
+          message: `Match schedule, player stats, and historical results have been updated for ${cleanTeam}.`,
+          time: "5 mins ago",
+          type: "alert",
+          sport: "general",
+          isRead: false,
+          link: "/"
+        });
+      }
+    });
+
+    setNotifications([...personalized, ...initialNotifications]);
+  }, [favoriteTeams]);
 
   const markAsRead = (id: number) => {
     setNotifications(notifications.map(n => n.id === id ? { ...n, isRead: true } : n));

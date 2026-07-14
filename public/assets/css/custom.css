@@ -1103,3 +1103,47 @@ body {
   text-transform: uppercase !important;
   line-height: 1.5 !important;
 }
+
+/* Favorites Module Additions */
+.hover-bg-dark:hover {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  cursor: pointer;
+}
+.max-h-200 {
+  max-height: 200px !important;
+}
+.hover-opacity:hover {
+  opacity: 0.8 !important;
+}
+.z-3 {
+  z-index: 3 !important;
+}
+.italic {
+  font-style: italic !important;
+}
+.text-xs {
+  font-size: 11px !important;
+}
+.px-2.5 {
+  padding-left: 10px !important;
+  padding-right: 10px !important;
+}
+.transition-all {
+  transition: all 0.2s ease-in-out !important;
+}
+.max-w-400 {
+  max-width: 400px !important;
+}
+.fs-12 {
+  font-size: 12px !important;
+}
+.fs-10 {
+  font-size: 10px !important;
+}
+.bg-card {
+  background-color: #111622 !important;
+}
+.hover-bg-dark {
+  transition: background-color 0.2s ease !important;
+}
+

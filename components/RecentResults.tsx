@@ -5,11 +5,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { ResultItem } from "@/types";
 import { recentResults } from "@/data/mockData";
+import { useFavorites } from "@/components/FavoritesContext";
 
 export default function RecentResults() {
   const [activeTab, setActiveTab] = useState<"all" | "cricket" | "football" | "NFL" | "AFL">("all");
   const [showArrows, setShowArrows] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const { isFavoriteTeam, isFavoriteCompetition } = useFavorites();
 
   const getMatchLink = (item: ResultItem) => {
     if (item.id) return `/live-scores/${item.id}`;
@@ -21,6 +23,15 @@ export default function RecentResults() {
   const filteredResults = activeTab === "all"
     ? recentResults
     : recentResults.filter((item) => item.type === activeTab);
+
+  // Prioritize results involving favorite teams or competitions
+  const sortedResults = [...filteredResults].sort((a, b) => {
+    const aFav = isFavoriteTeam(a.home) || isFavoriteTeam(a.away) || isFavoriteCompetition(a.league);
+    const bFav = isFavoriteTeam(b.home) || isFavoriteTeam(b.away) || isFavoriteCompetition(b.league);
+    if (aFav && !bFav) return -1;
+    if (!aFav && bFav) return 1;
+    return 0;
+  });
 
   const checkForOverflow = () => {
     if (scrollRef.current) {
@@ -36,7 +47,7 @@ export default function RecentResults() {
       clearTimeout(timer);
       window.removeEventListener("resize", checkForOverflow);
     };
-  }, [filteredResults]);
+  }, [sortedResults]);
 
   const handleScroll = (direction: "left" | "right") => {
     if (scrollRef.current) {
@@ -88,16 +99,25 @@ export default function RecentResults() {
           ref={scrollRef}
           className="fixtures-scroll-container d-flex gap-3 pb-2"
         >
-          {filteredResults.length > 0 ? (
-            filteredResults.map((item: ResultItem, index: number) => (
-              <Link
-                key={index}
-                href={getMatchLink(item)}
-                className="fixture-card d-block text-decoration-none flex-shrink-0 rounded-3 p-3 border border-dark"
-              >
-                <div className="text-center text-muted small mb-3">
-                  {item.league}
-                </div>
+          {sortedResults.length > 0 ? (
+            sortedResults.map((item: ResultItem, index: number) => {
+              const isMatchFav = isFavoriteTeam(item.home) || isFavoriteTeam(item.away) || isFavoriteCompetition(item.league);
+
+              return (
+                <Link
+                  key={index}
+                  href={getMatchLink(item)}
+                  className={`fixture-card d-block text-decoration-none flex-shrink-0 rounded-3 p-3 border position-relative ${isMatchFav ? "border-warning border-opacity-50" : "border-dark"}`}
+                  style={isMatchFav ? { background: "linear-gradient(180deg, rgba(255, 193, 7, 0.05) 0%, rgba(20, 20, 20, 0.4) 100%)" } : {}}
+                >
+                  <div className="d-flex justify-content-between align-items-center mb-3">
+                    <span className="text-muted small text-truncate" style={{ maxWidth: "160px" }}>{item.league}</span>
+                    {isMatchFav && (
+                      <span className="badge bg-warning text-dark px-2 py-1 rounded-pill fs-10 fw-bold d-flex align-items-center gap-1">
+                        <i className="bi bi-star-fill text-dark fs-10"></i> FAV
+                      </span>
+                    )}
+                  </div>
 
                 {item.type === "cricket" ? (
                   <>
@@ -182,7 +202,8 @@ export default function RecentResults() {
                   </div>
                 </div>
               </Link>
-            ))
+            );
+          })
           ) : (
             <div className="text-center text-muted w-100 py-4 small">
               No recent results for this category.
