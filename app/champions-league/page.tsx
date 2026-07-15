@@ -35,7 +35,7 @@ export default function ChampionsLeaguePage() {
   const [activeTab, setActiveTab] = useState<"fixtures" | "groups" | "history">("fixtures");
 
   return (
-    <main className="min-vh-100 font-outfit" style={{ background: "var(--bg-dark)", color: "var(--text-light)", padding: "40px 0 80px 0" }}>
+    <main className="font-outfit">
       <PageHeader
         title="Champions League"
         subtitle="UEFA Champions League match fixtures, group stage standings, draws, results, and history."

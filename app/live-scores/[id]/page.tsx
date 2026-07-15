@@ -9,6 +9,7 @@ import StatusBadge from "@/components/live-scores/StatusBadge";
 import NFLMatchDetail from "@/components/live-scores/NFLMatchDetail";
 import AFLMatchDetail from "@/components/live-scores/AFLMatchDetail";
 import { useAds } from "@/components/AdContext";
+import MatchDetailSkeleton from "@/components/live-scores/MatchDetailSkeleton";
 
 const getWidthStyle = (w: number | string | undefined) => ({ width: `${w}%` });
 
@@ -51,29 +52,33 @@ export default function MatchDetailPage() {
   const [matchAd, setMatchAd] = useState<any>(null);
 
   useEffect(() => {
-    const foundMatch = liveScoresDetailData.find((m) => m.id === id);
-    if (foundMatch) {
-      setMatch(foundMatch);
-    }
-    setLoading(false);
+    setLoading(true);
+    const timer = setTimeout(() => {
+      const foundMatch = liveScoresDetailData.find((m) => m.id === id);
+      if (foundMatch) {
+        setMatch(foundMatch);
+      }
+      setLoading(false);
+    }, 1000);
+
     if (getAdByType) {
       setMatchAd(getAdByType("Match Page Advertisement"));
     }
+
+    return () => clearTimeout(timer);
   }, [id, getAdByType]);
 
   if (loading) {
     return (
-      <main className="min-vh-100 d-flex align-items-center justify-content-center bg-page">
-        <div className="spinner-border text-success" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
+      <main className="bg-page">
+        <MatchDetailSkeleton />
       </main>
     );
   }
 
   if (!match) {
     return (
-      <main className="min-vh-100 d-flex flex-column align-items-center justify-content-center py-5 bg-page text-white">
+      <main className=" d-flex flex-column align-items-center justify-content-center py-5 bg-page text-white">
         <h3 className="fw-bold mb-3">Match Not Found</h3>
         <p className="text-muted mb-4">The selected match details are currently unavailable.</p>
         <Link href="/live-scores" className="btn btn-signup text-uppercase fw-semibold px-4 py-2">
@@ -303,7 +308,7 @@ export default function MatchDetailPage() {
   const details = getSportDetails();
 
   return (
-    <main className="min-vh-100 py-5 bg-page text-white font-outfit">
+    <main className="py-5 bg-page text-white font-outfit">
       <div className="container custom-container max-w-1000px">
 
         {/* Breadcrumb Back Button */}
@@ -1900,11 +1905,11 @@ function ScorecardTab({ match }: { match: any }) {
             <div className="text-end font-monospace text-muted-gray">{bw.o}</div>
             <div className="text-end font-monospace text-muted-gray">{bw.m}</div>
             <div className="text-end font-monospace text-muted-gray">{bw.r}</div>
-            <div className={`text-end font-monospace fw-bold ${ bw.w > 0 ? "text-teal" : "text-muted-gray" }`}>{bw.w}</div>
+            <div className={`text-end font-monospace fw-bold ${bw.w > 0 ? "text-teal" : "text-muted-gray"}`}>{bw.w}</div>
             <div className="text-end font-monospace text-muted-gray">{bw.nb}</div>
             <div className="text-end font-monospace text-muted-gray">{bw.wd}</div>
             <div
-              className={`text-end font-monospace ${ parseFloat(bw.eco) > 10 ? "text-danger" : "text-muted-gray" }`}
+              className={`text-end font-monospace ${parseFloat(bw.eco) > 10 ? "text-danger" : "text-muted-gray"}`}
             >
               {bw.eco}
             </div>

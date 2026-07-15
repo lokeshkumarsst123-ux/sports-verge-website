@@ -7,6 +7,8 @@ import { newsArticles } from "@/data/newsData";
 import PageHeader from "@/components/PageHeader";
 import { useAds } from "@/components/AdContext";
 
+import NewsSkeleton from "@/components/NewsSkeleton";
+
 const categoryConfig = [
   { name: "All News", icon: "bi-grid-fill", color: "#22c55e" },
   { name: "Cricket", icon: "bi-trophy-fill", color: "#22c55e" },
@@ -24,10 +26,19 @@ function NewsContent() {
   const [activeCategory, setActiveCategory] = useState<string>("All News");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [newsAd, setNewsAd] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (initialCategory) setActiveCategory(initialCategory);
   }, [initialCategory]);
+
+  useEffect(() => {
+    setLoading(true);
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 800);
+    return () => clearTimeout(timer);
+  }, [activeCategory, searchQuery]);
 
   useEffect(() => {
     if (getAdByType) {
@@ -105,75 +116,79 @@ function NewsContent() {
         })}
       </div>
 
-      {/* ─── Featured Article ─── */}
-      {featuredArticle && (
-        <div className="mb-5">
-          <Link href={`/news/${featuredArticle.id}`} className="text-decoration-none">
-            <div
-              className="rounded-4 overflow-hidden position-relative transition-all hover-glow"
-              style={{ minHeight: "400px", border: "1px solid rgba(255,255,255,0.08)" }}
-            >
-              {/* Background image */}
-              <img
-                src={featuredArticle.image}
-                alt={featuredArticle.title}
-                className="w-100 h-100 object-fit-cover position-absolute"
-                style={{ inset: 0 }}
-              />
-              {/* Gradient overlay */}
-              <div
-                className="position-absolute w-100 h-100"
-                style={{
-                  inset: 0,
-                  background: "linear-gradient(to right, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.7) 55%, rgba(0,0,0,0.1) 100%)",
-                }}
-              ></div>
+      {loading ? (
+        <NewsSkeleton />
+      ) : (
+        <>
+          {/* ─── Featured Article ─── */}
+          {featuredArticle && (
+            <div className="mb-5">
+              <Link href={`/news/${featuredArticle.id}`} className="text-decoration-none">
+                <div
+                  className="rounded-4 overflow-hidden position-relative transition-all hover-glow"
+                  style={{ minHeight: "400px", border: "1px solid rgba(255,255,255,0.08)" }}
+                >
+                  {/* Background image */}
+                  <img
+                    src={featuredArticle.image}
+                    alt={featuredArticle.title}
+                    className="w-100 h-100 object-fit-cover position-absolute"
+                    style={{ inset: 0 }}
+                  />
+                  {/* Gradient overlay */}
+                  <div
+                    className="position-absolute w-100 h-100"
+                    style={{
+                      inset: 0,
+                      background: "linear-gradient(to right, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.7) 55%, rgba(0,0,0,0.1) 100%)",
+                    }}
+                  ></div>
 
-              {/* Content */}
-              <div className="position-relative d-flex align-items-center h-100 p-4 p-lg-5" style={{ minHeight: "400px" }}>
-                <div style={{ maxWidth: "520px" }}>
-                  <div className="d-flex align-items-center gap-2 mb-3">
-                    <span className="badge bg-success rounded-pill px-3 py-1 fw-bold" style={{ fontSize: "10px", letterSpacing: "0.08em" }}>
-                      ★ FEATURED
-                    </span>
-                    <span className="badge rounded-pill px-3 py-1 fw-semibold" style={{ fontSize: "10px", background: "rgba(255,255,255,0.12)", color: "#d1d5db" }}>
-                      {featuredArticle.category}
-                    </span>
+                  {/* Content */}
+                  <div className="position-relative d-flex align-items-center h-100 p-4 p-lg-5" style={{ minHeight: "400px" }}>
+                    <div style={{ maxWidth: "520px" }}>
+                      <div className="d-flex align-items-center gap-2 mb-3">
+                        <span className="badge bg-success rounded-pill px-3 py-1 fw-bold" style={{ fontSize: "10px", letterSpacing: "0.08em" }}>
+                          ★ FEATURED
+                        </span>
+                        <span className="badge rounded-pill px-3 py-1 fw-semibold" style={{ fontSize: "10px", background: "rgba(255,255,255,0.12)", color: "#d1d5db" }}>
+                          {featuredArticle.category}
+                        </span>
+                      </div>
+
+                      <h2 className="fw-bold text-white mb-3 font-space-grotesk lh-sm" style={{ fontSize: "clamp(1.4rem, 3vw, 2rem)" }}>
+                        {featuredArticle.title}
+                      </h2>
+
+                      <p className="text-muted mb-4 lh-lg" style={{ fontSize: "14px" }}>
+                        {featuredArticle.summary}
+                      </p>
+
+                      <div className="d-flex align-items-center gap-3 mb-4">
+                        {featuredArticle.authorImage && (
+                          <img
+                            src={featuredArticle.authorImage}
+                            alt={featuredArticle.author}
+                            className="rounded-circle"
+                            style={{ width: "28px", height: "28px", objectFit: "cover", border: "2px solid rgba(34,197,94,0.4)" }}
+                          />
+                        )}
+                        <span className="text-success fw-semibold" style={{ fontSize: "12px" }}>{featuredArticle.author}</span>
+                        <span className="text-muted" style={{ fontSize: "12px" }}>· {featuredArticle.date} · {featuredArticle.readTime}</span>
+                      </div>
+
+                      <span
+                        className="btn btn-success fw-bold rounded-pill px-4 py-2 d-inline-flex align-items-center gap-2"
+                        style={{ fontSize: "13px" }}
+                      >
+                        Read Full Article <i className="bi bi-arrow-right"></i>
+                      </span>
+                    </div>
                   </div>
-
-                  <h2 className="fw-bold text-white mb-3 font-space-grotesk lh-sm" style={{ fontSize: "clamp(1.4rem, 3vw, 2rem)" }}>
-                    {featuredArticle.title}
-                  </h2>
-
-                  <p className="text-muted mb-4 lh-lg" style={{ fontSize: "14px" }}>
-                    {featuredArticle.summary}
-                  </p>
-
-                  <div className="d-flex align-items-center gap-3 mb-4">
-                    {featuredArticle.authorImage && (
-                      <img
-                        src={featuredArticle.authorImage}
-                        alt={featuredArticle.author}
-                        className="rounded-circle"
-                        style={{ width: "28px", height: "28px", objectFit: "cover", border: "2px solid rgba(34,197,94,0.4)" }}
-                      />
-                    )}
-                    <span className="text-success fw-semibold" style={{ fontSize: "12px" }}>{featuredArticle.author}</span>
-                    <span className="text-muted" style={{ fontSize: "12px" }}>· {featuredArticle.date} · {featuredArticle.readTime}</span>
-                  </div>
-
-                  <span
-                    className="btn btn-success fw-bold rounded-pill px-4 py-2 d-inline-flex align-items-center gap-2"
-                    style={{ fontSize: "13px" }}
-                  >
-                    Read Full Article <i className="bi bi-arrow-right"></i>
-                  </span>
                 </div>
-              </div>
+              </Link>
             </div>
-          </Link>
-        </div>
-      )}
+          )}
 
       {/* ─── Main Grid + Sidebar ─── */}
       <div className="row g-4">
@@ -283,19 +298,21 @@ function NewsContent() {
           </div>
         )}
       </div>
+      </>
+      )}
     </div>
   );
 }
 
 export default function NewsPage() {
   return (
-    <main className="min-vh-100 font-outfit text-white" style={{ background: "var(--bg-dark)", paddingTop: "8px", paddingBottom: "60px" }}>
+    <main className="font-outfit text-white">
       <Suspense
         fallback={
-          <div className="container custom-container py-5 text-center">
-            <div className="spinner-border text-success" role="status">
-              <span className="visually-hidden">Loading...</span>
-            </div>
+          <div className="container custom-container py-4">
+            <div className="skeleton-line w-200px h-32px mb-3"></div>
+            <div className="skeleton-line w-100 h-16px mb-5" style={{ maxWidth: "400px" }}></div>
+            <NewsSkeleton />
           </div>
         }
       >

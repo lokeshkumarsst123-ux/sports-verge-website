@@ -70,7 +70,7 @@ export default function RecentResults() {
         </Link>
       </div>
 
-      <ul className="nav nav-pills mb-3 custom-tabs">
+      <ul className="nav nav-pills mb-3 custom-tabs flex-nowrap overflow-x-auto scrollbar-none gap-2">
         {(["all", "cricket", "football", "NFL", "AFL"] as const).map((tab) => (
           <li className="nav-item" key={tab}>
             <button
@@ -107,16 +107,10 @@ export default function RecentResults() {
                 <Link
                   key={index}
                   href={getMatchLink(item)}
-                  className={`fixture-card d-block text-decoration-none flex-shrink-0 rounded-3 p-3 border position-relative ${isMatchFav ? "border-warning border-opacity-50" : "border-dark"}`}
-                  style={isMatchFav ? { background: "linear-gradient(180deg, rgba(255, 193, 7, 0.05) 0%, rgba(20, 20, 20, 0.4) 100%)" } : {}}
+                  className="fixture-card d-block text-decoration-none flex-shrink-0 rounded-3 p-3 border border-dark position-relative"
                 >
                   <div className="d-flex justify-content-between align-items-center mb-3">
                     <span className="text-muted small text-truncate" style={{ maxWidth: "160px" }}>{item.league}</span>
-                    {isMatchFav && (
-                      <span className="badge bg-warning text-dark px-2 py-1 rounded-pill fs-10 fw-bold d-flex align-items-center gap-1">
-                        <i className="bi bi-star-fill text-dark fs-10"></i> FAV
-                      </span>
-                    )}
                   </div>
 
                 {item.type === "cricket" ? (

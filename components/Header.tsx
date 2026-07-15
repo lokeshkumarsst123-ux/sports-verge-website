@@ -9,9 +9,11 @@ import NavigationMenu from "./NavigationMenu";
 export default function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const [user, setUser] = useState<{ firstName: string; lastName: string; email: string } | null>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const searchWrapperRef = useRef<HTMLDivElement>(null);
+  const profileDropdownRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
@@ -34,6 +36,14 @@ export default function Header() {
   }, [isSearchOpen]);
 
   useEffect(() => {
+    setIsMenuOpen(false);
+    setIsSearchOpen(false);
+    setIsProfileDropdownOpen(false);
+    if (typeof window !== "undefined") {
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTo(0, 0);
+      document.body.scrollTo(0, 0);
+    }
     const session = sessionStorage.getItem("user_session");
     if (session) {
       try {
@@ -55,12 +65,19 @@ export default function Header() {
       ) {
         setIsSearchOpen(false);
       }
+      if (
+        isProfileDropdownOpen &&
+        profileDropdownRef.current &&
+        !profileDropdownRef.current.contains(e.target as Node)
+      ) {
+        setIsProfileDropdownOpen(false);
+      }
     };
     document.addEventListener("mousedown", handleOutsideClick);
     return () => {
       document.removeEventListener("mousedown", handleOutsideClick);
     };
-  }, [isSearchOpen]);
+  }, [isSearchOpen, isProfileDropdownOpen]);
 
   if (["/login", "/register", "/forgot-password"].includes(pathname)) {
     return null;
@@ -134,19 +151,60 @@ export default function Header() {
               </span>
             </Link>
 
-            <div className="d-none d-xl-flex align-items-center">
+            <div className="d-none d-xl-flex align-items-center position-relative" ref={profileDropdownRef}>
               {user ? (
-                <Link href="/profile" className="d-flex align-items-center text-decoration-none ms-4">
-                  <div className="d-flex flex-column text-end me-3">
-                    <span className="text-white fw-semibold small lh-1-2">{user.firstName} {user.lastName}</span>
-                    <span className="text-success fs-11">{user.email}</span>
-                  </div>
-                  <div 
-                    className="rounded-circle d-flex align-items-center justify-content-center text-white shadow-sm header-user-avatar"
+                <>
+                  <button
+                    onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
+                    className="d-flex align-items-center text-decoration-none ms-4 bg-transparent border-0 p-0 text-start"
+                    style={{ outline: "none" }}
                   >
-                    {user.firstName.charAt(0)}{user.lastName.charAt(0)}
-                  </div>
-                </Link>
+                    <div className="d-flex flex-column text-end me-3">
+                      <span className="text-white fw-semibold small lh-1-2 hover-text-success transition-all">
+                        {user.firstName} {user.lastName}
+                      </span>
+                      <span className="text-success fs-11">{user.email}</span>
+                    </div>
+                    <div
+                      className="rounded-circle d-flex align-items-center justify-content-center text-white shadow-sm header-user-avatar hover-glow"
+                    >
+                      {user.firstName.charAt(0)}{user.lastName.charAt(0)}
+                    </div>
+                  </button>
+                  {isProfileDropdownOpen && (
+                    <div
+                      className="position-absolute end-0 mt-2 rounded-3 p-2 shadow-lg dropdown-menu-premium"
+                      style={{
+                        top: "100%",
+                        width: "180px",
+                        background: "rgba(18, 18, 18, 0.95)",
+                        backdropFilter: "blur(8px)",
+                        border: "1px solid var(--border-dark)",
+                        zIndex: 1000
+                      }}
+                    >
+                      <Link
+                        href="/profile"
+                        className="dropdown-item-premium d-flex align-items-center gap-2 px-3 py-2 text-decoration-none rounded mb-1 fs-14"
+                        onClick={() => setIsProfileDropdownOpen(false)}
+                      >
+                        <i className="bi bi-person-fill text-success"></i>
+                        <span>Profile</span>
+                      </Link>
+                      <button
+                        onClick={() => {
+                          setIsProfileDropdownOpen(false);
+                          sessionStorage.removeItem("user_session");
+                          window.location.href = "/login";
+                        }}
+                        className="dropdown-item-premium w-100 border-0 bg-transparent d-flex align-items-center gap-2 px-3 py-2 text-start text-danger rounded fs-14"
+                      >
+                        <i className="bi bi-box-arrow-right"></i>
+                        <span>Logout</span>
+                      </button>
+                    </div>
+                  )}
+                </>
               ) : (
                 <Link href="/login" className="btn btn-signup ms-4">
                   Login
@@ -171,27 +229,52 @@ export default function Header() {
           {/* Menu */}
 
           <div className={`collapse navbar-collapse ${isMenuOpen ? "show" : ""}`} id="mainNav">
-            <NavigationMenu />
-
-            <div className="d-xl-none d-flex flex-column mt-3 pb-3 border-top border-secondary pt-3">
+            {/* Mobile-only Top Profile Section */}
+            <div className="d-xl-none mb-3 pb-3 border-bottom border-secondary border-opacity-10 pt-2">
               {user ? (
-                <Link href="/profile" className="d-flex align-items-center text-decoration-none px-3 py-3 bg-dark rounded-3 border border-secondary border-opacity-25">
-                  <div 
-                    className="rounded-circle d-flex align-items-center justify-content-center text-white me-3 shadow-sm header-user-avatar-mobile"
-                  >
-                    {user.firstName.charAt(0)}{user.lastName.charAt(0)}
+                <div className="d-flex flex-column gap-3 p-3 bg-dark rounded-3 border border-secondary border-opacity-25">
+                  {/* User info row */}
+                  <div className="d-flex align-items-center">
+                    <div
+                      className="rounded-circle d-flex align-items-center justify-content-center text-white me-3 shadow-sm header-user-avatar-mobile"
+                    >
+                      {user.firstName.charAt(0)}{user.lastName.charAt(0)}
+                    </div>
+                    <div className="d-flex flex-column min-w-0">
+                      <span className="text-white fw-bold fs-15 text-truncate">{user.firstName} {user.lastName}</span>
+                      <span className="text-success small fs-12 text-truncate">{user.email}</span>
+                    </div>
                   </div>
-                  <div className="d-flex flex-column">
-                    <span className="text-white fw-bold">{user.firstName} {user.lastName}</span>
-                    <span className="text-success small">{user.email}</span>
+                  {/* Action buttons row */}
+                  <div className="row g-2">
+                    <div className="col-6">
+                      <Link href="/profile" className="btn gap-1 btn-sm btn-outline-success w-100 py-2 rounded-pill font-space-grotesk fw-bold fs-12 d-flex align-items-center justify-content-center gap-1.5">
+                        <i className="bi bi-person-fill"></i>
+                        <span>Profile</span>
+                      </Link>
+                    </div>
+                    <div className="col-6">
+                      <button
+                        onClick={() => {
+                          sessionStorage.removeItem("user_session");
+                          window.location.href = "/login";
+                        }}
+                        className="btn btn-sm btn-outline-danger gap-1 w-100 py-2 rounded-pill font-space-grotesk fw-bold fs-12 d-flex align-items-center justify-content-center gap-1.5"
+                      >
+                        <i className="bi bi-box-arrow-right"></i>
+                        <span>Logout</span>
+                      </button>
+                    </div>
                   </div>
-                </Link>
+                </div>
               ) : (
-                <Link href="/login" className="btn btn-signup w-100">
+                <Link href="/login" className="btn btn-signup w-100 py-2">
                   Login
                 </Link>
               )}
             </div>
+
+            <NavigationMenu />
           </div>
         </div>
       </nav>

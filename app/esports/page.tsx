@@ -43,7 +43,7 @@ const tournaments = [
 
 export default function EsportsPage() {
   return (
-    <main className="min-vh-100 font-outfit" style={{ background: "var(--bg-dark)", color: "var(--text-light)", padding: "40px 0 80px 0" }}>
+    <main className="font-outfit">
       <PageHeader
         title="Esports Arena"
         subtitle="Live scores, schedule updates, and insights on the biggest gaming tournaments in the world."

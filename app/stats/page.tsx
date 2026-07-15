@@ -71,7 +71,7 @@ export default function StatsPage() {
   const [activeTab, setActiveTab] = useState("Cricket");
 
   return (
-    <main className="min-vh-100 font-outfit" style={{ background: "var(--bg-dark)", color: "var(--text-light)", padding: "40px 0 80px 0" }}>
+    <main className="font-outfit">
       <PageHeader
         title="Player Stats & Leaders"
         subtitle="Leading player statistics and performance metrics across top global leagues."
@@ -104,7 +104,7 @@ export default function StatsPage() {
       <div className="container custom-container">
         <div className="d-flex flex-column gap-5">
           {statsCategories[activeTab]?.map((group, idx) => (
-            <div key={idx} className="premium-table-container p-4">
+            <div key={idx} className="premium-table-container p-2 p-md-4">
               <h5 className="fw-bold text-white mb-4 font-space-grotesk" style={{ fontSize: "15px" }}>
                 {group.title}
               </h5>

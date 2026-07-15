@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import PageHeader from "@/components/PageHeader";
@@ -99,11 +99,11 @@ const allFixtures = [
 
 // ─── Config ──────────────────────────────────────────────────────────────────
 const sportConfig: Record<string, { color: string; icon: string }> = {
-  "All":      { color: "#22c55e", icon: "bi-grid-fill" },
-  "Cricket":  { color: "#22c55e", icon: "bi-trophy-fill" },
+  "All": { color: "#22c55e", icon: "bi-grid-fill" },
+  "Cricket": { color: "#22c55e", icon: "bi-trophy-fill" },
   "Football": { color: "#3b82f6", icon: "bi-dribbble" },
-  "NFL":      { color: "#f59e0b", icon: "bi-shield-fill" },
-  "AFL":      { color: "#ec4899", icon: "bi-circle-fill" },
+  "NFL": { color: "#f59e0b", icon: "bi-shield-fill" },
+  "AFL": { color: "#ec4899", icon: "bi-circle-fill" },
 };
 
 const dayOrder = ["Today", "Tomorrow", "Wed, 16 Jul", "Thu, 17 Jul", "Fri, 18 Jul"];
@@ -111,6 +111,16 @@ const dayOrder = ["Today", "Tomorrow", "Wed, 16 Jul", "Thu, 17 Jul", "Fri, 18 Ju
 export default function FixturesPage() {
   const [activeTab, setActiveTab] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const search = params.get("search");
+      if (search) {
+        setSearchQuery(search);
+      }
+    }
+  }, []);
 
   const filtered = useMemo(() => {
     return allFixtures.filter((f) => {
@@ -142,7 +152,7 @@ export default function FixturesPage() {
 
   return (
     <main
-      className="min-vh-100 font-outfit"
+      className="font-outfit"
       style={{ background: "var(--bg-dark)", color: "var(--text-light)", padding: "40px 0 80px 0" }}
     >
       {/* ─── Hero Header ─────────────────────────────────────────────── */}

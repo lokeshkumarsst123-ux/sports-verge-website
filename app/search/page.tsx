@@ -13,6 +13,7 @@ import {
   liveScoresDetailData
 } from "@/data/mockData";
 import { newsArticles } from "@/data/newsData";
+import SearchSkeleton from "@/components/SearchSkeleton";
 
 // ─── Data Extraction & Indexing ─────────────────────────────────────────────
 
@@ -158,9 +159,17 @@ function SearchContent() {
 
   const [query, setQuery] = useState(queryParam);
   const [activeTab, setActiveTab] = useState<"all" | "news" | "matches" | "teams" | "competitions">("all");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setQuery(queryParam);
+    if (queryParam) {
+      setLoading(true);
+      const timer = setTimeout(() => {
+        setLoading(false);
+      }, 700);
+      return () => clearTimeout(timer);
+    }
   }, [queryParam]);
 
   const results = performSearch(queryParam);
@@ -227,7 +236,17 @@ function SearchContent() {
         </div>
       </div>
 
-      {queryParam && totalResults > 0 ? (
+      {queryParam && loading ? (
+        <>
+          {/* Tab Filters Placeholder */}
+          <div className="d-flex border-bottom border-dark overflow-auto mb-4 gap-2 pb-1">
+            <div className="skeleton-line w-100px h-32px rounded-pill"></div>
+            <div className="skeleton-line w-100px h-32px rounded-pill"></div>
+            <div className="skeleton-line w-100px h-32px rounded-pill"></div>
+          </div>
+          <SearchSkeleton />
+        </>
+      ) : queryParam && totalResults > 0 ? (
         <>
           {/* Tab Filters */}
           <div className="d-flex border-bottom border-dark overflow-auto mb-4 custom-tabs gap-2 pb-1">
@@ -503,10 +522,11 @@ function SearchContent() {
 export default function SearchPage() {
   return (
     <Suspense fallback={
-      <div className="container py-5 min-h-80vh d-flex align-items-center justify-content-center">
-        <div className="spinner-border text-success" role="status">
-          <span className="visually-hidden">Loading search...</span>
-        </div>
+      <div className="container py-5 min-h-80vh">
+        <div className="skeleton-line w-100 h-60px mb-4 rounded-3"></div>
+        <div className="skeleton-line w-300px h-32px mb-2"></div>
+        <div className="skeleton-line w-200px h-16px mb-5"></div>
+        <SearchSkeleton />
       </div>
     }>
       <SearchContent />

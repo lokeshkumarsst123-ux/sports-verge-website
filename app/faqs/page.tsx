@@ -34,7 +34,7 @@ export default function FAQsPage() {
   const toggle = (key: string) => setOpenItem(openItem === key ? null : key);
 
   return (
-    <main className="min-vh-100 font-outfit" style={{ background: "var(--bg-dark)", color: "var(--text-light)", padding: "40px 0 80px 0" }}>
+    <main className="font-outfit">
       <div className="container custom-container" style={{ maxWidth: "780px" }}>
         {/* Header */}
         <PageHeader

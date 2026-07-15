@@ -28,7 +28,7 @@ export default function AshesPage() {
   const [activeTab, setActiveTab] = useState<"matches" | "stats" | "history">("matches");
 
   return (
-    <main className="min-vh-100 font-outfit" style={{ background: "var(--bg-dark)", color: "var(--text-light)", padding: "40px 0 80px 0" }}>
+    <main className="font-outfit">
       <PageHeader
         title="The Ashes 2026"
         subtitle="Australia vs England Test Series match schedules, stats leaders, results, and team news."

@@ -43,7 +43,7 @@ const leagues = [
 
 export default function FantasyLeaguesPage() {
   return (
-    <main className="min-vh-100 font-outfit" style={{ background: "var(--bg-dark)", color: "var(--text-light)", padding: "40px 0 80px 0" }}>
+    <main className="font-outfit">
       <PageHeader
         title="Fantasy Leagues"
         subtitle="Build your dream team, join official public leagues, and win exclusive prizes."

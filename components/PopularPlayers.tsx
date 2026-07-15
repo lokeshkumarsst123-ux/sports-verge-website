@@ -47,12 +47,12 @@ export default function PopularPlayers() {
         <h2 className="h5 m-0 fw-semibold border-start border-success border-3 ps-2">
           Popular Players
         </h2>
-        <Link href="#" className="text-success text-decoration-none small fw-medium">
+        <Link href="/stats" className="text-success text-decoration-none small fw-medium">
           View All
         </Link>
       </div>
 
-      <ul className="nav nav-pills custom-tabs mb-4 flex-nowrap gap-2 overflow-x-auto">
+      <ul className="nav nav-pills custom-tabs mb-4 flex-nowrap overflow-x-auto scrollbar-none gap-2">
         {(["all", "cricket", "football", "NFL", "AFL"] as const).map((tab) => (
           <li className="nav-item" key={tab}>
             <button

@@ -1,8 +1,9 @@
-import React from "react";
+"use client";
+
+import React, { useEffect } from "react";
 import Link from "next/link";
 import PageHeader from "@/components/PageHeader";
-
-export const metadata = { title: "Popular Teams – The SportsVerge" };
+import { useFavorites } from "@/components/FavoritesContext";
 
 const sportsTeams = [
   {
@@ -40,8 +41,38 @@ const sportsTeams = [
 ];
 
 export default function TeamsPage() {
+  useEffect(() => {
+    document.title = "Popular Teams – The SportsVerge";
+  }, []);
+
+  const { isFavoriteTeam, addFavoriteTeam, removeFavoriteTeam } = useFavorites();
+
+  const toggleBookmark = (name: string) => {
+    if (isFavoriteTeam(name)) {
+      removeFavoriteTeam(name);
+    } else {
+      addFavoriteTeam(name);
+    }
+  };
+
+  const getSearchTerm = (teamName: string, code: string) => {
+    if (teamName.includes("Chennai") || code === "CSK") return "CSK";
+    if (teamName.includes("Bengaluru") || code === "RCB") return "RCB";
+    if (teamName.includes("Mumbai") || code === "MI") return "Mumbai";
+    if (teamName.includes("Kolkata") || code === "KKR") return "KKR";
+    if (teamName.includes("Manchester") || code === "MCI") return "Man City";
+    if (teamName.includes("Arsenal") || code === "ARS") return "Arsenal";
+    if (teamName.includes("Liverpool") || code === "LIV") return "Liverpool";
+    if (teamName.includes("Aston") || code === "AVL") return "Aston Villa";
+    if (teamName.includes("Kansas") || code === "KC") return "Chiefs";
+    if (teamName.includes("Buffalo") || code === "BUF") return "Bills";
+    if (teamName.includes("Brisbane") || code === "BL") return "Lions";
+    if (teamName.includes("Essendon") || code === "ESS") return "Bombers";
+    return code;
+  };
+
   return (
-    <main className="min-vh-100 font-outfit" style={{ background: "var(--bg-dark)", color: "var(--text-light)", padding: "40px 0 80px 0" }}>
+    <main className="font-outfit">
       <PageHeader
         title="Popular Teams"
         subtitle="Browse major teams across Cricket, Football, NFL & AFL. Click to see their recent fixtures and stats."
@@ -56,21 +87,37 @@ export default function TeamsPage() {
                 {group.sport}
               </h5>
               <div className="row g-3">
-                {group.teams.map((t, tIdx) => (
-                  <div key={tIdx} className="col-12 col-sm-6 col-md-3">
-                    <Link href={`/search?q=${t.name}`} className="text-decoration-none">
-                      <div className="rounded-4 p-4 text-center h-100 transition-all hover-translate" style={{ background: "var(--bg-card)", border: "1px solid var(--border-dark)" }}>
-                        <div className="d-flex align-items-center justify-content-center mx-auto mb-3 overflow-hidden rounded-3" style={{ width: "64px", height: "64px", background: "rgba(255,255,255,0.03)", border: "1px solid var(--border-dark)" }}>
-                          <img src={t.logo} alt={t.name} className="w-75 h-75 object-fit-contain" />
+                {group.teams.map((t, tIdx) => {
+                  const isBookmarked = isFavoriteTeam(t.name);
+                  return (
+                    <div key={tIdx} className="col-12 col-sm-6 col-md-3">
+                      <Link href={`/fixtures?search=${encodeURIComponent(getSearchTerm(t.name, t.code))}`} className="text-decoration-none">
+                        <div className="rounded-4 p-4 text-center h-100 transition-all hover-translate position-relative" style={{ background: "var(--bg-card)", border: "1px solid var(--border-dark)" }}>
+                          <button
+                            className="btn btn-link p-0 position-absolute"
+                            style={{ top: "14px", right: "14px", zIndex: 5 }}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              toggleBookmark(t.name);
+                            }}
+                            aria-label="Bookmark Team"
+                          >
+                            <i className={`bi ${isBookmarked ? "bi-star-fill text-warning" : "bi-star text-muted"}`} style={{ fontSize: "16px" }}></i>
+                          </button>
+
+                          <div className="d-flex align-items-center justify-content-center mx-auto mb-3 overflow-hidden rounded-3" style={{ width: "64px", height: "64px", background: "rgba(255,255,255,0.03)", border: "1px solid var(--border-dark)" }}>
+                            <img src={t.logo} alt={t.name} className="w-75 h-75 object-fit-contain" />
+                          </div>
+                          <h6 className="fw-bold text-white mb-1" style={{ fontSize: "14px" }}>{t.name}</h6>
+                          <span className="badge rounded-pill fw-semibold font-monospace" style={{ fontSize: "10px", background: "rgba(26,140,61,0.12)", color: "#86efac" }}>
+                            {t.code}
+                          </span>
                         </div>
-                        <h6 className="fw-bold text-white mb-1" style={{ fontSize: "14px" }}>{t.name}</h6>
-                        <span className="badge rounded-pill fw-semibold font-monospace" style={{ fontSize: "10px", background: "rgba(26,140,61,0.12)", color: "#86efac" }}>
-                          {t.code}
-                        </span>
-                      </div>
-                    </Link>
-                  </div>
-                ))}
+                      </Link>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           ))}

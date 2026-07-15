@@ -122,11 +122,54 @@ const getTeamLogo = (name: string): string => {
   return "";
 };
 
+const getTeamCode = (name: string): string => {
+  const n = name.toLowerCase();
+  if (n.includes("mumbai")) return "MI";
+  if (n.includes("csk") || n.includes("chennai")) return "CSK";
+  if (n.includes("rcb") || n.includes("bengaluru")) return "RCB";
+  if (n.includes("delhi")) return "DC";
+  if (n.includes("kolkata") || n === "kkr") return "KKR";
+  
+  if (n === "india") return "IND";
+  if (n === "australia") return "AUS";
+  if (n === "south africa") return "RSA";
+  if (n === "pakistan") return "PAK";
+  if (n === "england") return "ENG";
+  if (n === "new zealand") return "NZ";
+
+  if (n === "arsenal") return "ARS";
+  if (n.includes("manchester city") || n.includes("man city")) return "MCI";
+  if (n.includes("manchester united") || n.includes("man utd")) return "MUN";
+  if (n === "liverpool") return "LIV";
+  if (n === "chelsea") return "CHE";
+  if (n === "tottenham") return "TOT";
+  if (n === "argentina") return "ARG";
+  if (n === "france") return "FRA";
+  if (n === "belgium") return "BEL";
+  if (n === "brazil") return "BRA";
+
+  if (n.includes("chiefs")) return "KC";
+  if (n.includes("bills")) return "BUF";
+  if (n.includes("dolphins")) return "MIA";
+  if (n.includes("ravens")) return "BAL";
+  if (n.includes("49ers")) return "SF";
+  if (n.includes("cowboys")) return "DAL";
+  if (n.includes("lions")) return "DET";
+
+  if (n.includes("collingwood") || n.includes("magpies")) return "COL";
+  if (n.includes("brisbane") || n.includes("lions")) return "BL";
+  if (n.includes("port adelaide") || n.includes("power")) return "PORT";
+  if (n.includes("carlton") || n.includes("blues")) return "CAR";
+  if (n.includes("giants")) return "GWS";
+
+  return name.slice(0, 3).toUpperCase();
+};
+
 export default function RankingsPage() {
   const [activeTab, setActiveTab] = useState("Cricket");
 
   return (
-    <main className="min-vh-100 font-outfit" style={{ background: "var(--bg-dark)", color: "var(--text-light)", padding: "40px 0 80px 0" }}>
+    <main className="font-outfit">
       <PageHeader
         title="World Rankings"
         subtitle="Official team rankings and standings across major international sports leagues."
@@ -161,7 +204,7 @@ export default function RankingsPage() {
       <div className="container custom-container">
         <div className="d-flex flex-column gap-4">
           {rankingsData[activeTab]?.map((group, idx) => (
-            <div key={idx} className="premium-table-container p-4">
+            <div key={idx} className="premium-table-container p-2 p-md-4">
               <h5 className="fw-bold text-white mb-4 font-space-grotesk" style={{ fontSize: "16px" }}>
                 {group.category}
               </h5>
@@ -181,18 +224,19 @@ export default function RankingsPage() {
                       <tr key={item.rank}>
                         <td className="premium-table-rank text-start text-success">#{item.rank}</td>
                         <td className="premium-table-team text-start">
-                          <div className="d-flex align-items-center gap-2">
+                          <div className="d-flex align-items-center gap-1 gap-sm-2">
                             {(() => {
                               const logo = getTeamLogo(item.name);
                               return logo ? (
-                                <img src={logo} alt={item.name} style={{ width: "20px", height: "20px", objectFit: "contain" }} />
+                                <img src={logo} alt={item.name} style={{ width: "16px", height: "16px", objectFit: "contain" }} />
                               ) : (
-                                <div className="d-flex align-items-center justify-content-center rounded-circle text-white fw-bold" style={{ width: "20px", height: "20px", fontSize: "10px", background: "rgba(255, 255, 255, 0.08)", border: "1px solid rgba(255, 255, 255, 0.15)" }}>
+                                <div className="d-none d-sm-flex align-items-center justify-content-center rounded-circle text-white fw-bold" style={{ width: "20px", height: "20px", fontSize: "10px", background: "rgba(255, 255, 255, 0.08)", border: "1px solid rgba(255, 255, 255, 0.15)" }}>
                                   {item.name.charAt(0)}
                                 </div>
                               );
                             })()}
-                            <span className="text-truncate">{item.name}</span>
+                            <span className="text-truncate d-none d-sm-inline">{item.name}</span>
+                            <span className="d-inline d-sm-none">{getTeamCode(item.name)}</span>
                           </div>
                         </td>
                         <td className="premium-table-stat-bold text-center">{item.points}</td>

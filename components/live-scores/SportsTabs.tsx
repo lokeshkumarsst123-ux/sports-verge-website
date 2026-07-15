@@ -18,7 +18,7 @@ const sports = [
 export default function SportsTabs({ activeTab, onTabChange }: SportsTabsProps) {
   return (
     <div className="sports-tabs-container">
-      <ul className="nav nav-pills custom-tabs d-flex flex-nowrap gap-2 pb-2 overflow-x-auto">
+      <ul className="nav nav-pills custom-tabs d-flex flex-nowrap overflow-x-auto scrollbar-none gap-2 pb-2">
         {sports.map((sport) => {
           const isActive = activeTab === sport.id;
           return (

@@ -128,7 +128,7 @@ export default function ContactPage() {
   };
 
   return (
-    <main className="min-vh-100 bg-page text-white py-5 font-outfit">
+    <main className="bg-page text-white py-5 font-outfit">
       <div className="container py-4">
         {/* Header */}
         <div className="row mb-5 text-center text-lg-start">

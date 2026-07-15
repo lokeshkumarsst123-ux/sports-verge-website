@@ -19,7 +19,7 @@ export default function AFLMatchDetail({ match }: AFLMatchDetailProps) {
   return (
     <div className="afl-match-detail w-100">
       {/* ── Tab Navigation ── */}
-      <div className="d-flex border-bottom border-dark overflow-auto mb-4 custom-tabs gap-2 pb-1">
+      <div className="d-flex border-bottom border-dark overflow-x-auto scrollbar-none mb-4 custom-tabs gap-2 pb-1">
         {[
           { id: "overview", label: "Overview", icon: "bi-info-square" },
           { id: "stats", label: "Team Stats", icon: "bi-bar-chart" },

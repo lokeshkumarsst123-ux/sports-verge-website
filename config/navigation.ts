@@ -39,7 +39,7 @@ export const mainMenuItems: MenuItem[] = [
     href: "#",
     children: [
       { title: "Live Scores", href: "/live-scores" },
-      { title: "Draft News", href: "/news?search=Draft" },
+
       { title: "Teams", href: "/teams" },
     ],
   },

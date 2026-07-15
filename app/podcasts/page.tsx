@@ -43,7 +43,7 @@ const episodes = [
 
 export default function PodcastsPage() {
   return (
-    <main className="min-vh-100 font-outfit" style={{ background: "var(--bg-dark)", color: "var(--text-light)", padding: "40px 0 80px 0" }}>
+    <main className="font-outfit">
       <PageHeader
         title="Podcasts & Videos"
         subtitle="Listen to expert analyses and watch match reviews from our team of professional sports journalists."

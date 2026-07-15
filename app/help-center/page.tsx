@@ -15,7 +15,7 @@ const topics = [
 
 export default function HelpCenterPage() {
   return (
-    <main className="min-vh-100 font-outfit" style={{ background: "var(--bg-dark)", color: "var(--text-light)", padding: "40px 0 80px 0" }}>
+    <main className="font-outfit">
       <div className="container custom-container">
         {/* Header */}
         <PageHeader

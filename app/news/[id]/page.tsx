@@ -49,7 +49,7 @@ export default function NewsDetailsPage() {
 
   if (!article) {
     return (
-      <main className="py-5 min-vh-100 text-white d-flex align-items-center justify-content-center font-outfit" style={{ background: "var(--bg-dark)" }}>
+      <main className="font-outfit text-white">
         <div className="text-center p-5 bg-card border border-dark rounded-4 shadow-lg" style={{ maxWidth: "480px" }}>
           <div className="mb-4" style={{ fontSize: "4rem" }}>📰</div>
           <h2 className="fw-bold mb-2 text-white">Article Not Found</h2>
@@ -65,7 +65,7 @@ export default function NewsDetailsPage() {
   }
 
   return (
-    <main className="min-vh-100 font-outfit text-white" style={{ background: "var(--bg-dark)", paddingTop: "24px", paddingBottom: "60px" }}>
+    <main className="font-outfit text-white">
       <div className="container custom-container">
 
         {/* ─── Breadcrumb ─── */}

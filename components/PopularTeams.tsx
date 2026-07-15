@@ -22,7 +22,7 @@ export default function PopularTeams() {
     <aside className="popular-teams-section bg-card rounded-3 p-4 border border-dark mt-4 sticky-top popular-teams-aside">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h2 className="h5 m-0 fw-semibold border-start border-success border-3 ps-2">Popular Teams</h2>
-        <Link href="#" className="text-success text-decoration-none small fw-medium">
+        <Link href="/teams" className="text-success text-decoration-none small fw-medium">
           View All
         </Link>
       </div>

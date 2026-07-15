@@ -40,7 +40,7 @@ export default function LiveScores() {
         </Link>
       </div>
 
-      <ul className="nav nav-pills custom-tabs mb-3 flex-nowrap gap-2" id="scores-tab" role="tablist">
+      <ul className="nav nav-pills custom-tabs mb-3 flex-nowrap overflow-x-auto scrollbar-none gap-2" id="scores-tab" role="tablist">
         {(["all", "cricket", "football", "NFL", "AFL"] as const).map((tab) => (
           <li className="nav-item" role="presentation" key={tab}>
             <button
@@ -66,17 +66,11 @@ export default function LiveScores() {
                   <Link
                     key={idx}
                     href={getMatchLink(match)}
-                    className={`score-box d-block text-decoration-none rounded-3 p-3 mb-3 border ${isMatchFav ? "border-warning border-opacity-50" : "border-dark"}`}
-                    style={isMatchFav ? { background: "linear-gradient(180deg, rgba(255, 193, 7, 0.05) 0%, rgba(20, 20, 20, 0.4) 100%)" } : {}}
+                    className="score-box d-block text-decoration-none rounded-3 p-3 mb-3 border border-dark"
                   >
                     <div className="d-flex justify-content-between align-items-center mb-2">
                       <span className="small text-muted text-truncate" style={{ maxWidth: "160px" }}>{match.league}</span>
                       <div className="d-flex align-items-center gap-2">
-                        {isMatchFav && (
-                          <span className="badge bg-warning text-dark px-1.5 py-0.5 rounded-pill fs-10 fw-bold">
-                            <i className="bi bi-star-fill text-dark fs-10"></i>
-                          </span>
-                        )}
                         {match.status === "LIVE" ? (
                           <span className="badge bg-danger">LIVE</span>
                         ) : (
