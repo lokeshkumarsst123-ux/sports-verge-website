@@ -92,8 +92,9 @@ export default function PopularPlayers() {
                   <Image
                     src={player.image}
                     alt={player.name}
-                    width={170}
-                    height={220}
+                    width={160}
+                    height={180}
+                    sizes="(min-width: 992px) 160px, 140px"
                     className="w-100 player-thumb"
                   />
                 </div>

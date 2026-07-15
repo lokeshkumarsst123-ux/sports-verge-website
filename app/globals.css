@@ -1,3 +1,12 @@
+@font-face {
+  font-family: "bootstrap-icons";
+  src: url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/fonts/bootstrap-icons.woff2?2820a38d70b3cc1a63c6cf7c7c42ccb3") format("woff2"),
+       url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/fonts/bootstrap-icons.woff?2820a38d70b3cc1a63c6cf7c7c42ccb3") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 html,
 body {
   margin: 0;
