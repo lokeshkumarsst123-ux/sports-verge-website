@@ -159,11 +159,11 @@ export default function Header() {
                     className="d-flex align-items-center text-decoration-none ms-4 bg-transparent border-0 p-0 text-start"
                     style={{ outline: "none" }}
                   >
-                    <div className="d-flex flex-column text-end me-3">
-                      <span className="text-white fw-semibold small lh-1-2 hover-text-success transition-all">
+                    <div className="d-flex flex-column text-end me-3" style={{ maxWidth: "150px" }}>
+                      <span className="text-white fw-semibold small lh-1-2 hover-text-success transition-all text-truncate d-block">
                         {user.firstName} {user.lastName}
                       </span>
-                      <span className="text-success fs-11">{user.email}</span>
+                      <span className="text-success fs-11 text-truncate d-block">{user.email}</span>
                     </div>
                     <div
                       className="rounded-circle d-flex align-items-center justify-content-center text-white shadow-sm header-user-avatar hover-glow"
@@ -195,7 +195,7 @@ export default function Header() {
                         onClick={() => {
                           setIsProfileDropdownOpen(false);
                           sessionStorage.removeItem("user_session");
-                          window.location.href = "/login";
+                          window.location.href = "/";
                         }}
                         className="dropdown-item-premium w-100 border-0 bg-transparent d-flex align-items-center gap-2 px-3 py-2 text-start text-danger rounded fs-14"
                       >
@@ -240,9 +240,9 @@ export default function Header() {
                     >
                       {user.firstName.charAt(0)}{user.lastName.charAt(0)}
                     </div>
-                    <div className="d-flex flex-column min-w-0">
-                      <span className="text-white fw-bold fs-15 text-truncate">{user.firstName} {user.lastName}</span>
-                      <span className="text-success small fs-12 text-truncate">{user.email}</span>
+                    <div className="d-flex flex-column min-w-0" style={{ maxWidth: "180px" }}>
+                      <span className="text-white fw-bold fs-15 text-truncate d-block">{user.firstName} {user.lastName}</span>
+                      <span className="text-success small fs-12 text-truncate d-block">{user.email}</span>
                     </div>
                   </div>
                   {/* Action buttons row */}
@@ -257,7 +257,7 @@ export default function Header() {
                       <button
                         onClick={() => {
                           sessionStorage.removeItem("user_session");
-                          window.location.href = "/login";
+                          window.location.href = "/";
                         }}
                         className="btn btn-sm btn-outline-danger gap-1 w-100 py-2 rounded-pill font-space-grotesk fw-bold fs-12 d-flex align-items-center justify-content-center gap-1.5"
                       >

@@ -173,7 +173,7 @@ export default function ProfileDashboard() {
         <button
           onClick={() => {
             sessionStorage.removeItem("user_session");
-            window.location.href = "/login";
+            window.location.href = "/";
           }}
           className="btn btn-outline-danger px-4 py-2 fw-semibold"
         >

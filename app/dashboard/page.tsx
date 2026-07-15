@@ -45,7 +45,7 @@ export default function DashboardPage() {
 
   const handleLogout = () => {
     sessionStorage.removeItem("user_session");
-    router.push("/login");
+    router.push("/");
   };
 
   if (loading) {
