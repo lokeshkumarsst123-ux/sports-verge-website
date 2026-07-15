@@ -95,7 +95,7 @@ export default function LoginPage() {
   return (
     <main
       className="min-vh-100 d-flex align-items-center justify-content-center py-5 px-3 position-relative overflow-hidden auth-main-bg"
-      
+
     >
       {/* Background Mesh Glows */}
       <div
@@ -130,9 +130,8 @@ export default function LoginPage() {
           {/* Global Alert Notification */}
           {globalError && (
             <div
-              className={`alert d-flex flex-column gap-1.5 align-items-start ${
-                resendOption ? "alert-warning bg-warning bg-opacity-10 border-warning border-opacity-20 text-warning" : "alert-danger bg-danger bg-opacity-10 border-danger border-opacity-20 text-danger"
-              } small rounded-3 p-3 mb-4`}
+              className={`alert d-flex flex-column gap-1.5 align-items-start ${resendOption ? "alert-warning bg-warning bg-opacity-10 border-warning border-opacity-20 text-warning" : "alert-danger bg-danger bg-opacity-10 border-danger border-opacity-20 text-danger"
+                } small rounded-3 p-3 mb-4`}
               role="alert"
             >
               <div className="d-flex align-items-center gap-2 fw-semibold">
@@ -162,10 +161,9 @@ export default function LoginPage() {
                 name="email"
                 value={formData.email}
                 onChange={handleInputChange}
-                className={`form-control bg-dark text-white fw-medium border-0 ${
-                  errors.email ? "is-invalid" : ""
-                }`}
-                
+                className={`form-control bg-dark text-white fw-medium border-0 ${errors.email ? "is-invalid" : ""
+                  }`}
+
                 placeholder="john@example.com"
               />
               {errors.email && (
@@ -189,10 +187,9 @@ export default function LoginPage() {
                   name="password"
                   value={formData.password}
                   onChange={handleInputChange}
-                  className={`form-control bg-dark text-white fw-medium border-0 pe-5 ${
-                    errors.password ? "is-invalid" : ""
-                  }`}
-                  
+                  className={`form-control bg-dark text-white fw-medium border-0 pe-5 ${errors.password ? "is-invalid" : ""
+                    }`}
+
                   placeholder="••••••••"
                 />
                 <button
@@ -211,7 +208,7 @@ export default function LoginPage() {
             <button
               type="submit"
               className="btn btn-signup w-100 fw-semibold text-uppercase py-2.5 mt-3 ls-05"
-              
+
               disabled={loading}
             >
               {loading ? (

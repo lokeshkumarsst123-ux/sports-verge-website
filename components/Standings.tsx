@@ -85,12 +85,12 @@ export default function Standings() {
     <aside className="standings-section bg-card rounded-3 p-4 border border-dark mt-4">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h2 className="h5 m-0 fw-semibold border-start border-success border-3 ps-2">Standings</h2>
-        <Link href="#" className="text-success text-decoration-none small fw-medium">
+        <Link href="/standings" className="text-success text-decoration-none small fw-medium">
           View Table
         </Link>
       </div>
 
-      <ul className="nav nav-pills custom-tabs mb-3 flex-wrap gap-2" role="tablist">
+      <ul className="nav nav-pills custom-tabs mb-3 flex-nowrap overflow-x-auto scrollbar-none gap-2" role="tablist">
         {(["cricket", "football", "NFL", "AFL"] as const).map((sport) => (
           <li className="nav-item" role="presentation" key={sport}>
             <button
@@ -337,7 +337,7 @@ export default function Standings() {
       )}
 
       <Link
-        href="#"
+        href="/standings"
         className="btn btn-outline-success w-100 mt-3 p-2 rounded-3 text-capitalize fw-medium fs-13"
       >
         All Standings

@@ -5,9 +5,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { LiveScoreMatch } from "@/types";
 import { liveScoresData } from "@/data/mockData";
+import { useFavorites } from "@/components/FavoritesContext";
 
 export default function LiveScores() {
   const [activeTab, setActiveTab] = useState<"all" | "cricket" | "football" | "NFL" | "AFL">("all");
+  const { isFavoriteTeam, isFavoriteCompetition } = useFavorites();
 
   const getMatchLink = (match: LiveScoreMatch) => {
     if (match.id) return `/live-scores/${match.id}`;
@@ -20,6 +22,15 @@ export default function LiveScores() {
     ? liveScoresData
     : liveScoresData.filter((match) => match.sport === activeTab);
 
+  // Prioritize live matches involving favorite teams or competitions
+  const sortedMatches = [...filteredMatches].sort((a, b) => {
+    const aFav = isFavoriteTeam(a.homeTeam) || isFavoriteTeam(a.awayTeam) || isFavoriteCompetition(a.league);
+    const bFav = isFavoriteTeam(b.homeTeam) || isFavoriteTeam(b.awayTeam) || isFavoriteCompetition(b.league);
+    if (aFav && !bFav) return -1;
+    if (!aFav && bFav) return 1;
+    return 0;
+  });
+
   return (
     <aside className="live-scores-section bg-card rounded-3 py-4 px-3 border border-dark">
       <div className="d-flex justify-content-between align-items-center mb-4">
@@ -29,7 +40,7 @@ export default function LiveScores() {
         </Link>
       </div>
 
-      <ul className="nav nav-pills custom-tabs mb-3 flex-nowrap gap-2" id="scores-tab" role="tablist">
+      <ul className="nav nav-pills custom-tabs mb-3 flex-nowrap overflow-x-auto scrollbar-none gap-2" id="scores-tab" role="tablist">
         {(["all", "cricket", "football", "NFL", "AFL"] as const).map((tab) => (
           <li className="nav-item" role="presentation" key={tab}>
             <button
@@ -47,21 +58,26 @@ export default function LiveScores() {
       <div className="scores-list">
         <div className="tab-content">
           <div className="tab-pane fade show active" role="tabpanel">
-            {filteredMatches.length > 0 ? (
-              filteredMatches.map((match: LiveScoreMatch, idx: number) => (
-                <Link
-                  key={idx}
-                  href={getMatchLink(match)}
-                  className="score-box d-block text-decoration-none rounded-3 p-3 mb-3 border border-dark"
-                >
-                  <div className="d-flex justify-content-between align-items-center mb-2">
-                    <span className="small text-muted">{match.league}</span>
-                    {match.status === "LIVE" ? (
-                      <span className="badge bg-danger">LIVE</span>
-                    ) : (
-                      <span className="text-success small">{match.status}</span>
-                    )}
-                  </div>
+            {sortedMatches.length > 0 ? (
+              sortedMatches.map((match: LiveScoreMatch, idx: number) => {
+                const isMatchFav = isFavoriteTeam(match.homeTeam) || isFavoriteTeam(match.awayTeam) || isFavoriteCompetition(match.league);
+
+                return (
+                  <Link
+                    key={idx}
+                    href={getMatchLink(match)}
+                    className="score-box d-block text-decoration-none rounded-3 p-3 mb-3 border border-dark"
+                  >
+                    <div className="d-flex justify-content-between align-items-center mb-2">
+                      <span className="small text-muted text-truncate" style={{ maxWidth: "160px" }}>{match.league}</span>
+                      <div className="d-flex align-items-center gap-2">
+                        {match.status === "LIVE" ? (
+                          <span className="badge bg-danger">LIVE</span>
+                        ) : (
+                          <span className="text-success small">{match.status}</span>
+                        )}
+                      </div>
+                    </div>
 
                   <div className="d-flex justify-content-between align-items-center mb-3">
                     <div className="d-flex align-items-center">
@@ -111,7 +127,8 @@ export default function LiveScores() {
                     </div>
                   )}
                 </Link>
-              ))
+              );
+            })
             ) : (
               <div className="p-3 text-center text-muted small">No Live Match</div>
             )}

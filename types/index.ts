@@ -2,6 +2,7 @@ export interface SlideItem {
   image: string;
   title: string;
   desc: string;
+  newsId?: string;
 }
 
 export interface FixtureItem {

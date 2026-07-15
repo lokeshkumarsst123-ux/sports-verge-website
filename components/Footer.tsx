@@ -54,101 +54,37 @@ export default function Footer() {
               <div className="col-6 col-sm-3">
                 <h6 className="footer-title text-white fw-semibold small mb-3">EXPLORE</h6>
                 <ul className="list-unstyled mb-0 d-flex flex-column gap-2 small">
-                  <li>
-                    <Link href="#" className="footer-link">
-                      Cricket
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="#" className="footer-link">
-                      Football
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="#" className="footer-link">
-                      NFL
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="#" className="footer-link">
-                      AFL
-                    </Link>
-                  </li>
+                  <li><Link href="/news?category=Cricket" className="footer-link">Cricket</Link></li>
+                  <li><Link href="/news?category=Football" className="footer-link">Football</Link></li>
+                  <li><Link href="/news?category=NFL" className="footer-link">NFL</Link></li>
+                  <li><Link href="/news?category=AFL" className="footer-link">AFL</Link></li>
                 </ul>
               </div>
               <div className="col-6 col-sm-3">
-                <h6 className="footer-title text-white fw-semibold small mb-3">Live Stats</h6>
+                <h6 className="footer-title text-white fw-semibold small mb-3">LIVE STATS</h6>
                 <ul className="list-unstyled mb-0 d-flex flex-column gap-2 small">
-                  <li>
-                    <Link href="#" className="footer-link">
-                      Live Scores
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="#" className="footer-link">
-                      Fixtures
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="#" className="footer-link">
-                      Results
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="#" className="footer-link">
-                      Standings
-                    </Link>
-                  </li>
+                  <li><Link href="/live-scores" className="footer-link">Live Scores</Link></li>
+                  <li><Link href="/fixtures" className="footer-link">Fixtures</Link></li>
+                  <li><Link href="/results" className="footer-link">Results</Link></li>
+                  <li><Link href="/standings" className="footer-link">Standings</Link></li>
                 </ul>
               </div>
               <div className="col-6 col-sm-3">
                 <h6 className="footer-title text-white fw-semibold small mb-3">COMPANY</h6>
                 <ul className="list-unstyled mb-0 d-flex flex-column gap-2 small">
-                  <li>
-                    <Link href="#" className="footer-link">
-                      About Us
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="#" className="footer-link">
-                      Contact Us
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="#" className="footer-link">
-                      Privacy Policy
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="#" className="footer-link">
-                      Terms of Use
-                    </Link>
-                  </li>
+                  <li><Link href="/about" className="footer-link">About Us</Link></li>
+                  <li><Link href="/contact" className="footer-link">Contact Us</Link></li>
+                  <li><Link href="/privacy-policy" className="footer-link">Privacy Policy</Link></li>
+                  <li><Link href="/terms-of-use" className="footer-link">Terms of Use</Link></li>
                 </ul>
               </div>
               <div className="col-6 col-sm-3">
                 <h6 className="footer-title text-white fw-semibold small mb-3">SUPPORT</h6>
                 <ul className="list-unstyled mb-0 d-flex flex-column gap-2 small">
-                  <li>
-                    <Link href="#" className="footer-link">
-                      Help Center
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="#" className="footer-link">
-                      FAQs
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="#" className="footer-link">
-                      Feedback
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="#" className="footer-link">
-                      How to Use
-                    </Link>
-                  </li>
+                  <li><Link href="/help-center" className="footer-link">Help Center</Link></li>
+                  <li><Link href="/faqs" className="footer-link">FAQs</Link></li>
+                  <li><Link href="/contact#feedback" className="footer-link">Feedback</Link></li>
+                  <li><Link href="/how-to-use" className="footer-link">How to Use</Link></li>
                 </ul>
               </div>
             </div>

@@ -45,46 +45,53 @@ export default function Hero() {
 
         {/* Slides */}
         <div className="carousel-inner border border-dark rounded-3 overflow-hidden">
-          {heroSlides.map((item: SlideItem, index: number) => (
-            <div
-              key={index}
-              className={`carousel-item custom-carousel-item ${index === activeIndex ? "active" : ""}`}
-            >
-              <Link href="#" className="d-block text-decoration-none">
-                <Image
-                  src={item.image}
-                  alt={item.title}
-                  width={1200}
-                  height={650}
-                  className="featured-img w-100 featured-img-cover"
-                  priority={index === 0}
-                  fetchPriority={index === 0 ? "high" : "auto"}
-                  sizes="(max-width: 768px) 100vw, 1200px"
-                />
+          {heroSlides.map((item: SlideItem, index: number) => {
+            // Use direct newsId if available, else fall back to title matching
+            const articleUrl = item.newsId
+              ? `/news/${item.newsId}`
+              : "/news";
 
-                <div className="featured-overlay"></div>
+            return (
+              <div
+                key={index}
+                className={`carousel-item custom-carousel-item ${index === activeIndex ? "active" : ""}`}
+              >
+                <Link href={articleUrl} className="d-block text-decoration-none">
+                  <Image
+                    src={item.image}
+                    alt={item.title}
+                    width={1200}
+                    height={650}
+                    className="featured-img w-100 featured-img-cover"
+                    priority={index === 0}
+                    fetchPriority={index === 0 ? "high" : "auto"}
+                    sizes="(max-width: 768px) 100vw, 1200px"
+                  />
 
-                <div className="carousel-caption custom-caption w-50 text-start">
-                  <span className="badge fw-normal ms-badge bg-dark mb-3 rounded-pill small">
-                    FEATURED NEWS
-                  </span>
+                  <div className="featured-overlay"></div>
 
-                  <h2 className="fw-semibold mb-3">
-                    {item.title}
-                  </h2>
+                  <div className="carousel-caption custom-caption w-50 text-start">
+                    <span className="badge fw-normal ms-badge bg-dark mb-3 rounded-pill small">
+                      FEATURED NEWS
+                    </span>
 
-                  <p className="mb-4 text-light">
-                    {item.desc}
-                  </p>
+                    <h2 className="fw-semibold mb-3">
+                      {item.title}
+                    </h2>
 
-                  <button className="btn btn-success px-4 py-2">
-                    Read Full Story
-                    <i className="bi bi-arrow-right ms-2"></i>
-                  </button>
-                </div>
-              </Link>
-            </div>
-          ))}
+                    <p className="mb-4 text-light">
+                      {item.desc}
+                    </p>
+
+                    <span className="btn btn-success px-4 py-2">
+                      Read Full Story
+                      <i className="bi bi-arrow-right ms-2"></i>
+                    </span>
+                  </div>
+                </Link>
+              </div>
+            );
+          })}
         </div>
 
         {/* Controls */}

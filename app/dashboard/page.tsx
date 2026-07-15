@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import DashboardSkeleton from "@/components/DashboardSkeleton";
 
 interface UserProfile {
   firstName: string;
@@ -19,23 +20,27 @@ export default function DashboardPage() {
   const [smsAlertsChecked, setSmsAlertsChecked] = useState(false);
 
   useEffect(() => {
-    // Check if session exists, fallback to registered user, otherwise redirect to login
-    const session = sessionStorage.getItem("user_session");
-    const registered = sessionStorage.getItem("registered_user");
+    setLoading(true);
+    const timer = setTimeout(() => {
+      const session = sessionStorage.getItem("user_session");
+      const registered = sessionStorage.getItem("registered_user");
 
-    if (session) {
-      setUser(JSON.parse(session));
-    } else if (registered) {
-      const parsed = JSON.parse(registered);
-      if (parsed.verified) {
-        setUser(parsed);
+      if (session) {
+        setUser(JSON.parse(session));
+      } else if (registered) {
+        const parsed = JSON.parse(registered);
+        if (parsed.verified) {
+          setUser(parsed);
+        } else {
+          router.push("/login");
+        }
       } else {
         router.push("/login");
       }
-    } else {
-      router.push("/login");
-    }
-    setLoading(false);
+      setLoading(false);
+    }, 800);
+
+    return () => clearTimeout(timer);
   }, [router]);
 
   const handleLogout = () => {
@@ -45,10 +50,8 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <main className="min-vh-100 d-flex align-items-center justify-content-center bg-dark text-white">
-        <div className="spinner-border text-success" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
+      <main className="font-outfit">
+        <DashboardSkeleton />
       </main>
     );
   }
@@ -56,7 +59,7 @@ export default function DashboardPage() {
   if (!user) return null;
 
   return (
-    <main className="min-vh-100 py-5">
+    <main className="font-outfit">
       <div className="container custom-container">
         {/* Upper Breadcrumb/Header */}
         <div className="d-flex justify-content-between align-items-center mb-5 pb-3 border-bottom border-secondary border-opacity-10">
