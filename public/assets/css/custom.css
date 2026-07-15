@@ -1364,7 +1364,6 @@ textarea:-ms-input-placeholder {
 .dropdown-item-premium:hover {
   background-color: rgba(34, 197, 94, 0.12) !important;
   color: var(--accent-green) !important;
-  transform: translateX(3px);
 }
 
 .dropdown-item-premium.text-danger:hover {
@@ -1379,7 +1378,6 @@ textarea:-ms-input-placeholder {
 .hover-glow:hover {
   box-shadow: 0 0 12px rgba(25, 135, 84, 0.8) !important;
   border-color: var(--accent-green) !important;
-  transform: scale(1.05);
 }
 
 

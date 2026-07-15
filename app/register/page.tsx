@@ -71,21 +71,19 @@ export default function RegisterPage() {
     setLoading(true);
     setStep("sending");
 
-    // Simulate calling API & sending verification email
+    // Simulate calling API & creating user directly
     setTimeout(() => {
       setLoading(false);
-      setStep("verify_sent");
-      // Store user registration details temporarily
-      sessionStorage.setItem(
-        "registered_user",
-        JSON.stringify({
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          email: formData.email,
-          verified: false,
-        })
-      );
-    }, 2000);
+      const sessionUser = {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        verified: true,
+      };
+      sessionStorage.setItem("registered_user", JSON.stringify(sessionUser));
+      sessionStorage.setItem("user_session", JSON.stringify(sessionUser)); // log them in
+      router.push("/profile");
+    }, 1500);
   };
 
   // Simulates clicking the link in the verification email
