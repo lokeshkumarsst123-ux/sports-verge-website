@@ -1,11 +1,21 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { mainMenuItems, MenuItem } from "@/config/navigation";
 
 export default function NavigationMenu() {
   const [openSubMenus, setOpenSubMenus] = useState<Record<string, boolean>>({});
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 1200);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const handleSubMenuClick = (title: string, e: React.MouseEvent) => {
     if (typeof window !== "undefined" && window.innerWidth < 1200) {
@@ -69,10 +79,15 @@ export default function NavigationMenu() {
               <Link
                 className={`nav-link dropdown-toggle ${item.hideArrow ? "hide-arrow" : ""}`}
                 href={item.href}
-                data-bs-toggle="dropdown"
+                data-bs-toggle={isMobile ? "dropdown" : undefined}
+                data-bs-auto-close={isMobile ? "outside" : undefined}
               >
                 {item.title}
-                {item.icon && <i className={item.icon}></i>}
+                {item.hideArrow ? (
+                  item.icon && <i className={item.icon}></i>
+                ) : (
+                  <i className="bi bi-chevron-down ms-1" style={{ fontSize: "10px" }}></i>
+                )}
               </Link>
               <ul className="dropdown-menu">
                 {item.children.map((child, idx) => renderSubMenu(child, idx))}
