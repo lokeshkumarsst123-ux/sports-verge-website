@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { authApi, hasAuthSession, updateStoredUser } from "@/lib/auth-api";
 
 type FavoritesContextType = {
   favoriteTeams: string[];
@@ -44,62 +45,36 @@ export default function FavoritesProvider({ children }: { children: React.ReactN
     }
   }, [toast.type]);
 
-  // Initialize from localStorage on mount
   useEffect(() => {
-    try {
-      const storedTeams = localStorage.getItem("fav_teams");
-      const storedComps = localStorage.getItem("fav_competitions");
-      
-      if (storedTeams) {
-        const parsed = JSON.parse(storedTeams);
-        // Clear if they contain only the default items to clean up existing storage
-        if (
-          Array.isArray(parsed) &&
-          parsed.length <= 2 &&
-          parsed.every(t => t === "CSK" || t === "Man City" || t === "Manchester City")
-        ) {
-          setFavoriteTeams([]);
-          localStorage.setItem("fav_teams", JSON.stringify([]));
-        } else {
-          setFavoriteTeams(parsed);
-        }
-      } else {
-        setFavoriteTeams([]);
-        localStorage.setItem("fav_teams", JSON.stringify([]));
-      }
-
-      if (storedComps) {
-        const parsed = JSON.parse(storedComps);
-        if (
-          Array.isArray(parsed) &&
-          parsed.length <= 2 &&
-          parsed.every(c => c === "IPL 2026" || c === "Premier League")
-        ) {
-          setFavoriteCompetitions([]);
-          localStorage.setItem("fav_competitions", JSON.stringify([]));
-        } else {
-          setFavoriteCompetitions(parsed);
-        }
-      } else {
-        setFavoriteCompetitions([]);
-        localStorage.setItem("fav_competitions", JSON.stringify([]));
-      }
-    } catch (e) {
-      console.error("Error reading favorites from localStorage", e);
+    if (hasAuthSession()) {
+      void authApi.getProfile().then((result) => {
+        if (Array.isArray(result.data.user.favoriteTeams)) setFavoriteTeams(result.data.user.favoriteTeams);
+        if (Array.isArray(result.data.user.favoriteCompetitions)) setFavoriteCompetitions(result.data.user.favoriteCompetitions);
+      }).catch(() => undefined).finally(() => setIsHydrated(true));
+    } else {
+      localStorage.removeItem("fav_teams");
+      localStorage.removeItem("fav_competitions");
+      const frame = window.requestAnimationFrame(() => setIsHydrated(true));
+      return () => window.cancelAnimationFrame(frame);
     }
-    setIsHydrated(true);
   }, []);
 
-  // Update localStorage when favorites change
   useEffect(() => {
-    if (!isHydrated) return;
-    localStorage.setItem("fav_teams", JSON.stringify(favoriteTeams));
-  }, [favoriteTeams, isHydrated]);
+    if (!isHydrated || !hasAuthSession()) return;
+    void authApi.updateProfile({ favoriteTeams, favoriteCompetitions })
+      .then((result) => updateStoredUser(result.data.user))
+      .catch((error) => console.error("Unable to sync favorites to profile.", error));
+  }, [favoriteTeams, favoriteCompetitions, isHydrated]);
 
-  useEffect(() => {
-    if (!isHydrated) return;
-    localStorage.setItem("fav_competitions", JSON.stringify(favoriteCompetitions));
-  }, [favoriteCompetitions, isHydrated]);
+  const requireAuthForFavorites = () => {
+    if (hasAuthSession()) return true;
+    if (typeof window !== "undefined") {
+      const returnTo = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+      const next = returnTo && returnTo !== "/" ? `?next=${encodeURIComponent(returnTo)}` : "";
+      window.location.assign(`/login-required${next}`);
+    }
+    return false;
+  };
 
   const isTeamMatch = (teamA: string, teamB: string) => {
     if (!teamA || !teamB) return false;
@@ -125,12 +100,12 @@ export default function FavoritesProvider({ children }: { children: React.ReactN
       cleanA.includes(cleanB) ||
       cleanB.includes(cleanA) ||
       (cleanA.includes("ipl") && cleanB.includes("ipl")) ||
-      (cleanA.includes("nfl") && cleanB.includes("nfl")) ||
-      (cleanA.includes("afl") && cleanB.includes("afl"))
+      (cleanA.includes("nfl") && cleanB.includes("nfl"))
     );
   };
 
   const addFavoriteTeam = (team: string) => {
+    if (!requireAuthForFavorites()) return;
     if (!team || favoriteTeams.some(t => isTeamMatch(t, team))) return;
     setFavoriteTeams(prev => [...prev, team]);
     setToast({
@@ -140,6 +115,7 @@ export default function FavoritesProvider({ children }: { children: React.ReactN
   };
 
   const removeFavoriteTeam = (team: string) => {
+    if (!requireAuthForFavorites()) return;
     setFavoriteTeams(prev => prev.filter(t => !isTeamMatch(t, team)));
     setToast({
       message: `Removed ${team} from favorites!`,
@@ -148,11 +124,13 @@ export default function FavoritesProvider({ children }: { children: React.ReactN
   };
 
   const addFavoriteCompetition = (comp: string) => {
+    if (!requireAuthForFavorites()) return;
     if (!comp || favoriteCompetitions.some(c => isCompMatch(c, comp))) return;
     setFavoriteCompetitions(prev => [...prev, comp]);
   };
 
   const removeFavoriteCompetition = (comp: string) => {
+    if (!requireAuthForFavorites()) return;
     setFavoriteCompetitions(prev => prev.filter(c => !isCompMatch(c, comp)));
   };
 

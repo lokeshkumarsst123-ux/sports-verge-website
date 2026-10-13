@@ -1,6 +1,16 @@
 import PageHeader from "@/components/PageHeader";
+import { contentApi } from "@/lib/content-api";
+import { buildSeoMetadata, getSeoDefaultsForPath } from "@/lib/seo";
 
-export const metadata = { title: "Esports – The SportsVerge" };
+export async function generateMetadata() {
+  const path = "/esports";
+  const seo = await contentApi.seo(path).catch(() => null);
+  const defaults = getSeoDefaultsForPath(path);
+  return buildSeoMetadata(seo?.data, {
+    title: defaults.defaultTitle,
+    description: defaults.defaultDescription,
+  }, path, { preferDefaults: true });
+}
 
 const tournaments = [
   {

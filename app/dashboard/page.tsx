@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import DashboardSkeleton from "@/components/DashboardSkeleton";
+import { logoutUser } from "@/lib/auth-api";
 
 interface UserProfile {
   firstName: string;
@@ -23,17 +24,8 @@ export default function DashboardPage() {
     setLoading(true);
     const timer = setTimeout(() => {
       const session = sessionStorage.getItem("user_session");
-      const registered = sessionStorage.getItem("registered_user");
-
       if (session) {
         setUser(JSON.parse(session));
-      } else if (registered) {
-        const parsed = JSON.parse(registered);
-        if (parsed.verified) {
-          setUser(parsed);
-        } else {
-          router.push("/login");
-        }
       } else {
         router.push("/login");
       }
@@ -43,8 +35,9 @@ export default function DashboardPage() {
     return () => clearTimeout(timer);
   }, [router]);
 
-  const handleLogout = () => {
-    sessionStorage.removeItem("user_session");
+  const handleLogout = async () => {
+    await logoutUser();
+    sessionStorage.removeItem("registered_user");
     router.push("/");
   };
 

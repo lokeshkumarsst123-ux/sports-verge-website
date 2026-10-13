@@ -4,6 +4,8 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useAds } from "@/components/AdContext";
+import { useSiteSettings } from "@/components/SiteSettingsContext";
+import { authApi } from "@/lib/auth-api";
 
 interface Inquiry {
   id: string;
@@ -13,10 +15,12 @@ interface Inquiry {
   message: string;
   date: string;
   status: "Received" | "Under Review" | "Resolved";
+  emailSent: boolean;
 }
 
 export default function ContactPage() {
   const { getAdByType } = useAds();
+  const siteSettings = useSiteSettings();
   const [contactAd, setContactAd] = useState<any>(null);
 
   const [formData, setFormData] = useState({
@@ -82,15 +86,15 @@ export default function ContactPage() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
 
     setIsSubmitting(true);
 
-    // Simulate inquiry processing and storage
-    setTimeout(() => {
-      const ticketId = `SV-${Math.floor(100000 + Math.random() * 900000)}`;
+    try {
+      const response = await authApi.submitContact(formData);
+      const ticketId = `SV-${response.data.inquiry.id.slice(0, 8).toUpperCase()}`;
       const newInquiry: Inquiry = {
         id: ticketId,
         fullName: formData.fullName,
@@ -99,6 +103,7 @@ export default function ContactPage() {
         message: formData.message,
         date: new Date().toLocaleString(),
         status: "Received",
+        emailSent: response.data.emailNotificationsSent,
       };
 
       // Store in localStorage
@@ -113,8 +118,9 @@ export default function ContactPage() {
       localStorage.setItem("sportsverge_contact_inquiries", JSON.stringify(updatedInquiries));
       setLastSubmittedInquiry(newInquiry);
 
-      setIsSubmitting(false);
-      setSuccessMessage(`Thank you, ${formData.fullName}! Your message has been sent successfully.`);
+      setSuccessMessage(response.data.emailNotificationsSent
+        ? `Thank you, ${formData.fullName}! Your message was sent and a confirmation email is on its way.`
+        : `Thank you, ${formData.fullName}! Your inquiry has been recorded.`);
       setShowEmailModal(true);
 
       // Clear form fields
@@ -124,7 +130,11 @@ export default function ContactPage() {
         subject: "",
         message: "",
       });
-    }, 800);
+    } catch (error) {
+      setSuccessMessage(error instanceof Error ? error.message : "Unable to send your message. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -160,7 +170,7 @@ export default function ContactPage() {
                     className="btn btn-sm btn-outline-success border-0 px-2 text-white"
                     onClick={() => setShowEmailModal(true)}
                   >
-                    View Email Receipt <i className="bi bi-eye ms-1"></i>
+                    View Submission Receipt <i className="bi bi-eye ms-1"></i>
                   </button>
                 </div>
               )}
@@ -258,7 +268,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <span className="text-muted text-xs text-uppercase d-block mb-0.5">Call Support</span>
-                    <span className="text-white fw-semibold small">+1 (800) 555-0199</span>
+                    <span className="text-white fw-semibold small">{siteSettings.contactNumber}</span>
                     <span className="text-muted text-xs d-block mt-0.5">Toll-free, Mon-Fri 9AM - 6PM EST</span>
                   </div>
                 </div>
@@ -269,7 +279,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <span className="text-muted text-xs text-uppercase d-block mb-0.5">Email Admin</span>
-                    <span className="text-white fw-semibold small">admin@sportsverge.com</span>
+                    <span className="text-white fw-semibold small">{siteSettings.contactEmail}</span>
                     <span className="text-muted text-xs d-block mt-0.5">Direct ticket routing for enterprise users</span>
                   </div>
                 </div>
@@ -328,7 +338,7 @@ export default function ContactPage() {
 
                 <h3 className="text-white fw-bold mb-2">Message Sent!</h3>
                 <p className="text-muted small px-3 mb-4">
-                  Thank you for reaching out to SportsVerge. Your inquiry has been logged in our system. A support administrator will contact you shortly.
+                  Thank you for reaching out to SportsVerge. Your inquiry has been logged in our system. {lastSubmittedInquiry.emailSent ? "A confirmation email has been sent to your email address, and a support administrator will contact you shortly." : "A support administrator will contact you shortly."}
                 </p>
 
                 {/* Ticket details summary */}

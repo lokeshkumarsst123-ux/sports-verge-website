@@ -25,8 +25,6 @@ export default function LiveMatchCard({ match }: LiveMatchCardProps) {
         return "bi-dribbble";
       case "nfl":
         return "bi-trophy-fill";
-      case "afl":
-        return "bi-shield-fill";
       default:
         return "bi-sport";
     }

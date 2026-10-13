@@ -1,265 +1,213 @@
 "use client";
 
-import React, { useState } from "react";
-import PageHeader from "@/components/PageHeader";
+import React, { useEffect, useState } from "react";
+import { cricketApi, cricketItems, mapCricketRankingGroups, type CricketRankingGroup } from "@/lib/cricket-api";
+import { mapProviderRankingRows, nflApi, soccerApi, type ProviderStandingRow } from "@/lib/sports-api";
 
-const rankingsData: Record<string, { category: string; list: { rank: number; name: string; points: string; rating?: string; change: string; trend: "up" | "down" | "flat" }[] }[]> = {
-  Cricket: [
-    {
-      category: "ICC Men's Test Team Rankings",
-      list: [
-        { rank: 1, name: "Australia", points: "3,420", rating: "124", change: "+1", trend: "up" },
-        { rank: 2, name: "India", points: "3,810", rating: "120", change: "-1", trend: "down" },
-        { rank: 3, name: "England", points: "4,100", rating: "115", change: "0", trend: "flat" },
-        { rank: 4, name: "South Africa", points: "2,560", rating: "104", change: "0", trend: "flat" },
-        { rank: 5, name: "New Zealand", points: "2,840", rating: "99", change: "+1", trend: "up" },
-      ],
-    },
-    {
-      category: "ICC Men's ODI Team Rankings",
-      list: [
-        { rank: 1, name: "India", points: "4,620", rating: "121", change: "0", trend: "flat" },
-        { rank: 2, name: "Australia", points: "3,850", rating: "118", change: "0", trend: "flat" },
-        { rank: 3, name: "South Africa", points: "3,210", rating: "110", change: "+2", trend: "up" },
-        { rank: 4, name: "Pakistan", points: "3,150", rating: "109", change: "-1", trend: "down" },
-        { rank: 5, name: "New Zealand", points: "2,980", rating: "102", change: "-1", trend: "down" },
-      ],
-    },
-  ],
-  Football: [
-    {
-      category: "FIFA Men's World Rankings",
-      list: [
-        { rank: 1, name: "Argentina", points: "1861.29", change: "0", trend: "flat" },
-        { rank: 2, name: "France", points: "1853.11", change: "0", trend: "flat" },
-        { rank: 3, name: "Belgium", points: "1793.21", change: "+1", trend: "up" },
-        { rank: 4, name: "England", points: "1790.55", change: "-1", trend: "down" },
-        { rank: 5, name: "Brazil", points: "1785.61", change: "0", trend: "flat" },
-      ],
-    },
-  ],
-  NFL: [
-    {
-      category: "NFL Power Rankings",
-      list: [
-        { rank: 1, name: "Kansas City Chiefs", points: "15-2", change: "0", trend: "flat" },
-        { rank: 2, name: "San Francisco 49ers", points: "14-3", change: "+1", trend: "up" },
-        { rank: 3, name: "Baltimore Ravens", points: "13-4", change: "-1", trend: "down" },
-        { rank: 4, name: "Detroit Lions", points: "12-5", change: "+2", trend: "up" },
-        { rank: 5, name: "Buffalo Bills", points: "11-6", change: "-1", trend: "down" },
-      ],
-    },
-  ],
-  AFL: [
-    {
-      category: "AFL Premiership Ladder Power Rankings",
-      list: [
-        { rank: 1, name: "Collingwood Magpies", points: "64", change: "0", trend: "flat" },
-        { rank: 2, name: "Brisbane Lions", points: "60", change: "+1", trend: "up" },
-        { rank: 3, name: "Port Adelaide Power", points: "60", change: "-1", trend: "down" },
-        { rank: 4, name: "Carlton Blues", points: "56", change: "+3", trend: "up" },
-        { rank: 5, name: "GWS Giants", points: "52", change: "0", trend: "flat" },
-      ],
-    },
-  ],
-};
+type Sport = "cricket" | "football" | "NFL";
+type RankingSport = Sport;
+type Competition = { id: string; name: string };
+type CricketRankingItem = CricketRankingGroup["list"][number];
 
-const tabConfig = [
-  { name: "Cricket", icon: "bi-trophy" },
-  { name: "Football", icon: "bi-dribbble" },
-  { name: "NFL", icon: "bi-shield" },
-  { name: "AFL", icon: "bi-circle" },
+const placeholderLogo = "/assets/imgs/teams/team-placeholder.svg";
+const sports: Array<{ id: RankingSport; icon: string }> = [
+  { id: "cricket", icon: "bi-trophy" },
+  { id: "football", icon: "bi-globe2" },
+  { id: "NFL", icon: "bi-shield" },
 ];
 
-const getTeamLogo = (name: string): string => {
-  const n = name.toLowerCase();
-  
-  // IPL / Cricket Teams
-  if (n.includes("mumbai") || n === "mi") return "/assets/imgs/teams/ipl/MIoutline.png";
-  if (n.includes("csk") || n.includes("chennai")) return "/assets/imgs/teams/ipl/CSKoutline.png";
-  if (n.includes("rcb") || n.includes("bengaluru")) return "/assets/imgs/teams/ipl/RCBoutline.png";
-  if (n.includes("delhi") || n === "dc") return "/assets/imgs/teams/ipl/DCoutline.png";
-  if (n.includes("kolkata") || n === "kkr") return "/assets/imgs/teams/ipl/KKRoutline.png";
-  if (n.includes("rajasthan") || n === "rr") return "/assets/imgs/teams/ipl/RRoutline.png";
-  if (n.includes("hyderabad") || n === "srh") return "/assets/imgs/teams/ipl/SRHoutline.png";
-  if (n.includes("gujarat") || n === "gt") return "/assets/imgs/teams/ipl/GToutline.png";
-  if (n.includes("lucknow") || n === "lsg") return "/assets/imgs/teams/ipl/LSGoutline.png";
-  if (n.includes("punjab") || n === "pbks") return "/assets/imgs/teams/ipl/PBKSoutline.png";
-
-  // Premier League
-  if (n.includes("manchester city") || n.includes("man city") || n === "mci") return "/assets/imgs/teams/Manchester_City_FC_badge.svg";
-  if (n.includes("manchester united") || n.includes("man utd") || n === "mun") return "/assets/imgs/teams/Manchester_United_FC_crest.png";
-  if (n.includes("arsenal") || n === "ars") return "/assets/imgs/teams/Arsenal_FC.svg";
-  if (n.includes("liverpool") || n === "liv") return "/assets/imgs/teams/Liverpool_FC.svg";
-  if (n.includes("aston villa") || n === "avl") return "/assets/imgs/teams/Aston_Villa_FC_new_crest.svg";
-  if (n.includes("tottenham") || n === "tot") return "/assets/imgs/teams/Tottenham_Hotspur.png";
-  if (n.includes("newcastle") || n === "new") return "/assets/imgs/teams/Newcastle_United_Logo.svg";
-
-  // NFL
-  if (n.includes("chiefs") || n === "kc") return "/assets/imgs/teams/Kansas_City_Chiefs_logo.svg";
-  if (n.includes("bills") || n === "buf") return "/assets/imgs/teams/Buffalo_Bills_logo.svg";
-  if (n.includes("dolphins") || n === "mia") return "/assets/imgs/teams/Ravens_logo.svg";
-  if (n.includes("ravens") || n === "bal") return "/assets/imgs/teams/Ravens_logo.svg";
-  if (n.includes("49ers") || n === "sf") return "/assets/imgs/teams/San_Francisco_49ers_logo.svg";
-  if (n.includes("bengals") || n === "cin") return "/assets/imgs/teams/Bengals_logo.svg";
-  if (n.includes("cowboys") || n === "dal") return "/assets/imgs/teams/Dallas_Cowboys.svg";
-
-  // AFL
-  if (n.includes("lions") || n === "bl") return "/assets/imgs/teams/Brisbane_Lions_logo_2010.svg";
-  if (n.includes("bombers") || n === "ess") return "/assets/imgs/teams/Essendon_FC_logo.svg";
-
-  // Countries / International
-  if (n === "india") return "/assets/imgs/teams/india.webp";
-  if (n === "australia") return "/assets/imgs/teams/australia.webp";
-  if (n === "england") return "/assets/imgs/teams/england.webp";
-  if (n === "south africa") return "/assets/imgs/teams/south-africa.webp";
-  if (n === "new zealand") return "/assets/imgs/teams/new-zealand.webp";
-  if (n === "pakistan") return "/assets/imgs/teams/pakistan.webp";
-  if (n === "sri lanka") return "/assets/imgs/teams/sri-lanka.webp";
-  if (n === "afghanistan") return "/assets/imgs/teams/afghanistan.webp";
-  if (n === "ireland") return "/assets/imgs/teams/ireland.webp";
-
-  return "";
+const formatNumber = (value: string) => {
+  const numeric = Number(String(value).replaceAll(",", ""));
+  return Number.isFinite(numeric) ? numeric.toLocaleString("en-US") : value;
 };
 
-const getTeamCode = (name: string): string => {
-  const n = name.toLowerCase();
-  if (n.includes("mumbai")) return "MI";
-  if (n.includes("csk") || n.includes("chennai")) return "CSK";
-  if (n.includes("rcb") || n.includes("bengaluru")) return "RCB";
-  if (n.includes("delhi")) return "DC";
-  if (n.includes("kolkata") || n === "kkr") return "KKR";
-  
-  if (n === "india") return "IND";
-  if (n === "australia") return "AUS";
-  if (n === "south africa") return "RSA";
-  if (n === "pakistan") return "PAK";
-  if (n === "england") return "ENG";
-  if (n === "new zealand") return "NZ";
-
-  if (n === "arsenal") return "ARS";
-  if (n.includes("manchester city") || n.includes("man city")) return "MCI";
-  if (n.includes("manchester united") || n.includes("man utd")) return "MUN";
-  if (n === "liverpool") return "LIV";
-  if (n === "chelsea") return "CHE";
-  if (n === "tottenham") return "TOT";
-  if (n === "argentina") return "ARG";
-  if (n === "france") return "FRA";
-  if (n === "belgium") return "BEL";
-  if (n === "brazil") return "BRA";
-
-  if (n.includes("chiefs")) return "KC";
-  if (n.includes("bills")) return "BUF";
-  if (n.includes("dolphins")) return "MIA";
-  if (n.includes("ravens")) return "BAL";
-  if (n.includes("49ers")) return "SF";
-  if (n.includes("cowboys")) return "DAL";
-  if (n.includes("lions")) return "DET";
-
-  if (n.includes("collingwood") || n.includes("magpies")) return "COL";
-  if (n.includes("brisbane") || n.includes("lions")) return "BL";
-  if (n.includes("port adelaide") || n.includes("power")) return "PORT";
-  if (n.includes("carlton") || n.includes("blues")) return "CAR";
-  if (n.includes("giants")) return "GWS";
-
-  return name.slice(0, 3).toUpperCase();
+const trendValue = (change: string) => {
+  const value = String(change || "").trim();
+  if (!/^[+-]?\d+(?:\.\d+)?$/.test(value) || value === "0") return "0";
+  return value.startsWith("-") || value.startsWith("+") ? value : `+${value}`;
 };
+
+const applyCricketTrendSnapshot = (groups: ReturnType<typeof mapCricketRankingGroups>) => {
+  if (typeof window === "undefined") return groups;
+
+  return groups.map((group) => {
+    const storageKey = `sports-verg:ranking-snapshot:${group.category}`;
+    let previousRanks: Record<string, number> = {};
+    try {
+      previousRanks = JSON.parse(window.localStorage.getItem(storageKey) || "{}") as Record<string, number>;
+    } catch {
+      previousRanks = {};
+    }
+
+    const list = group.list.map((item) => {
+      // The ICC endpoint currently has no previous-rank field. Use its value when
+      // supplied; otherwise compare this response with the last saved snapshot.
+      if (/^[+-]?\d+(?:\.\d+)?$/.test(item.change) && item.change !== "0") return item;
+      const previousRank = previousRanks[item.name] || item.rank;
+      const change = previousRank - item.rank;
+      return {
+        ...item,
+        change: String(change),
+        trend: (change > 0 ? "up" : change < 0 ? "down" : "flat") as CricketRankingItem["trend"],
+      };
+    });
+
+    try {
+      window.localStorage.setItem(storageKey, JSON.stringify(Object.fromEntries(group.list.map((item) => [item.name, item.rank]))));
+    } catch {
+      // Rankings should remain usable when browser storage is disabled.
+    }
+
+    return { ...group, list };
+  });
+};
+
+function RankingTeamLogo({ src, name }: { src: string; name: string }) {
+  return <img src={src || placeholderLogo} alt={`${name} logo`} className="ranking-team-logo" onError={(event) => { event.currentTarget.src = placeholderLogo; }} />;
+}
+
+function RankingTrend({ item }: { item: CricketRankingItem }) {
+  const value = trendValue(item.change);
+  const isUp = item.trend === "up";
+  const isDown = item.trend === "down";
+  return <span className={`ranking-trend ${isUp ? "is-up" : isDown ? "is-down" : "is-flat"}`}><i className={`bi ${isUp ? "bi-caret-up-fill" : isDown ? "bi-caret-down-fill" : "bi-dot"}`} />{value}</span>;
+}
+
+function ProviderTrend({ row }: { row: ProviderStandingRow }) {
+  const value = trendValue(row.change);
+  const isUp = row.trend === "up";
+  const isDown = row.trend === "down";
+  return <span className={`ranking-trend ${isUp ? "is-up" : isDown ? "is-down" : "is-flat"}`}><i className={`bi ${isUp ? "bi-caret-up-fill" : isDown ? "bi-caret-down-fill" : "bi-dot"}`} />{value}</span>;
+}
+
+function CricketRankingCard({ group }: { group: CricketRankingGroup }) {
+  return <article className="ranking-card">
+    <h2 className="ranking-card-title">{group.category}</h2>
+    <div className="ranking-table-scroll">
+      <div className="ranking-table ranking-cricket-table">
+        <div className="ranking-row ranking-row-head"><span>RANK</span><span>TEAM</span><span>POINTS</span><span>RATING</span><span>TREND</span></div>
+        {group.list.slice(0, 10).map((item) => <div className="ranking-row" key={`${group.category}-${item.rank}-${item.name}`}>
+          <span className="ranking-rank">#{item.rank}</span>
+          <span className="ranking-team"><RankingTeamLogo src={item.logo} name={item.name} /><strong>{item.name}</strong></span>
+          <span className="ranking-points">{formatNumber(item.points)}</span>
+          <span className="ranking-rating">{item.rating ? formatNumber(item.rating) : "—"}</span>
+          <RankingTrend item={item} />
+        </div>)}
+      </div>
+    </div>
+  </article>;
+}
+
+function ProviderRankingCard({ sport, rows }: { sport: Sport; rows: ProviderStandingRow[] }) {
+  const isNfl = sport === "NFL";
+  const pageSize = 10;
+  const totalPages = Math.max(1, Math.ceil(rows.length / pageSize));
+  const [page, setPage] = useState(1);
+  const currentPage = Math.min(page, totalPages);
+  const visibleRows = rows.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+  return <article className="ranking-card">
+    <h2 className="ranking-card-title">{isNfl ? "NFL Power Rankings" : "FIFA Men's World Rankings"}</h2>
+    <div className="ranking-table-scroll">
+      <div className={`ranking-table ${isNfl ? "ranking-nfl-table" : "ranking-football-table"}`}>
+        <div className="ranking-row ranking-row-head"><span>RANK</span><span>TEAM</span><span>{isNfl ? "RECORD" : "POINTS"}</span><span>TREND</span></div>
+        {visibleRows.map((row) => <div className="ranking-row" key={`${row.rank}-${row.team}`}>
+          <span className="ranking-rank">#{row.rank}</span>
+          <span className="ranking-team"><RankingTeamLogo src={row.teamLogo} name={row.team} /><strong>{row.team}</strong></span>
+          {isNfl ? <span className="ranking-record">{row.wins}-{row.losses}</span> : <span className="ranking-points">{formatNumber(row.points)}</span>}
+          <ProviderTrend row={row} />
+        </div>)}
+      </div>
+    </div>
+    {totalPages > 1 && <div className="ranking-pagination">
+      <button type="button" disabled={currentPage === 1} onClick={() => setPage((value) => Math.max(1, value - 1))}>Previous</button>
+      <span>Page {currentPage} of {totalPages}</span>
+      <button type="button" disabled={currentPage === totalPages} onClick={() => setPage((value) => Math.min(totalPages, value + 1))}>Next</button>
+    </div>}
+    <div className="ranking-pagination-summary">Showing {rows.length ? ((currentPage - 1) * pageSize) + 1 : 0}-{Math.min(currentPage * pageSize, rows.length)} of {rows.length} teams</div>
+  </article>;
+}
 
 export default function RankingsPage() {
-  const [activeTab, setActiveTab] = useState("Cricket");
+  const [sport, setSport] = useState<RankingSport>("cricket");
+  const [competitions, setCompetitions] = useState<Record<Sport, Competition[]>>({ cricket: [], football: [], NFL: [] });
+  const [selected, setSelected] = useState("");
+  const [rows, setRows] = useState<ProviderStandingRow[]>([]);
+  const [cricketRankings, setCricketRankings] = useState<ReturnType<typeof mapCricketRankingGroups>>([]);
+  const [loading, setLoading] = useState(true);
+  const [message, setMessage] = useState<string | null>(null);
 
-  return (
-    <main className="font-outfit">
-      <PageHeader
-        title="World Rankings"
-        subtitle="Official team rankings and standings across major international sports leagues."
-        className="mb-5"
-      />
+  useEffect(() => {
+    let cancelled = false;
+    const load = async () => {
+      const responses = await Promise.allSettled([cricketApi.competitions(), soccerApi.competitions(), nflApi.competitions(), cricketApi.rankings()]);
+      const next: Record<Sport, Competition[]> = { cricket: [], football: [], NFL: [] };
+      responses.slice(0, 3).forEach((response, index) => {
+        if (response.status !== "fulfilled") return;
+        const items = index === 0 ? cricketItems(response.value) : Array.isArray(response.value.items) ? response.value.items : [];
+        next[index === 0 ? "cricket" : index === 1 ? "football" : "NFL"] = items
+          .map((item) => ({ id: String(item.cid || item.id || ""), name: String(item.cname || item.name || item.title || "Competition") }))
+          .filter((item) => item.id);
+      });
+      if (!cancelled) {
+        setCompetitions(next);
+        if (responses[3].status === "fulfilled") setCricketRankings(applyCricketTrendSnapshot(mapCricketRankingGroups(responses[3].value)));
+        else setMessage("Unable to load cricket rankings from the provider.");
+        if (sport === "cricket") setLoading(false);
+      }
+    };
+    void load();
+    return () => { cancelled = true; };
+  }, [sport]);
 
-      {/* Switcher Tabs */}
-      <div className="container custom-container mb-4">
-        <div className="d-flex gap-2 overflow-auto pb-2" style={{ scrollbarWidth: "none" }}>
-          {tabConfig.map((tab) => {
-            const isActive = activeTab === tab.name;
-            return (
-              <button
-                key={tab.name}
-                onClick={() => setActiveTab(tab.name)}
-                className="btn d-flex align-items-center gap-2 fw-semibold rounded-pill px-4 py-2 transition-all text-white"
-                style={{
-                  fontSize: "13px",
-                  background: isActive ? "var(--accent-green)" : "var(--bg-card)",
-                  border: `1px solid ${isActive ? "var(--accent-green)" : "var(--border-dark)"}`,
-                }}
-              >
-                <i className={`bi ${tab.icon}`}></i>
-                {tab.name}
-              </button>
-            );
-          })}
-        </div>
+  const available = competitions[sport];
+  useEffect(() => { setSelected(available[0]?.id || ""); }, [available]);
+
+  useEffect(() => {
+    let cancelled = false;
+    if (sport === "cricket") {
+      setLoading(false);
+      return () => { cancelled = true; };
+    }
+    if (!selected) {
+      setRows([]);
+      setLoading(false);
+      return () => { cancelled = true; };
+    }
+    setLoading(true);
+    const load = async () => {
+      try {
+        const api = sport === "football" ? soccerApi : nflApi;
+        const [data, matchesData] = await Promise.all([api.competition(selected), api.competitionMatchesAll(selected)]);
+        if (!cancelled) {
+          const next = mapProviderRankingRows(data, matchesData, sport);
+          setRows(next);
+          setMessage(next.length ? null : "No ranking data supplied for this provider.");
+        }
+      } catch {
+        if (!cancelled) {
+          setRows([]);
+          setMessage("Unable to load rankings from the provider.");
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+    void load();
+    return () => { cancelled = true; };
+  }, [selected, sport]);
+
+  return <main className="rankings-page font-outfit">
+    <section className="container custom-container rankings-container">
+      <div className="rankings-heading-row">
+        <div><span className="rankings-eyebrow">SPORTS DATA</span><h1>WORLD RANKINGS</h1><p>Official team rankings and standings across major international sports leagues.</p></div>
+        <div className="rankings-sport-tabs">{sports.map((item) => <button type="button" key={item.id} className={sport === item.id ? "active" : ""} onClick={() => setSport(item.id)}><i className={`bi ${item.icon}`} />{item.id}</button>)}</div>
       </div>
 
-      {/* Rankings List */}
-      <div className="container custom-container">
-        <div className="d-flex flex-column gap-4">
-          {rankingsData[activeTab]?.map((group, idx) => (
-            <div key={idx} className="premium-table-container p-2 p-md-4">
-              <h5 className="fw-bold text-white mb-4 font-space-grotesk" style={{ fontSize: "16px" }}>
-                {group.category}
-              </h5>
-              <div className="table-responsive">
-                <table className="premium-table">
-                  <thead>
-                    <tr>
-                      <th className="text-start" style={{ width: "80px" }}>RANK</th>
-                      <th className="text-start">TEAM</th>
-                      <th className="text-center">{activeTab === "NFL" || activeTab === "AFL" ? "RECORD" : "POINTS"}</th>
-                      {group.list[0].rating && <th className="text-center">RATING</th>}
-                      <th className="text-end">TREND</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {group.list.map((item) => (
-                      <tr key={item.rank}>
-                        <td className="premium-table-rank text-start text-success">#{item.rank}</td>
-                        <td className="premium-table-team text-start">
-                          <div className="d-flex align-items-center gap-1 gap-sm-2">
-                            {(() => {
-                              const logo = getTeamLogo(item.name);
-                              return logo ? (
-                                <img src={logo} alt={item.name} style={{ width: "16px", height: "16px", objectFit: "contain" }} />
-                              ) : (
-                                <div className="d-none d-sm-flex align-items-center justify-content-center rounded-circle text-white fw-bold" style={{ width: "20px", height: "20px", fontSize: "10px", background: "rgba(255, 255, 255, 0.08)", border: "1px solid rgba(255, 255, 255, 0.15)" }}>
-                                  {item.name.charAt(0)}
-                                </div>
-                              );
-                            })()}
-                            <span className="text-truncate d-none d-sm-inline">{item.name}</span>
-                            <span className="d-inline d-sm-none">{getTeamCode(item.name)}</span>
-                          </div>
-                        </td>
-                        <td className="premium-table-stat-bold text-center">{item.points}</td>
-                        {item.rating && <td className="premium-table-stat text-center text-success fw-semibold">{item.rating}</td>}
-                        <td className="text-end">
-                          <span className={`fw-semibold d-inline-flex align-items-center gap-1 ${
-                            item.trend === "up" ? "text-success" : item.trend === "down" ? "text-danger" : "text-muted"
-                          }`} style={{ fontSize: "13px" }}>
-                            {item.trend === "up" && <i className="bi bi-caret-up-fill"></i>}
-                            {item.trend === "down" && <i className="bi bi-caret-down-fill"></i>}
-                            {item.trend === "flat" && <span className="d-inline-block rounded-circle bg-secondary" style={{ width: "6px", height: "6px" }}></span>}
-                            {item.change}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </main>
-  );
+      {sport !== "cricket" && <div className="rankings-filter-row"><label htmlFor="ranking-competition">Competition</label><select id="ranking-competition" value={selected} onChange={(event) => setSelected(event.target.value)}><option value="">Select competition</option>{available.map((item) => <option value={item.id} key={item.id}>{item.name}</option>)}</select></div>}
+
+      {loading ? <div className="ranking-state-card">Loading rankings…</div> : sport === "cricket" ? (
+        cricketRankings.length ? <div className="ranking-groups">{cricketRankings.map((group) => <CricketRankingCard group={group} key={group.category} />)}</div> : <div className="ranking-state-card">{message || "No cricket rankings available"}</div>
+      ) : sport === "football" || sport === "NFL" ? rows.length ? <div className="ranking-groups"><ProviderRankingCard key={`${sport}-${selected}`} sport={sport} rows={rows} /></div> : <div className="ranking-state-card">{message || "No ranking data supplied for this provider."}</div> : <div className="ranking-state-card">{message || "No ranking data supplied for this provider."}</div>}
+    </section>
+  </main>;
 }

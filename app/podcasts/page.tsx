@@ -1,6 +1,16 @@
 import PageHeader from "@/components/PageHeader";
+import { contentApi } from "@/lib/content-api";
+import { buildSeoMetadata, getSeoDefaultsForPath } from "@/lib/seo";
 
-export const metadata = { title: "Podcasts & Videos – The SportsVerge" };
+export async function generateMetadata() {
+  const path = "/podcasts";
+  const seo = await contentApi.seo(path).catch(() => null);
+  const defaults = getSeoDefaultsForPath(path);
+  return buildSeoMetadata(seo?.data, {
+    title: defaults.defaultTitle,
+    description: defaults.defaultDescription,
+  }, path, { preferDefaults: true });
+}
 
 const episodes = [
   {
@@ -31,7 +41,7 @@ const episodes = [
     icon: "bi-mic-fill",
   },
   {
-    title: "AFL Tactics Class: How Carlton Built the Midfield Block",
+    title: "Cricket Tactics Class: Building a Strong Middle Order",
     type: "Video Watch",
     duration: "25 mins",
     host: "Coach Terry Vance",

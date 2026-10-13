@@ -4,11 +4,13 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { useSiteSettings } from "@/components/SiteSettingsContext";
 
 export default function Footer() {
   const pathname = usePathname();
+  const siteSettings = useSiteSettings();
 
-  if (["/login", "/register", "/forgot-password"].includes(pathname)) {
+  if (["/login", "/register", "/forgot-password"].includes(pathname) || pathname.startsWith("/admin")) {
     return null;
   }
 
@@ -19,32 +21,26 @@ export default function Footer() {
           {/* Logo and Description */}
           <div className="col-lg-3 pe-lg-4">
             <div className="mb-3 footer-logo-wrapper">
-              <Image
+              {siteSettings.logoUrl ? <img src={siteSettings.logoUrl} alt={siteSettings.websiteName} className="object-fit-contain" style={{ width: "100%", height: "100%" }} /> : <Image
                 src="/assets/imgs/logo-white.svg"
-                alt="The SportsVerge"
+                alt={siteSettings.websiteName}
                 fill className="object-fit-contain"
-              />
+              />}
             </div>
             <p className="text-muted small mb-4 lh-lg">
               Your ultimate destination for live scores, news, stats and everything sports.
             </p>
             <h6 className="footer-title text-white fw-semibold small mb-3">FOLLOW US</h6>
             <div className="d-flex gap-2">
-              <Link href="#" className="social-icon" aria-label="Facebook">
+              {siteSettings.socialLinks.facebook && <a href={siteSettings.socialLinks.facebook} target="_blank" rel="noopener noreferrer" className="social-icon" aria-label="Facebook">
                 <i className="bi bi-facebook"></i>
-              </Link>
-              <Link href="#" className="social-icon" aria-label="X (formerly Twitter)">
+              </a>}
+              {siteSettings.socialLinks.linkedin && <a href={siteSettings.socialLinks.linkedin} target="_blank" rel="noopener noreferrer" className="social-icon" aria-label="LinkedIn">
+                <i className="bi bi-linkedin"></i>
+              </a>}
+              {siteSettings.socialLinks.twitter && <a href={siteSettings.socialLinks.twitter} target="_blank" rel="noopener noreferrer" className="social-icon" aria-label="X (formerly Twitter)">
                 <i className="bi bi-twitter-x"></i>
-              </Link>
-              <Link href="#" className="social-icon" aria-label="Instagram">
-                <i className="bi bi-instagram"></i>
-              </Link>
-              <Link href="#" className="social-icon" aria-label="YouTube">
-                <i className="bi bi-youtube"></i>
-              </Link>
-              <Link href="#" className="social-icon" aria-label="Discord">
-                <i className="bi bi-discord"></i>
-              </Link>
+              </a>}
             </div>
           </div>
 
@@ -57,7 +53,7 @@ export default function Footer() {
                   <li><Link href="/news?category=Cricket" className="footer-link">Cricket</Link></li>
                   <li><Link href="/news?category=Football" className="footer-link">Football</Link></li>
                   <li><Link href="/news?category=NFL" className="footer-link">NFL</Link></li>
-                  <li><Link href="/news?category=AFL" className="footer-link">AFL</Link></li>
+                  <li><Link href="/tips" className="footer-link text-success">Sports Tips</Link></li>
                 </ul>
               </div>
               <div className="col-6 col-sm-3">
@@ -75,7 +71,7 @@ export default function Footer() {
                   <li><Link href="/about" className="footer-link">About Us</Link></li>
                   <li><Link href="/contact" className="footer-link">Contact Us</Link></li>
                   <li><Link href="/privacy-policy" className="footer-link">Privacy Policy</Link></li>
-                  <li><Link href="/terms-of-use" className="footer-link">Terms of Use</Link></li>
+                  <li><Link href="/terms-of-use" className="footer-link">Terms of Service</Link></li>
                 </ul>
               </div>
               <div className="col-6 col-sm-3">
@@ -91,7 +87,7 @@ export default function Footer() {
           </div>
 
           {/* Newsletter Column */}
-          <div className="col-lg-4 ps-lg-4">
+          {/* <div className="col-lg-4 ps-lg-4">
             <h6 className="footer-title text-white fw-semibold small mb-3">STAY UPDATED</h6>
             <p className="text-muted small mb-4">Subscribe to get the latest sports news and updates.</p>
             <form action="#" className="mt-2" onSubmit={(e) => e.preventDefault()}>
@@ -110,14 +106,12 @@ export default function Footer() {
                 </button>
               </div>
             </form>
-          </div>
+          </div> */}
         </div>
 
         {/* Feature Icons Row */}
-        <div
-          className="row row-cols-1 row-cols-sm-2 row-cols-md-4 gy-4 border-bottom border-secondary-20 pb-4 mb-4"
-        >
-          <div className="col">
+        <div className="row gx-5 gy-4 border-bottom border-secondary-20 pb-4 mb-4">
+          <div className="col-12 col-sm-6 col-md-3">
             <div className="d-flex align-items-center gap-3">
               <div className="footer-feature-icon">
                 <i className="bi bi-lightning-charge"></i>
@@ -131,7 +125,7 @@ export default function Footer() {
             </div>
           </div>
 
-          <div className="col">
+          <div className="col-12 col-sm-6 col-md-3">
             <div className="d-flex align-items-center gap-3">
               <div className="footer-feature-icon">
                 <i className="bi bi-bar-chart"></i>
@@ -145,7 +139,7 @@ export default function Footer() {
             </div>
           </div>
 
-          <div className="col">
+          <div className="col-12 col-sm-6 col-md-3">
             <div className="d-flex align-items-center gap-3">
               <div className="footer-feature-icon">
                 <i className="bi bi-newspaper"></i>
@@ -159,7 +153,7 @@ export default function Footer() {
             </div>
           </div>
 
-          <div className="col">
+          <div className="col-12 col-sm-6 col-md-3">
             <div className="d-flex align-items-center gap-3">
               <div className="footer-feature-icon">
                 <i className="bi bi-star"></i>
@@ -177,7 +171,7 @@ export default function Footer() {
         {/* Footer Bottom Rights */}
         <div className="d-flex flex-column flex-md-row justify-content-md-between align-items-center gap-3 text-center text-md-start">
           <div className="text-muted small">
-            &copy; 2026 <span className="text-muted">The SportsVerge</span>. All rights reserved.
+            &copy; 2026 <span className="text-muted">{siteSettings.websiteName}</span>. All rights reserved.
             <br className="d-md-none" />
             {" Designed by "}
             <a

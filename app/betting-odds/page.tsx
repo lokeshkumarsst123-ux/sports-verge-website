@@ -1,105 +1,125 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import PageHeader from "@/components/PageHeader";
+import { cricketApi, type CricketBettingOddsCard } from "@/lib/cricket-api";
 
-export const metadata = { title: "Betting Odds & Predictions – The SportsVerge" };
-
-const odds = [
-  {
-    sport: "Football",
-    match: "Manchester City vs Arsenal",
-    league: "Premier League",
-    date: "Today, 8:30 PM",
-    homeOdds: "1.85",
-    drawOdds: "3.60",
-    awayOdds: "4.20",
-    prediction: "Man City win",
-  },
-  {
-    sport: "Cricket",
-    match: "CSK vs RCB",
-    league: "IPL 2026",
-    date: "Today, 7:30 PM",
-    homeOdds: "1.72",
-    drawOdds: "--",
-    awayOdds: "2.10",
-    prediction: "CSK win",
-  },
-  {
-    sport: "NFL",
-    match: "Kansas City Chiefs vs Buffalo Bills",
-    league: "NFL Pre-season",
-    date: "Tomorrow, 6:00 AM",
-    homeOdds: "1.55",
-    drawOdds: "12.0",
-    awayOdds: "2.55",
-    prediction: "Chiefs win",
-  },
-];
+const PAGE_SIZE = 5;
 
 export default function BettingOddsPage() {
+  const [cards, setCards] = useState<CricketBettingOddsCard[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasNextPage, setHasNextPage] = useState(false);
+  const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    document.title = "Betting Odds & Analytics - The SportsVerge";
+    let active = true;
+
+    const loadOdds = async (initialLoad = false) => {
+      if (initialLoad) setLoading(true);
+      else setRefreshing(true);
+      setMessage("");
+
+      try {
+        const nextPage = await cricketApi.bettingOddsPage(page, PAGE_SIZE);
+
+        if (!active) return;
+
+        if (!nextPage.items.length && page > 1) {
+          setPage((currentPage) => Math.max(1, currentPage - 1));
+          return;
+        }
+
+        setCards(nextPage.items);
+        setHasNextPage(nextPage.hasNextPage);
+        if (!nextPage.items.length) setMessage("Live odds are temporarily unavailable. Please check back shortly.");
+      } catch {
+        if (!active) return;
+        setCards([]);
+        setHasNextPage(false);
+        setMessage("We couldn't load the latest odds right now. Please check back shortly.");
+      } finally {
+        if (active) {
+          if (initialLoad) setLoading(false);
+          setRefreshing(false);
+        }
+      }
+    };
+
+    void loadOdds(true);
+    const refreshTimer = window.setInterval(() => void loadOdds(false), 30000);
+
+    return () => {
+      active = false;
+      window.clearInterval(refreshTimer);
+    };
+  }, [page]);
+
   return (
-    <main className="font-outfit">
+    <main className="font-outfit odds-page">
       <PageHeader
         title="Betting Odds & Analytics"
-        subtitle="Real-time betting market odds multipliers and match outcome analytical predictions."
-        className="mb-5"
+        subtitle="Live match odds, updated automatically when available."
+        className="odds-page-header"
       />
 
-      <div className="container custom-container mb-5">
-        <div className="rounded-4 p-4 d-flex align-items-center gap-3" style={{ background: "rgba(245,158,11,0.08)", border: "1px solid rgba(245,158,11,0.2)" }}>
-          <div className="d-flex align-items-center justify-content-center rounded-3 bg-warning bg-opacity-10 text-warning" style={{ width: "44px", height: "44px", flexShrink: 0 }}>
-            <i className="bi bi-exclamation-triangle-fill" style={{ fontSize: "1.2rem" }}></i>
-          </div>
-          <div>
-            <h6 className="fw-bold text-white mb-1 font-space-grotesk" style={{ fontSize: "14px" }}>18+ Responsible Gaming Disclaimer</h6>
-            <p className="text-muted mb-0 small" style={{ lineHeight: "1.5" }}>
-              These statistics are for analytical and news reporting purposes only. SportsVerge does not host gambling or betting. Please play responsibly.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <div className="container custom-container">
-        <div className="d-flex flex-column gap-4">
-          {odds.map((o, i) => (
-            <div key={i} className="rounded-4 p-4" style={{ background: "var(--bg-card)", border: "1px solid var(--border-dark)" }}>
-              <div className="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
-                <div>
-                  <span className="badge rounded-pill px-3 py-1 fw-semibold me-2" style={{ fontSize: "10px", background: "rgba(26,140,61,0.15)", color: "#86efac", border: "1px solid rgba(26,140,61,0.3)" }}>
-                    {o.sport}
-                  </span>
-                  <span className="text-muted small">{o.league} · {o.date}</span>
-                </div>
-                <div className="text-end">
-                  <span className="small text-muted">Model Predicts: <strong className="text-success">{o.prediction}</strong></span>
-                </div>
-              </div>
-
-              <h5 className="fw-bold text-white mb-4 font-space-grotesk">{o.match}</h5>
-
-              <div className="row g-3 text-center">
-                <div className="col-4">
-                  <div className="rounded-3 p-3" style={{ background: "var(--bg-dark)", border: "1px solid var(--border-dark)" }}>
-                    <div className="text-muted small mb-1">1 (Home)</div>
-                    <div className="fw-bold text-success font-monospace" style={{ fontSize: "16px" }}>{o.homeOdds}</div>
+      <section className="container custom-container odds-content">
+        {loading ? (
+          <div className="odds-state" role="status">Loading the latest odds...</div>
+        ) : cards.length ? (
+          <>
+            <div className="odds-list">
+              {cards.map((card) => (
+                <article className="odds-match-card" key={card.id}>
+                  <div className="odds-card-meta">
+                    <div className="odds-card-label">
+                      <span className="odds-sport-badge">Cricket</span>
+                      <span>{card.competition} - {card.label}</span>
+                    </div>
+                    <span className="odds-provider-status">{card.status}</span>
                   </div>
-                </div>
-                <div className="col-4">
-                  <div className="rounded-3 p-3" style={{ background: "var(--bg-dark)", border: "1px solid var(--border-dark)" }}>
-                    <div className="text-muted small mb-1">X (Draw)</div>
-                    <div className="fw-bold text-muted font-monospace" style={{ fontSize: "16px" }}>{o.drawOdds}</div>
+                  <h2>{card.home} <span>vs</span> {card.away}</h2>
+                  <div className="odds-options">
+                    <div className="odds-option">
+                      <span>1 (Home)</span>
+                      <strong>{card.homeOdds}</strong>
+                    </div>
+                    <div className="odds-option">
+                      <span>X (Draw)</span>
+                      <strong>{card.drawOdds}</strong>
+                    </div>
+                    <div className="odds-option">
+                      <span>2 (Away)</span>
+                      <strong>{card.awayOdds}</strong>
+                    </div>
                   </div>
-                </div>
-                <div className="col-4">
-                  <div className="rounded-3 p-3" style={{ background: "var(--bg-dark)", border: "1px solid var(--border-dark)" }}>
-                    <div className="text-muted small mb-1">2 (Away)</div>
-                    <div className="fw-bold text-success font-monospace" style={{ fontSize: "16px" }}>{o.awayOdds}</div>
-                  </div>
-                </div>
-              </div>
+                </article>
+              ))}
             </div>
-          ))}
-        </div>
-      </div>
+
+            {(page > 1 || hasNextPage) && (
+              <>
+                <div className="ranking-pagination">
+                  <button type="button" disabled={page === 1 || refreshing} onClick={() => setPage((currentPage) => Math.max(1, currentPage - 1))}>Previous</button>
+                  <span>Page {page}</span>
+                  <button type="button" disabled={!hasNextPage || refreshing} onClick={() => setPage((currentPage) => currentPage + 1)}>Next</button>
+                </div>
+                <div className="ranking-pagination-summary">
+                  Showing {((page - 1) * PAGE_SIZE) + 1}-{((page - 1) * PAGE_SIZE) + cards.length} of live odds
+                </div>
+              </>
+            )}
+          </>
+        ) : (
+          <div className="odds-state odds-empty-state" role="status">
+            <strong>Live odds are currently unavailable.</strong>
+            <span>{message}</span>
+          </div>
+        )}
+      </section>
     </main>
   );
 }

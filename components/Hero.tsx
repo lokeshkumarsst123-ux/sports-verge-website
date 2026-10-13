@@ -1,119 +1,110 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import Image from "next/image";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { SlideItem } from "@/types";
-import { heroSlides } from "@/data/mockData";
+import { contentApi, type PublicNewsArticle } from "@/lib/content-api";
+
+const FALLBACK_IMAGE = "/assets/imgs/banner/news-banner_1.webp";
 
 export default function Hero() {
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [articles, setArticles] = useState<PublicNewsArticle[]>([]);
+  const [active, setActive] = useState(0);
 
-  // Auto slide interval
   useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % heroSlides.length);
-    }, 5000); // Slide every 5 seconds
-    return () => clearInterval(interval);
+    let cancelled = false;
+
+    contentApi
+      .articles({ limit: 5 })
+      .then((result) => {
+        if (cancelled) return;
+        setArticles(result.data.items);
+        setActive(0);
+      })
+      .catch(() => {
+        if (!cancelled) setArticles([]);
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  const handlePrev = (e: React.MouseEvent) => {
-    e.preventDefault();
-    setActiveIndex((prev) => (prev - 1 + heroSlides.length) % heroSlides.length);
-  };
+  useEffect(() => {
+    if (articles.length < 2) return undefined;
 
-  const handleNext = (e: React.MouseEvent) => {
-    e.preventDefault();
-    setActiveIndex((prev) => (prev + 1) % heroSlides.length);
-  };
+    const timer = window.setInterval(() => {
+      setActive((index) => (index + 1) % articles.length);
+    }, 5000);
+
+    return () => window.clearInterval(timer);
+  }, [articles.length]);
+
+  const article = articles[active];
+
+  if (!article) {
+    return (
+      <section className="featured-news-section mb-4 rounded-3 border border-dark p-5 text-center text-muted">
+        No featured news available.
+      </section>
+    );
+  }
+
+  const previous = () => setActive((index) => (index - 1 + articles.length) % articles.length);
+  const next = () => setActive((index) => (index + 1) % articles.length);
 
   return (
     <section className="featured-news-section mb-4">
-      <div id="featuredNewsCarousel" className="carousel slide">
-        {/* Indicators */}
-        <div className="carousel-indicators custom-indicators">
-          {heroSlides.map((_, index) => (
-            <button
-              key={index}
-              type="button"
-              onClick={() => setActiveIndex(index)}
-              className={index === activeIndex ? "active" : ""}
-              aria-label={`Slide ${index + 1}`}
+      <div className="carousel-inner border border-dark rounded-3 overflow-hidden position-relative">
+        <div className="custom-carousel-item active">
+          <Link href={`/news/${article.id}`} className="d-block text-decoration-none position-relative">
+            <img
+              src={article.image || FALLBACK_IMAGE}
+              alt={article.title}
+              className="featured-img w-100 featured-img-cover d-block"
+              loading="eager"
+              onError={(event) => {
+                if (!event.currentTarget.src.endsWith(FALLBACK_IMAGE)) {
+                  event.currentTarget.src = FALLBACK_IMAGE;
+                }
+              }}
             />
-          ))}
+            <div className="featured-overlay" />
+            <div className="carousel-caption custom-caption w-75 text-start">
+              <span className="badge fw-normal bg-dark mb-3 rounded-pill small">FEATURED NEWS</span>
+              <h2 className="fw-semibold mb-2">{article.title}</h2>
+              <p className="text-light small mb-3">{article.summary}</p>
+              <span className="btn btn-success px-4 py-2">
+                Read Full Story <i className="bi bi-arrow-right ms-2" aria-hidden="true" />
+              </span>
+            </div>
+          </Link>
         </div>
 
-        {/* Slides */}
-        <div className="carousel-inner border border-dark rounded-3 overflow-hidden">
-          {heroSlides.map((item: SlideItem, index: number) => {
-            // Use direct newsId if available, else fall back to title matching
-            const articleUrl = item.newsId
-              ? `/news/${item.newsId}`
-              : "/news";
+        {articles.length > 1 && (
+          <>
+            <div className="carousel-indicators custom-indicators">
+              {articles.map((item, index) => (
+                <button
+                  key={`${item.id}-${index}`}
+                  type="button"
+                  onClick={() => setActive(index)}
+                  className={index === active ? "active" : ""}
+                  aria-label={`Slide ${index + 1}`}
+                  aria-current={index === active ? "true" : undefined}
+                />
+              ))}
+            </div>
 
-            return (
-              <div
-                key={index}
-                className={`carousel-item custom-carousel-item ${index === activeIndex ? "active" : ""}`}
-              >
-                <Link href={articleUrl} className="d-block text-decoration-none">
-                  <Image
-                    src={item.image}
-                    alt={item.title}
-                    width={1200}
-                    height={650}
-                    className="featured-img w-100 featured-img-cover"
-                    priority={index === 0}
-                    fetchPriority={index === 0 ? "high" : "auto"}
-                    sizes="(max-width: 768px) 100vw, 1200px"
-                  />
-
-                  <div className="featured-overlay"></div>
-
-                  <div className="carousel-caption custom-caption w-50 text-start">
-                    <span className="badge fw-normal ms-badge bg-dark mb-3 rounded-pill small">
-                      FEATURED NEWS
-                    </span>
-
-                    <h2 className="fw-semibold mb-3">
-                      {item.title}
-                    </h2>
-
-                    <p className="mb-4 text-light">
-                      {item.desc}
-                    </p>
-
-                    <span className="btn btn-success px-4 py-2">
-                      Read Full Story
-                      <i className="bi bi-arrow-right ms-2"></i>
-                    </span>
-                  </div>
-                </Link>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Controls */}
-        <div className="carousel-controls-custom">
-          <button
-            className="btn btn-dark-control"
-            type="button"
-            onClick={handlePrev}
-            aria-label="Previous Slide"
-          >
-            <i className="bi bi-chevron-left"></i>
-          </button>
-
-          <button
-            className="btn btn-dark-control"
-            type="button"
-            onClick={handleNext}
-            aria-label="Next Slide"
-          >
-            <i className="bi bi-chevron-right"></i>
-          </button>
-        </div>
+            <div className="carousel-controls-custom">
+              <button type="button" className="btn-dark-control" onClick={previous} aria-label="Previous featured story">
+                <i className="bi bi-chevron-left" aria-hidden="true" />
+              </button>
+              <button type="button" className="btn-dark-control" onClick={next} aria-label="Next featured story">
+                <i className="bi bi-chevron-right" aria-hidden="true" />
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </section>
   );

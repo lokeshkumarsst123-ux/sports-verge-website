@@ -211,7 +211,7 @@ export default function FootballMatchCard({ match }: FootballMatchCardProps) {
               {match.lastUpdated}
             </span>
             <Link
-              href={`/live-scores/${match.id}`}
+              href={`/live-scores/${match.id}?sport=football`}
               className="btn btn-outline-success btn-sm w-100 w-sm-auto px-3 py-2 fw-semibold text-uppercase fs-11 ls-05px"
             >
               View Match Details

@@ -12,7 +12,6 @@ const sports = [
   { id: "cricket", label: "Cricket", icon: "bi-activity" },
   { id: "football", label: "Football", icon: "bi-dribbble" },
   { id: "NFL", label: "NFL", icon: "bi-trophy-fill" },
-  { id: "AFL", label: "AFL", icon: "bi-shield-fill" },
 ];
 
 export default function SportsTabs({ activeTab, onTabChange }: SportsTabsProps) {
