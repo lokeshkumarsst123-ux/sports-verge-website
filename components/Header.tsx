@@ -5,6 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import NavigationMenu from "./NavigationMenu";
+import { logoutUser } from "@/lib/auth-api";
+import { useSiteSettings } from "@/components/SiteSettingsContext";
 
 export default function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -17,6 +19,7 @@ export default function Header() {
   const pathname = usePathname();
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
+  const siteSettings = useSiteSettings();
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -79,7 +82,7 @@ export default function Header() {
     };
   }, [isSearchOpen, isProfileDropdownOpen]);
 
-  if (["/login", "/register", "/forgot-password"].includes(pathname)) {
+  if (["/login", "/register", "/forgot-password"].includes(pathname) || pathname.startsWith("/admin")) {
     return null;
   }
 
@@ -90,14 +93,14 @@ export default function Header() {
           {/* Logo */}
 
           <Link href="/" className="navbar-brand me-auto">
-            <Image
+            {siteSettings.logoUrl ? <img src={siteSettings.logoUrl} alt={siteSettings.websiteName} width={180} height={45} className="brand-logo" /> : <Image
               src="/assets/imgs/logo-white.svg"
-              alt="SportsVerge"
+              alt={siteSettings.websiteName}
               width={180}
               height={45}
               className="brand-logo"
               priority
-            />
+            />}
           </Link>
 
           {/* Right Controls */}
@@ -139,19 +142,25 @@ export default function Header() {
               </div>
             </div>
 
-            <Link
-              href="/notifications"
-              className="control-icon text-white position-relative ms-3 ms-xl-4"
-            >
-              <span className="visually-hidden">Notifications</span>
-              <i className="bi bi-bell"></i>
-
-              <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success notification-badge">
-                3
-              </span>
-            </Link>
+            {/* Notifications temporarily disabled. Restore this block when notification access is needed. */}
 
             <div className="d-none d-xl-flex align-items-center position-relative" ref={profileDropdownRef}>
+              <Link
+                href="/join-tipster"
+                className="d-inline-flex align-items-center gap-2 text-nowrap fw-semibold text-decoration-none transition-all ms-3"
+                style={{
+                  fontSize: "13.5px",
+                  padding: "7px 16px",
+                  borderRadius: "6px",
+                  color: "#ffffff",
+                  background: "rgba(34, 197, 94, 0.14)",
+                  border: "1px solid rgba(34, 197, 94, 0.45)",
+                  lineHeight: "1.4",
+                }}
+              >
+                <i className="bi bi-stars text-success" style={{ fontSize: "13px" }}></i>
+                <span>Join as a Tipster</span>
+              </Link>
               {user ? (
                 <>
                   <button
@@ -191,10 +200,26 @@ export default function Header() {
                         <i className="bi bi-person-fill text-success"></i>
                         <span>Profile</span>
                       </Link>
+                      <Link
+                        href="/tipster/dashboard"
+                        className="dropdown-item-premium d-flex align-items-center gap-2 px-3 py-2 text-decoration-none rounded mb-1 fs-14"
+                        onClick={() => setIsProfileDropdownOpen(false)}
+                      >
+                        <i className="bi bi-speedometer2 text-success"></i>
+                        <span>Tipster Studio</span>
+                      </Link>
+                      <Link
+                        href="/my-purchased-tips"
+                        className="dropdown-item-premium d-flex align-items-center gap-2 px-3 py-2 text-decoration-none rounded mb-1 fs-14"
+                        onClick={() => setIsProfileDropdownOpen(false)}
+                      >
+                        <i className="bi bi-unlock-fill text-success"></i>
+                        <span>My Purchased Tips</span>
+                      </Link>
                       <button
-                        onClick={() => {
+                        onClick={async () => {
                           setIsProfileDropdownOpen(false);
-                          sessionStorage.removeItem("user_session");
+                          await logoutUser();
                           window.location.href = "/";
                         }}
                         className="dropdown-item-premium w-100 border-0 bg-transparent d-flex align-items-center gap-2 px-3 py-2 text-start text-danger rounded fs-14"
@@ -255,8 +280,8 @@ export default function Header() {
                     </div>
                     <div className="col-6">
                       <button
-                        onClick={() => {
-                          sessionStorage.removeItem("user_session");
+                        onClick={async () => {
+                          await logoutUser();
                           window.location.href = "/";
                         }}
                         className="btn btn-sm btn-outline-danger gap-1 w-100 py-2 rounded-pill font-space-grotesk fw-bold fs-12 d-flex align-items-center justify-content-center gap-1.5"
@@ -272,6 +297,21 @@ export default function Header() {
                   Login
                 </Link>
               )}
+              <div className="mt-2">
+                <Link
+                  href="/join-tipster"
+                  className="w-100 d-flex align-items-center justify-content-center gap-2 text-decoration-none fw-semibold rounded-2 py-2"
+                  style={{
+                    fontSize: "13.5px",
+                    color: "#ffffff",
+                    background: "rgba(34, 197, 94, 0.14)",
+                    border: "1px solid rgba(34, 197, 94, 0.45)",
+                  }}
+                >
+                  <i className="bi bi-stars text-success" style={{ fontSize: "13px" }}></i>
+                  <span>Join as a Tipster</span>
+                </Link>
+              </div>
             </div>
 
             <NavigationMenu />

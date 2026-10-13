@@ -2113,19 +2113,6 @@ body {
   font-size: 0.8em !important;
 }
 
-/* AFL Match Detail Styles */
-.afl-tab-btn {
-  font-size: 12px !important;
-  letter-spacing: 0.5px !important;
-  transition: all 0.2s !important;
-  font-family: var(--font-space-grotesk) !important;
-}
-
-.afl-section-title {
-  font-size: 18px !important;
-  font-family: var(--font-space-grotesk) !important;
-}
-
 .border-bottom-white-05 {
   border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
 }
@@ -2412,62 +2399,6 @@ body {
   background-color: rgba(239, 68, 68, 0.15) !important;
   color: #f87171 !important;
   border: 1px solid rgba(239, 68, 68, 0.3) !important;
-  font-weight: 600 !important;
-  font-size: 10px !important;
-  padding: 4px 8px !important;
-  border-radius: 4px !important;
-  display: inline-block !important;
-}
-
-/* AFL Badges */
-.badge-afl-goal {
-  background-color: rgba(25, 135, 84, 0.15) !important;
-  color: #4ade80 !important;
-  border: 1px solid rgba(25, 135, 84, 0.3) !important;
-  font-weight: 600 !important;
-  font-size: 10px !important;
-  padding: 4px 8px !important;
-  border-radius: 4px !important;
-  display: inline-block !important;
-}
-
-.badge-afl-behind {
-  background-color: rgba(108, 117, 125, 0.15) !important;
-  color: #cbd5e1 !important;
-  border: 1px solid rgba(108, 117, 125, 0.3) !important;
-  font-weight: 600 !important;
-  font-size: 10px !important;
-  padding: 4px 8px !important;
-  border-radius: 4px !important;
-  display: inline-block !important;
-}
-
-.badge-afl-injury {
-  background-color: rgba(220, 53, 69, 0.15) !important;
-  color: #ff5b5b !important;
-  border: 1px solid rgba(220, 53, 69, 0.35) !important;
-  font-weight: 600 !important;
-  font-size: 10px !important;
-  padding: 4px 8px !important;
-  border-radius: 4px !important;
-  display: inline-block !important;
-}
-
-.badge-afl-interchange {
-  background-color: rgba(13, 202, 240, 0.15) !important;
-  color: #38bdf8 !important;
-  border: 1px solid rgba(13, 202, 240, 0.35) !important;
-  font-weight: 600 !important;
-  font-size: 10px !important;
-  padding: 4px 8px !important;
-  border-radius: 4px !important;
-  display: inline-block !important;
-}
-
-.badge-afl-event-default {
-  background-color: rgba(255, 255, 255, 0.05) !important;
-  color: #cbd5e1 !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
   font-weight: 600 !important;
   font-size: 10px !important;
   padding: 4px 8px !important;
@@ -2869,5 +2800,349 @@ textarea:-ms-input-placeholder {
     position: absolute;
     right: 0;
     top: 14px;
+  }
+}
+
+/* Provider-backed betting odds page */
+.odds-page {
+  min-height: 700px;
+}
+
+.odds-page-header {
+  margin-bottom: 36px !important;
+}
+
+.odds-content {
+  max-width: 1060px;
+}
+
+.odds-disclaimer {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 18px;
+  margin-bottom: 36px;
+  color: #f4ead2;
+  background: rgba(81, 55, 8, 0.25);
+  border: 1px solid rgba(170, 122, 20, 0.42);
+  border-radius: 12px;
+}
+
+.odds-disclaimer-icon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  color: #ffc107;
+  background: rgba(255, 193, 7, 0.12);
+  border-radius: 6px;
+  font-size: 19px;
+}
+
+.odds-disclaimer strong {
+  display: block;
+  color: #fff;
+  font-size: 12px;
+  margin-bottom: 3px;
+}
+
+.odds-disclaimer p {
+  margin: 0;
+  color: #cbbf9e;
+  font-size: 11px;
+}
+
+.odds-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.odds-match-card {
+  padding: 20px;
+  background: var(--bg-card, #111722);
+  border: 1px solid var(--border-dark, #273141);
+  border-radius: 14px;
+}
+
+.odds-card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  color: #aeb9ca;
+  font-size: 11px;
+}
+
+.odds-card-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.odds-card-label > span:last-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.odds-sport-badge {
+  flex: 0 0 auto;
+  padding: 3px 10px;
+  color: #6ee7a0;
+  background: rgba(26, 140, 61, 0.14);
+  border: 1px solid rgba(26, 140, 61, 0.4);
+  border-radius: 999px;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.odds-provider-status {
+  color: #6ee7a0;
+  white-space: nowrap;
+}
+
+.odds-match-card h2 {
+  margin: 14px 0 16px;
+  color: #fff;
+  font-family: var(--font-space-grotesk, Arial, sans-serif);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.odds-match-card h2 span {
+  margin: 0 5px;
+  color: #8a96a8;
+  font-weight: 400;
+}
+
+.odds-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.odds-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 62px;
+  padding: 10px;
+  background: #070b12;
+  border: 1px solid #2a3444;
+  border-radius: 6px;
+}
+
+.odds-option span {
+  color: #d7deea;
+  font-size: 11px;
+}
+
+.odds-option strong {
+  margin-top: 6px;
+  color: #6ee7a0;
+  font-family: var(--font-space-grotesk, Arial, sans-serif);
+  font-size: 13px;
+}
+
+.odds-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 150px;
+  padding: 30px;
+  color: #b6c2d3;
+  background: var(--bg-card, #111722);
+  border: 1px solid var(--border-dark, #273141);
+  border-radius: 14px;
+  text-align: center;
+}
+
+.odds-empty-state {
+  flex-direction: column;
+  gap: 8px;
+}
+
+.odds-empty-state strong {
+  color: #fff;
+}
+
+.odds-empty-state span {
+  max-width: 680px;
+  color: #aeb9ca;
+  font-size: 12px;
+}
+
+@media (max-width: 575.98px) {
+  .odds-disclaimer {
+    align-items: flex-start;
+  }
+
+  .odds-card-meta {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .odds-options {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Provider-backed player statistics and leaders page */
+.stats-leaders-page {
+  min-height: 700px;
+}
+
+.stats-leaders-header {
+  margin-bottom: 34px !important;
+}
+
+.stats-leaders-content {
+  max-width: 1060px;
+}
+
+.stats-sport-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.stats-sport-tabs button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 16px;
+  color: #f1f5fb;
+  background: #111722;
+  border: 1px solid #2a3444;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  transition: background-color .2s ease, border-color .2s ease;
+}
+
+.stats-sport-tabs button:hover,
+.stats-sport-tabs button.active {
+  color: #fff;
+  background: #198c3d;
+  border-color: #198c3d;
+}
+
+.stats-leader-tables {
+  display: flex;
+  flex-direction: column;
+  gap: 34px;
+}
+
+.stats-leader-card {
+  padding: 18px;
+  overflow: hidden;
+  background: var(--bg-card, #111722);
+  border: 1px solid var(--border-dark, #273141);
+  border-radius: 14px;
+}
+
+.stats-leader-card h2 {
+  margin: 0 0 18px;
+  color: #fff;
+  font-family: var(--font-space-grotesk, Arial, sans-serif);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.stats-leader-table {
+  width: 100%;
+  min-width: 700px;
+  border-collapse: collapse;
+  color: #aeb9ca;
+  font-size: 11px;
+}
+
+.stats-leader-table thead {
+  background: #171e2a;
+}
+
+.stats-leader-table th {
+  padding: 12px 14px;
+  color: #91a0b5;
+  border-bottom: 1px solid #2a3444;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.stats-leader-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, .055);
+  white-space: nowrap;
+}
+
+.stats-leader-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.stats-leader-table tbody tr:hover {
+  background: rgba(255, 255, 255, .025);
+}
+
+.stats-rank {
+  width: 90px;
+  color: #20b957;
+  font-family: var(--font-space-grotesk, Arial, sans-serif);
+  font-weight: 700;
+}
+
+.stats-player {
+  min-width: 220px;
+  color: #fff;
+  font-weight: 700;
+}
+
+.stats-value {
+  color: #fff;
+  font-weight: 700;
+}
+
+.stats-leaders-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 180px;
+  padding: 30px;
+  color: #b6c2d3;
+  background: var(--bg-card, #111722);
+  border: 1px solid var(--border-dark, #273141);
+  border-radius: 14px;
+  text-align: center;
+}
+
+.stats-leaders-empty {
+  flex-direction: column;
+  gap: 8px;
+}
+
+.stats-leaders-empty strong {
+  color: #fff;
+}
+
+.stats-leaders-empty span {
+  max-width: 720px;
+  font-size: 12px;
+}
+
+@media (max-width: 575.98px) {
+  .stats-sport-tabs button {
+    padding: 8px 12px;
+  }
+
+  .stats-leader-card {
+    padding: 14px;
   }
 }

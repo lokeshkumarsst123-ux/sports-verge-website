@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { apiErrorMessage, apiFieldErrors, authApi, saveAuthSession } from "@/lib/auth-api";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -17,13 +18,15 @@ export default function RegisterPage() {
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [loading, setLoading] = useState(false);
-  const [step, setStep] = useState<"form" | "sending" | "verify_sent">("form");
+  const [step, setStep] = useState<"form" | "sending">("form");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [globalError, setGlobalError] = useState<string | null>(null);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    setGlobalError(null);
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
@@ -40,8 +43,6 @@ export default function RegisterPage() {
       newErrors.email = "Email address is required.";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = "Please enter a valid email address.";
-    } else if (formData.email.toLowerCase() === "admin@sportsverge.com") {
-      newErrors.email = "This email address is already registered.";
     }
 
     // Password security check
@@ -64,42 +65,28 @@ export default function RegisterPage() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
 
     setLoading(true);
     setStep("sending");
+    setGlobalError(null);
 
-    // Simulate calling API & creating user directly
-    setTimeout(() => {
+    try {
+      const response = await authApi.register(formData);
+      sessionStorage.removeItem("admin_session");
+      saveAuthSession(response.data);
+      const requestedNext = typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("next") : null;
+      const nextPath = requestedNext && requestedNext.startsWith("/") && !requestedNext.startsWith("//") ? requestedNext : "/profile";
+      router.push(nextPath);
+    } catch (error) {
+      setStep("form");
+      setGlobalError(apiErrorMessage(error));
+      setErrors(apiFieldErrors(error));
+    } finally {
       setLoading(false);
-      const sessionUser = {
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        email: formData.email,
-        verified: true,
-      };
-      sessionStorage.setItem("registered_user", JSON.stringify(sessionUser));
-      sessionStorage.setItem("user_session", JSON.stringify(sessionUser)); // log them in
-      router.push("/profile");
-    }, 1500);
-  };
-
-  // Simulates clicking the link in the verification email
-  const handleSimulateVerification = () => {
-    setLoading(true);
-    setTimeout(() => {
-      const user = sessionStorage.getItem("registered_user");
-      if (user) {
-        const parsed = JSON.parse(user);
-        parsed.verified = true;
-        sessionStorage.setItem("registered_user", JSON.stringify(parsed));
-        sessionStorage.setItem("user_session", JSON.stringify(parsed)); // log them in
-      }
-      setLoading(false);
-      router.push("/profile");
-    }, 1500);
+    }
   };
 
   return (
@@ -138,6 +125,12 @@ export default function RegisterPage() {
               <p className="text-muted small mb-4">
                 Get started today and experience premium sports analytics.
               </p>
+
+              {globalError && (
+                <div className="alert alert-danger bg-danger bg-opacity-10 border-danger border-opacity-20 text-danger small rounded-3 p-3 mb-4" role="alert">
+                  {globalError}
+                </div>
+              )}
 
               <form onSubmit={handleSubmit} className="d-flex flex-column gap-3">
                 <div className="row g-3">
@@ -213,6 +206,7 @@ export default function RegisterPage() {
                       type="button"
                       className="btn position-absolute top-50 end-0 translate-middle-y border-0 text-muted px-3"
                       onClick={() => setShowPassword(!showPassword)}
+                      aria-label={showPassword ? "Hide password" : "Show password"}
                     >
                       <i className={`bi ${showPassword ? "bi-eye-slash" : "bi-eye"}`}></i>
                     </button>
@@ -240,6 +234,7 @@ export default function RegisterPage() {
                       type="button"
                       className="btn position-absolute top-50 end-0 translate-middle-y border-0 text-muted px-3"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      aria-label={showConfirmPassword ? "Hide password confirmation" : "Show password confirmation"}
                     >
                       <i className={`bi ${showConfirmPassword ? "bi-eye-slash" : "bi-eye"}`}></i>
                     </button>
@@ -257,7 +252,7 @@ export default function RegisterPage() {
                     required
                   />
                   <label className="form-check-label text-muted small" htmlFor="termsCheck">
-                    I agree to the <Link href="#" className="text-success text-decoration-none">Terms of Service</Link> & <Link href="#" className="text-success text-decoration-none">Privacy Policy</Link>
+                    I agree to the <Link href="/terms-of-use" className="text-success text-decoration-none">Terms of Service</Link> & <Link href="/privacy-policy" className="text-success text-decoration-none">Privacy Policy</Link>
                   </label>
                 </div>
 
@@ -292,50 +287,6 @@ export default function RegisterPage() {
             </div>
           )}
 
-          {step === "verify_sent" && (
-            <div className="text-center py-2">
-              <div
-                className="d-inline-flex align-items-center justify-content-center bg-success bg-opacity-10 text-success rounded-circle p-3 mb-4 envelope-icon-wrapper"
-              >
-                <i className="bi bi-envelope-check-fill fs-28"></i>
-              </div>
-              <h4 className="text-white fw-semibold">Verify Your Email</h4>
-              <p className="text-muted small my-3 lh-16">
-                A verification link has been sent to <strong className="text-light">{formData.email}</strong>. 
-                Please click the link in the email to activate your profile dashboard.
-              </p>
-
-              {/* Simulation Sandbox CTA */}
-              <div className="bg-dark bg-opacity-40 border border-secondary border-opacity-10 rounded-3 p-3 my-4">
-                <span className="badge bg-secondary bg-opacity-20 text-success mb-2 px-2.5 py-1.5 sandbox-badge">
-                  SIMULATION SANDBOX
-                </span>
-                <p className="text-muted sandbox-text">
-                  In production, users would check their email client. Click the trigger below to simulate clicking the email link.
-                </p>
-                <button
-                  onClick={handleSimulateVerification}
-                  className="btn btn-login w-100 fw-semibold text-uppercase py-2 fs-11"
-                  disabled={loading}
-                >
-                  {loading ? "Verifying..." : "Simulate Email Link Click"}
-                </button>
-              </div>
-
-              <div className="text-center mt-2">
-                <span className="text-muted small">Didn't receive the email? </span>
-                <button
-                  onClick={() => {
-                    setStep("sending");
-                    setTimeout(() => setStep("verify_sent"), 1500);
-                  }}
-                  className="btn btn-link text-success text-decoration-none small p-0 fw-semibold align-baseline"
-                >
-                  Resend Link
-                </button>
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </main>

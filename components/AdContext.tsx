@@ -1,9 +1,12 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
+import { API_BASE_URL, API_ORIGIN } from "@/lib/api-config";
 
 export interface Ad {
   id: string;
+  sourceId?: string;
   title: string;
   type: "Homepage Banner" | "Sidebar Advertisement" | "Article Advertisement" | "Match Page Advertisement";
   image: string;
@@ -13,149 +16,39 @@ export interface Ad {
   status: "Active" | "Paused" | "Scheduled";
 }
 
-type AdContextType = {
-  ads: Ad[];
-  addAd: (ad: Omit<Ad, "id">) => void;
-  updateAdStatus: (id: string, status: Ad["status"]) => void;
-  deleteAd: (id: string) => void;
-  editAd: (id: string, ad: Omit<Ad, "id">) => void;
-  getAdByType: (type: Ad["type"]) => Ad | null;
-};
+type ApiAd = { id: string; title: string; imageUrl: string; destinationUrl: string; placement: string; startDate: string; endDate: string };
+type AdContextType = { ads: Ad[]; addAd: (ad: Omit<Ad, "id">) => void; updateAdStatus: (id: string, status: Ad["status"]) => void; deleteAd: (id: string) => void; editAd: (id: string, ad: Omit<Ad, "id">) => void; getAdByType: (type: Ad["type"]) => Ad | null };
 
-const AdContext = createContext<AdContextType>({
-  ads: [],
-  addAd: () => {},
-  updateAdStatus: () => {},
-  deleteAd: () => {},
-  editAd: () => {},
-  getAdByType: () => null,
-});
-
+const AdContext = createContext<AdContextType>({ ads: [], addAd: () => {}, updateAdStatus: () => {}, deleteAd: () => {}, editAd: () => {}, getAdByType: () => null });
 export const useAds = () => useContext(AdContext);
 
-const defaultAds: Ad[] = [
-  {
-    id: "AD-1",
-    title: "Premium Sports Gear Sale",
-    type: "Homepage Banner",
-    image: "/assets/imgs/ad-2.webp",
-    redirectUrl: "https://example.com/sports-gear",
-    startDate: "2026-07-01",
-    endDate: "2026-08-31",
-    status: "Active",
-  },
-  {
-    id: "AD-2",
-    title: "Join The Club Membership",
-    type: "Sidebar Advertisement",
-    image: "/assets/imgs/ad+1.webp",
-    redirectUrl: "https://example.com/membership",
-    startDate: "2026-07-01",
-    endDate: "2026-08-31",
-    status: "Active",
-  },
-  {
-    id: "AD-3",
-    title: "Get SportsVerge Premium",
-    type: "Article Advertisement",
-    image: "/assets/imgs/news/haaland-brazil.webp",
-    redirectUrl: "https://example.com/premium",
-    startDate: "2026-07-01",
-    endDate: "2026-08-31",
-    status: "Active",
-  },
-  {
-    id: "AD-4",
-    title: "Live Stream Ticket Specials",
-    type: "Match Page Advertisement",
-    image: "/assets/imgs/news/james-cook-bills.jpg",
-    redirectUrl: "https://example.com/tickets",
-    startDate: "2026-07-01",
-    endDate: "2026-08-31",
-    status: "Active",
-  },
-];
+const normalizeAdImage = (value: string) => {
+  const source = String(value || "").trim();
+  if (!source) return "";
+  if (source.startsWith("//")) return `https:${source}`;
+  if (source.startsWith("/")) return `${API_ORIGIN}${source}`;
+  if (/^https?:\/\/(localhost|127\.0\.0\.1):4000\//i.test(source)) {
+    try {
+      const parsed = new URL(source);
+      return `${API_ORIGIN}${parsed.pathname}${parsed.search}`;
+    } catch {
+      return source;
+    }
+  }
+  return source;
+};
+const placementByType: Record<Ad["type"], string> = { "Homepage Banner": "homepage_header", "Sidebar Advertisement": "homepage_sidebar", "Article Advertisement": "news_details", "Match Page Advertisement": "match_details" };
+const typeByPlacement: Record<string, Ad["type"]> = { homepage_header: "Homepage Banner", news_listing: "Homepage Banner", homepage_sidebar: "Sidebar Advertisement", news_details: "Article Advertisement", match_details: "Match Page Advertisement" };
+const mapAds = (ad: ApiAd): Ad[] => ad.placement.split(",").map((placement) => typeByPlacement[placement]).filter(Boolean).map((type) => ({ id: `${ad.id}-${type}`, sourceId: ad.id, title: ad.title, type, image: normalizeAdImage(ad.imageUrl), redirectUrl: `${API_BASE_URL}/content/advertisements/${ad.id}/click`, startDate: ad.startDate, endDate: ad.endDate, status: "Active" }));
 
 export default function AdProvider({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+  const isAdminRoute = pathname === "/admin" || pathname.startsWith("/admin/");
   const [ads, setAds] = useState<Ad[]>([]);
-  const [isHydrated, setIsHydrated] = useState(false);
-
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem("sportsverge_advertisements");
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        const hasUnsplash = parsed.some((ad: any) => ad.image && ad.image.includes("unsplash.com"));
-        if (hasUnsplash) {
-          setAds(defaultAds);
-          localStorage.setItem("sportsverge_advertisements", JSON.stringify(defaultAds));
-        } else {
-          setAds(parsed);
-        }
-      } else {
-        setAds(defaultAds);
-        localStorage.setItem("sportsverge_advertisements", JSON.stringify(defaultAds));
-      }
-    } catch (e) {
-      console.error("Error reading ads from localStorage", e);
-    }
-    setIsHydrated(true);
-  }, []);
-
-  useEffect(() => {
-    if (!isHydrated) return;
-    localStorage.setItem("sportsverge_advertisements", JSON.stringify(ads));
-  }, [ads, isHydrated]);
-
-  const addAd = (newAdData: Omit<Ad, "id">) => {
-    const id = `AD-${Math.floor(100000 + Math.random() * 900000)}`;
-    const newAd: Ad = { ...newAdData, id };
-    setAds((prev) => [newAd, ...prev]);
-  };
-
-  const updateAdStatus = (id: string, status: Ad["status"]) => {
-    setAds((prev) =>
-      prev.map((ad) => (ad.id === id ? { ...ad, status } : ad))
-    );
-  };
-
-  const deleteAd = (id: string) => {
-    setAds((prev) => prev.filter((ad) => ad.id !== id));
-  };
-
-  const editAd = (id: string, updatedData: Omit<Ad, "id">) => {
-    setAds((prev) =>
-      prev.map((ad) => (ad.id === id ? { ...ad, ...updatedData } : ad))
-    );
-  };
-
-  const getAdByType = (type: Ad["type"]): Ad | null => {
-    const today = new Date().toISOString().split("T")[0];
-    // Find the first active ad of the matching type within date range
-    const activeAds = ads.filter((ad) => {
-      if (ad.type !== type || ad.status !== "Active") return false;
-      
-      // Date verification
-      const isAfterStart = !ad.startDate || today >= ad.startDate;
-      const isBeforeEnd = !ad.endDate || today <= ad.endDate;
-      return isAfterStart && isBeforeEnd;
-    });
-
-    return activeAds.length > 0 ? activeAds[0] : null;
-  };
-
-  return (
-    <AdContext.Provider
-      value={{
-        ads,
-        addAd,
-        updateAdStatus,
-        deleteAd,
-        editAd,
-        getAdByType,
-      }}
-    >
-      {children}
-    </AdContext.Provider>
-  );
+  const trackedImpressions = useRef(new Set<string>());
+  const loadAds = async () => { if (isAdminRoute) return; try { const response = await fetch(`${API_BASE_URL}/content/advertisements`, { cache: "no-store" }); if (!response.ok) return; const payload = await response.json(); const nextAds: Ad[] = (payload.data?.advertisements || []).flatMap((ad: ApiAd) => mapAds(ad)); setAds(nextAds); const sourceIds = [...new Set(nextAds.map((ad) => ad.sourceId).filter(Boolean))] as string[]; await Promise.all(sourceIds.filter((id) => !trackedImpressions.current.has(id)).map(async (id) => { trackedImpressions.current.add(id); try { await fetch(`${API_BASE_URL}/content/advertisements/${id}/impression`, { method: "POST", keepalive: true }); } catch { /* Impression tracking must never block the page. */ } })); } catch { /* Ads should never block the page. */ } };
+  useEffect(() => { if (isAdminRoute) { setAds([]); return undefined; } void loadAds(); const timer = window.setInterval(() => void loadAds(), 30000); return () => window.clearInterval(timer); }, [isAdminRoute]);
+  const getAdByType = (type: Ad["type"]): Ad | null => ads.find((ad) => ad.type === type) || null;
+  const value = useMemo(() => ({ ads, addAd: (_ad: Omit<Ad, "id">) => {}, updateAdStatus: (_id: string, _status: Ad["status"]) => {}, deleteAd: (_id: string) => {}, editAd: (_id: string, _ad: Omit<Ad, "id">) => {}, getAdByType }), [ads]);
+  return <AdContext.Provider value={value}>{children}</AdContext.Provider>;
 }

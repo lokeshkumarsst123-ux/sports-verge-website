@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 360" role="img" aria-labelledby="title desc">
+  <title id="title">Player image unavailable</title>
+  <desc id="desc">Neutral player silhouette placeholder</desc>
+  <rect width="320" height="360" fill="#1a2332"/>
+  <circle cx="160" cy="118" r="58" fill="#526174"/>
+  <path d="M62 326c8-74 45-112 98-112s90 38 98 112" fill="#526174"/>
+  <path d="M88 92c12-47 40-68 72-68s60 21 72 68c-18-17-43-25-72-25s-54 8-72 25Z" fill="#738196" opacity=".7"/>
+</svg>

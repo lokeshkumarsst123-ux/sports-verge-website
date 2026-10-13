@@ -1,34 +1,89 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { newsArticles } from "@/data/newsData";
-import { useAds } from "@/components/AdContext";
+import { contentApi, type PublicNewsArticle } from "@/lib/content-api";
+import { useAds, type Ad } from "@/components/AdContext";
+import { hasAuthSession } from "@/lib/auth-api";
 
 export default function NewsDetailsPage() {
   const { id } = useParams();
   const { getAdByType } = useAds();
 
   const [copied, setCopied] = useState(false);
-  const [articleAd, setArticleAd] = useState<any>(null);
-
-  const article = useMemo(() => {
-    if (!id) return null;
-    return newsArticles.find((a) => a.id === id) || null;
-  }, [id]);
+  const [article, setArticle] = useState<PublicNewsArticle | null>(null);
+  const [relatedArticles, setRelatedArticles] = useState<PublicNewsArticle[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
+  const [authChecked, setAuthChecked] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const viewedArticleRef = useRef<string | null>(null);
 
   useEffect(() => {
-    if (article && getAdByType) {
-      setArticleAd(getAdByType("Article Advertisement"));
-    }
-  }, [article, getAdByType]);
+    const timer = window.setTimeout(() => {
+      const authenticated = hasAuthSession();
+      setIsAuthenticated(authenticated);
+      setAuthChecked(true);
+      if (!authenticated) setLoading(false);
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, []);
 
-  const relatedArticles = useMemo(() => {
-    if (!article) return [];
-    return newsArticles
-      .filter((a) => a.category === article.category && a.id !== article.id)
-      .slice(0, 3);
+  useEffect(() => {
+    if (!id || !authChecked || !isAuthenticated) return;
+    const articleKey = String(id);
+    if (viewedArticleRef.current === articleKey) return;
+    viewedArticleRef.current = articleKey;
+    let active = true;
+
+    const loadArticle = async () => {
+      setLoading(true);
+      setLoadError("");
+
+      try {
+        const result = await contentApi.article(String(id));
+        if (!active) return;
+
+        const nextArticle = result.data.article;
+        setArticle(nextArticle);
+
+        try {
+          const related = await contentApi.articles({ category: nextArticle.categorySlug, limit: 4 });
+          if (active) {
+            setRelatedArticles(related.data.items.filter((item) => item.id !== nextArticle.id).slice(0, 3));
+          }
+        } catch {
+          if (active) setRelatedArticles([]);
+        }
+      } catch (error) {
+        if (!active) return;
+        setArticle(null);
+        setRelatedArticles([]);
+        setLoadError(error instanceof Error ? error.message : "Article not found.");
+      } finally {
+        if (active) setLoading(false);
+      }
+    };
+
+    void loadArticle();
+    return () => { active = false; };
+  }, [id, authChecked, isAuthenticated]);
+
+  const articleAd: Ad | null = article ? getAdByType("Article Advertisement") : null;
+
+  useEffect(() => {
+    if (!article) return undefined;
+    const canonical = article.canonicalUrl || window.location.href;
+    let link = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+    if (!link) {
+      link = document.createElement("link");
+      link.rel = "canonical";
+      document.head.appendChild(link);
+    }
+    link.href = canonical;
+    document.title = article.title;
+    return undefined;
   }, [article]);
 
   const handleCopyLink = () => {
@@ -43,9 +98,39 @@ export default function NewsDetailsPage() {
     { name: "Cricket", icon: "bi-trophy-fill", color: "#22c55e" },
     { name: "Football", icon: "bi-dribbble", color: "#3b82f6" },
     { name: "NFL", icon: "bi-shield-fill", color: "#f59e0b" },
-    { name: "AFL", icon: "bi-circle-fill", color: "#ec4899" },
     { name: "General Sports", icon: "bi-globe2", color: "#8b5cf6" },
   ];
+
+  if (!authChecked || loading) {
+    return (
+      <main className="font-outfit text-white">
+        <div className="container custom-container py-5">
+          <div className="skeleton-line w-75 h-32px mb-4"></div>
+          <div className="skeleton-line w-100 h-420px rounded-4"></div>
+        </div>
+      </main>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <main className="font-outfit text-white">
+        <div className="container custom-container py-5">
+          <div className="mx-auto text-center p-4 p-md-5 bg-card border border-dark rounded-4 shadow-lg" style={{ maxWidth: "520px" }}>
+            <div className="d-flex align-items-center justify-content-center mx-auto mb-4 rounded-circle" style={{ width: "68px", height: "68px", color: "#86efac", background: "rgba(34,197,94,.12)", border: "1px solid rgba(34,197,94,.28)", fontSize: "1.6rem" }}>
+              <i className="bi bi-lock-fill" />
+            </div>
+            <h2 className="fw-bold mb-2 text-white">Login required</h2>
+            <p className="text-muted mb-4">Please log in or create an account to read the full news article.</p>
+            <div className="d-flex flex-wrap justify-content-center gap-2">
+              <Link href="/login" className="btn btn-success fw-bold px-4 py-2 rounded-pill">Log in to continue</Link>
+              <Link href="/register" className="btn btn-outline-success fw-semibold px-4 py-2 rounded-pill">Create account</Link>
+            </div>
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   if (!article) {
     return (
@@ -54,7 +139,7 @@ export default function NewsDetailsPage() {
           <div className="mb-4" style={{ fontSize: "4rem" }}>📰</div>
           <h2 className="fw-bold mb-2 text-white">Article Not Found</h2>
           <p className="text-muted small mb-4">
-            The news article you are looking for does not exist or has been archived.
+            {loadError || "The news article you are looking for does not exist or has been archived."}
           </p>
           <Link href="/news" className="btn btn-success fw-bold px-5 py-2 rounded-pill">
             ← Back to News
@@ -227,7 +312,7 @@ export default function NewsDetailsPage() {
               {/* Tags row */}
               <div className="d-flex align-items-center gap-2 flex-wrap border-top pt-4 mt-2" style={{ borderColor: "rgba(255,255,255,0.08) !important" }}>
                 <span className="text-muted fw-semibold" style={{ fontSize: "12px" }}>TAGS:</span>
-                {[article.category, "Sports", "SportsVerge"].map((tag) => (
+                {(article.tags?.length ? article.tags : [article.category, "Sports", "SportsVerge"]).map((tag) => (
                   <span key={tag} className="badge rounded-pill px-3 py-1" style={{ background: "rgba(34,197,94,0.12)", color: "#86efac", fontSize: "11px", border: "1px solid rgba(34,197,94,0.2)" }}>
                     {tag}
                   </span>

@@ -1,13 +1,14 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import SportsTabs from "@/components/live-scores/SportsTabs";
 import LiveMatchCard from "@/components/live-scores/LiveMatchCard";
 import LoadingSkeleton from "@/components/live-scores/LoadingSkeleton";
 import EmptyState from "@/components/live-scores/EmptyState";
 import Sidebar from "@/components/live-scores/Sidebar";
-import { liveScoresDetailData } from "@/data/mockData";
 import { LiveScoreMatchDetail } from "@/types";
+import { cricketApi, mapCricketMatch } from "@/lib/cricket-api";
+import { mapNflMatch, mapSoccerMatch, nflApi, soccerApi } from "@/lib/sports-api";
 
 export default function LiveScoresPage() {
   const [activeTab, setActiveTab] = useState<string>("all");
@@ -16,40 +17,91 @@ export default function LiveScoresPage() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [matches, setMatches] = useState<LiveScoreMatchDetail[]>([]);
+  const [lastSyncedAt, setLastSyncedAt] = useState("");
 
-  // Initial loading simulation
   useEffect(() => {
-    loadData();
+    const requestedSport = new URLSearchParams(window.location.search).get("sport")?.toLowerCase();
+    if (requestedSport === "nfl") setActiveTab("NFL");
+    else if (requestedSport === "football" || requestedSport === "soccer") setActiveTab("football");
+    else if (requestedSport === "cricket") setActiveTab("cricket");
   }, []);
 
-  const loadData = () => {
+  const loadData = useCallback(async () => {
     setLoading(true);
     setError(null);
-    setTimeout(() => {
-      setMatches(liveScoresDetailData);
+    try {
+      const responses = await Promise.allSettled([
+        cricketApi.matches("live"),
+        soccerApi.matches("live"),
+        nflApi.matches("live"),
+      ]);
+      const [cricketResult, soccerResult, nflResult] = responses;
+      const nextMatches = [
+        ...(cricketResult.status === "fulfilled" ? cricketResult.value.map(mapCricketMatch) : []),
+        ...(soccerResult.status === "fulfilled" ? soccerResult.value.map(mapSoccerMatch) : []),
+        ...(nflResult.status === "fulfilled" ? nflResult.value.map(mapNflMatch) : []),
+      ];
+      const failures = responses.filter((result) => result.status === "rejected");
+      if (failures.length === responses.length) {
+        throw new Error("Unable to sync live scores from the sports providers.");
+      }
+      const fetchedAt = new Date().toLocaleTimeString("en-IN", { hour: "numeric", minute: "2-digit", second: "2-digit" });
+      setMatches(nextMatches.map((match) => ({ ...match, lastUpdated: match.lastUpdated === "Just now" ? fetchedAt : match.lastUpdated })));
+      setLastSyncedAt(fetchedAt);
+    } catch (requestError) {
+      setError(requestError instanceof Error ? requestError.message : "Unable to sync cricket live scores.");
+      setMatches([]);
+    } finally {
       setLoading(false);
-    }, 1200); // realistic load time
-  };
+    }
+  }, []);
+
+  useEffect(() => {
+    void loadData();
+  }, [loadData]);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || typeof EventSource === "undefined") return undefined;
+
+    const streams = [
+      { source: new EventSource(cricketApi.streamUrl()), mapper: mapCricketMatch },
+      { source: new EventSource(soccerApi.streamUrl()), mapper: mapSoccerMatch },
+    ];
+    const handleMatchUpdate = (event: MessageEvent<string>, mapper: typeof mapCricketMatch | typeof mapSoccerMatch) => {
+      try {
+        const payload = JSON.parse(event.data) as { matchId?: string; match?: Record<string, any> };
+        if (!payload.match) return;
+        const updated = mapper(payload.match);
+        const updatedAt = new Date().toLocaleTimeString("en-IN", { hour: "numeric", minute: "2-digit", second: "2-digit" });
+        setMatches((current) => {
+          const index = current.findIndex((match) => match.id === updated.id);
+          if (index < 0) return [...current, { ...updated, lastUpdated: updated.lastUpdated === "Just now" ? updatedAt : updated.lastUpdated }];
+          const next = [...current];
+          next[index] = { ...updated, lastUpdated: updated.lastUpdated === "Just now" ? updatedAt : updated.lastUpdated };
+          return next;
+        });
+        setLastSyncedAt(updatedAt);
+      } catch {
+        // A malformed provider push should not interrupt the live page.
+      }
+    };
+
+    streams.forEach(({ source, mapper }) => source.addEventListener("match-update", ((event: MessageEvent<string>) => handleMatchUpdate(event, mapper)) as EventListener));
+    return () => {
+      streams.forEach(({ source }) => {
+        source.close();
+      });
+    };
+  }, []);
+
+  useEffect(() => {
+    const interval = window.setInterval(() => { void loadData(); }, 30000);
+    return () => window.clearInterval(interval);
+  }, [loadData]);
 
   const handleResetFilters = () => {
     setActiveTab("all");
     setSearchQuery("");
-  };
-
-  const triggerErrorState = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setError("Failed to sync with live sports database. Please verify your connection.");
-      setLoading(false);
-    }, 800);
-  };
-
-  const triggerEmptyState = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setMatches([]);
-      setLoading(false);
-    }, 800);
   };
 
   // Filter logic
@@ -83,7 +135,12 @@ export default function LiveScoresPage() {
             <p className="text-muted mb-0 fs-14">Real-time scores from all supported sports.</p>
           </div>
 
-          {/* Interactive Simulation Controls */}
+          <div className="d-flex align-items-center gap-2">
+            <span className="text-muted small">Last sync: {lastSyncedAt || "Syncing..."}</span>
+            <button type="button" className="btn btn-outline-success btn-sm" onClick={() => { void loadData(); }} disabled={loading}>
+              <i className={`bi bi-arrow-clockwise me-1 ${loading ? "spin" : ""}`}></i>Refresh
+            </button>
+          </div>
 
         </div>
       </div>
@@ -165,8 +222,8 @@ export default function LiveScoresPage() {
             />
           ) : (
             <div className="d-flex flex-column">
-              {filteredMatches.map((match) => (
-                <LiveMatchCard key={match.id} match={match} />
+              {filteredMatches.map((match, index) => (
+                <LiveMatchCard key={`${match.sport}-${match.id || "live"}-${index}`} match={match} />
               ))}
             </div>
           )}

@@ -3,16 +3,15 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useFavorites } from "@/components/FavoritesContext";
-import {
-  upcomingFixtures,
-  recentResults,
-  popularTeamsData,
-  liveScoresDetailData
-} from "@/data/mockData";
+import { apiErrorMessage, apiFieldErrors, authApi, clearAuthSession, getStoredUser, logoutUser, updateStoredUser } from "@/lib/auth-api";
 import { FixtureItem, ResultItem } from "@/types";
+import { cricketApi, mapCricketFixture, mapCricketResult } from "@/lib/cricket-api";
+import { mapNflFixture, mapNflResult, mapSoccerFixture, mapSoccerResult, nflApi, soccerApi } from "@/lib/sports-api";
 
 export default function ProfileDashboard() {
+  const router = useRouter();
   const {
     favoriteTeams,
     removeFavoriteTeam,
@@ -20,9 +19,9 @@ export default function ProfileDashboard() {
   } = useFavorites();
 
   const [formData, setFormData] = useState({
-    firstName: "John",
-    lastName: "Doe",
-    email: "john.doe@example.com",
+    firstName: "",
+    lastName: "",
+    email: "",
   });
 
   const [passwordData, setPasswordData] = useState({
@@ -31,46 +30,81 @@ export default function ProfileDashboard() {
     confirmPassword: "",
   });
 
-  const [notificationPrefs, setNotificationPrefs] = useState({
-    emailAlerts: true,
-    pushNotifications: false,
-  });
-
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [pwdErrors, setPwdErrors] = useState<{ [key: string]: string }>({});
   const [successMsg, setSuccessMsg] = useState("");
   const [pwdSuccessMsg, setPwdSuccessMsg] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isAccountLoading, setIsAccountLoading] = useState(false);
   const [isPasswordLoading, setIsPasswordLoading] = useState(false);
+  const [isProfileLoading, setIsProfileLoading] = useState(true);
+  const [profileError, setProfileError] = useState("");
 
   // Personalized feed filter
   const [feedTab, setFeedTab] = useState<"fixtures" | "results">("fixtures");
+  const [userFixtures, setUserFixtures] = useState<FixtureItem[]>([]);
+  const [userResults, setUserResults] = useState<ResultItem[]>([]);
 
-  const savedPreferences = {
-    theme: "Dark Mode",
-    language: "English"
-  };
-
-  // Sync user info from session storage
   useEffect(() => {
-    const session = sessionStorage.getItem("user_session");
-    if (session) {
-      try {
-        const parsed = JSON.parse(session);
-        setFormData({
-          firstName: parsed.firstName || "John",
-          lastName: parsed.lastName || "Doe",
-          email: parsed.email || "john.doe@example.com",
-        });
-      } catch (e) {
-        // Handle error
+    let cancelled = false;
+    const loadFeed = async () => {
+      const fixtureResponses = await Promise.allSettled([cricketApi.matches("fixture"), soccerApi.matches("fixture"), nflApi.matches("fixture")]);
+      const resultResponses = await Promise.allSettled([cricketApi.matches("result"), soccerApi.matches("result"), nflApi.matches("result")]);
+      const fixtures = fixtureResponses.flatMap((response, index) => {
+        if (response.status !== "fulfilled") return [];
+        if (index === 0) return response.value.map((raw) => { const item = mapCricketFixture(raw); return { ...item, type: "cricket", date: item.date, sport: "Cricket" } as FixtureItem; });
+        return response.value.map(index === 1 ? mapSoccerFixture : mapNflFixture);
+      });
+      const results = resultResponses.flatMap((response, index) => {
+        if (response.status !== "fulfilled") return [];
+        if (index === 0) return response.value.map((raw) => { const item = mapCricketResult(raw); return { ...item, type: "cricket", score: `${item.homeScore} - ${item.awayScore}` } as ResultItem; });
+        return response.value.map(index === 1 ? mapSoccerResult : mapNflResult);
+      });
+      if (!cancelled) { setUserFixtures(fixtures.filter((fixture) => isFavoriteTeam(fixture.home) || isFavoriteTeam(fixture.away))); setUserResults(results.filter((result) => isFavoriteTeam(result.home) || isFavoriteTeam(result.away))); }
+    };
+    void loadFeed();
+    return () => { cancelled = true; };
+  }, [isFavoriteTeam]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadProfile = async () => {
+      if (!getStoredUser()) {
+        router.replace("/login");
+        return;
       }
-    }
-  }, []);
+
+      try {
+        const response = await authApi.getProfile();
+        if (cancelled) return;
+        const user = response.data.user;
+        setFormData({ firstName: user.firstName, lastName: user.lastName, email: user.email });
+        updateStoredUser(user);
+      } catch (error) {
+        if (!cancelled) {
+          if (error instanceof Error && "status" in error && (error as { status?: number }).status === 401) {
+            clearAuthSession();
+            router.replace("/login");
+          } else {
+            setProfileError(apiErrorMessage(error));
+          }
+        }
+      } finally {
+        if (!cancelled) setIsProfileLoading(false);
+      }
+    };
+
+    loadProfile();
+    return () => {
+      cancelled = true;
+    };
+  }, [router]);
 
   const validateForm = () => {
-    let newErrors: { [key: string]: string } = {};
+    const newErrors: { [key: string]: string } = {};
     if (!formData.firstName.trim()) newErrors.firstName = "First Name is required.";
     if (!formData.lastName.trim()) newErrors.lastName = "Last Name is required.";
 
@@ -86,7 +120,7 @@ export default function ProfileDashboard() {
   };
 
   const validatePasswordForm = () => {
-    let newErrors: { [key: string]: string } = {};
+    const newErrors: { [key: string]: string } = {};
     if (!passwordData.currentPassword) newErrors.currentPassword = "Current Password is required.";
     if (!passwordData.newPassword) newErrors.newPassword = "New Password is required.";
     else if (passwordData.newPassword.length < 8) newErrors.newPassword = "Password must be at least 8 characters long.";
@@ -96,70 +130,74 @@ export default function ProfileDashboard() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handlePasswordUpdate = (e: React.FormEvent) => {
+  const handlePasswordUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
     setPwdSuccessMsg("");
     if (validatePasswordForm()) {
       setIsPasswordLoading(true);
-      setTimeout(() => {
-        setIsPasswordLoading(false);
+      try {
+        await authApi.changePassword(passwordData);
         setPwdSuccessMsg("Password successfully updated!");
         setPasswordData({ currentPassword: "", newPassword: "", confirmPassword: "" });
         setTimeout(() => setPwdSuccessMsg(""), 3000);
-      }, 1000);
+      } catch (error) {
+        setPwdErrors(apiFieldErrors(error));
+        setPwdSuccessMsg(apiErrorMessage(error));
+      } finally {
+        setIsPasswordLoading(false);
+      }
     }
   };
 
-  const handleAccountUpdate = (e: React.FormEvent) => {
+  const handleAccountUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
     setSuccessMsg("");
     if (validateForm()) {
-      if (formData.email === "taken@example.com") {
-        setErrors({ email: "This email address is already in use." });
-        return;
-      }
       setIsAccountLoading(true);
-      setTimeout(() => {
-        setIsAccountLoading(false);
+      try {
+        const response = await authApi.updateProfile(formData);
+        setFormData({
+          firstName: response.data.user.firstName,
+          lastName: response.data.user.lastName,
+          email: response.data.user.email,
+        });
+        updateStoredUser(response.data.user);
         setSuccessMsg("Account information successfully updated!");
-        const session = sessionStorage.getItem("user_session");
-        if (session) {
-          const parsed = JSON.parse(session);
-          sessionStorage.setItem("user_session", JSON.stringify({ ...parsed, ...formData }));
-        }
         setTimeout(() => setSuccessMsg(""), 3000);
-      }, 1000);
+      } catch (error) {
+        setErrors(apiFieldErrors(error));
+        setSuccessMsg(apiErrorMessage(error));
+      } finally {
+        setIsAccountLoading(false);
+      }
     }
   };
 
-  const handleNotificationChange = (key: keyof typeof notificationPrefs) => {
-    setNotificationPrefs(prev => ({ ...prev, [key]: !prev[key] }));
-    setSuccessMsg("Notification preferences saved successfully.");
-    setTimeout(() => setSuccessMsg(""), 2000);
+
+  const getMatchLink = (match: FixtureItem | ResultItem) => {
+    if (!match.id) return "/live-scores";
+    return `/live-scores/${match.id}${match.type === "football" ? "?sport=football" : match.type === "NFL" ? "?sport=nfl" : ""}`;
   };
 
+  if (isProfileLoading) {
+    return (
+      <div className="container py-5 min-h-80vh text-center text-muted">
+        <div className="spinner-border text-success" role="status">
+          <span className="visually-hidden">Loading profile...</span>
+        </div>
+      </div>
+    );
+  }
 
-
-  // Filter fixtures involving favorite teams
-  const userFixtures = upcomingFixtures.filter(
-    (fixture) =>
-      isFavoriteTeam(fixture.home) ||
-      isFavoriteTeam(fixture.away)
-  );
-
-  // Filter results involving favorite teams
-  const userResults = recentResults.filter(
-    (result) =>
-      isFavoriteTeam(result.home) ||
-      isFavoriteTeam(result.away)
-  );
-
-  const getMatchLink = (match: any) => {
-    if (match.id) return `/live-scores/${match.id}`;
-    if (match.type === "football" || match.sport === "football") return "/live-scores/match-2";
-    if (match.type === "NFL" || match.sport === "NFL") return "/live-scores/match-3";
-    return "/live-scores/match-1";
-  };
+  if (profileError) {
+    return (
+      <div className="container py-5 min-h-80vh">
+        <div className="alert alert-danger bg-danger bg-opacity-10 border-danger border-opacity-20 text-danger">
+          {profileError}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container py-5 min-h-80vh">
@@ -172,8 +210,7 @@ export default function ProfileDashboard() {
         </div>
         <button
           onClick={() => {
-            sessionStorage.removeItem("user_session");
-            window.location.href = "/";
+            void logoutUser().then(() => router.push("/"));
           }}
           className="btn btn-outline-danger px-4 py-2 fw-semibold"
         >
@@ -182,7 +219,7 @@ export default function ProfileDashboard() {
       </div>
 
       <div className="row g-4">
-        {/* Left Column: Manage Account, Password & Notifications */}
+        {/* Left Column: Manage account information and password */}
         <div className="col-lg-8">
           <div className="card border-0 rounded-3 mb-4 profile-card">
             <div className="card-body p-4">
@@ -268,6 +305,7 @@ export default function ProfileDashboard() {
                       type="button"
                       className="btn position-absolute top-50 end-0 translate-middle-y border-0 text-muted px-3"
                       onClick={() => setShowPassword(!showPassword)}
+                      aria-label={showPassword ? "Hide current password" : "Show current password"}
                     >
                       <i className={`bi ${showPassword ? "bi-eye-slash" : "bi-eye"}`}></i>
                     </button>
@@ -278,24 +316,24 @@ export default function ProfileDashboard() {
                 <div className="row g-3 mb-4">
                   <div className="col-md-6">
                     <label className="form-label text-muted small fw-medium mb-1 text-uppercase">New Password</label>
-                    <input
-                      type="password"
-                      className={`form-control bg-dark text-white fw-medium border-0 custom-input ${pwdErrors.newPassword ? 'is-invalid' : ''}`}
+                    <div className="position-relative"><input
+                      type={showNewPassword ? "text" : "password"}
+                      className={`form-control bg-dark text-white fw-medium border-0 pe-5 custom-input ${pwdErrors.newPassword ? 'is-invalid' : ''}`}
                       value={passwordData.newPassword}
                       onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
                       placeholder="Enter new password"
-                    />
+                    /><button type="button" className="btn position-absolute top-50 end-0 translate-middle-y border-0 text-muted px-3" onClick={() => setShowNewPassword(!showNewPassword)} aria-label={showNewPassword ? "Hide new password" : "Show new password"}><i className={`bi ${showNewPassword ? "bi-eye-slash" : "bi-eye"}`}></i></button></div>
                     {pwdErrors.newPassword && <div className="invalid-feedback d-block small mt-1">{pwdErrors.newPassword}</div>}
                   </div>
                   <div className="col-md-6">
                     <label className="form-label text-muted small fw-medium mb-1 text-uppercase">Confirm Password</label>
-                    <input
-                      type="password"
-                      className={`form-control bg-dark text-white fw-medium border-0 custom-input ${pwdErrors.confirmPassword ? 'is-invalid' : ''}`}
+                    <div className="position-relative"><input
+                      type={showConfirmPassword ? "text" : "password"}
+                      className={`form-control bg-dark text-white fw-medium border-0 pe-5 custom-input ${pwdErrors.confirmPassword ? 'is-invalid' : ''}`}
                       value={passwordData.confirmPassword}
                       onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
                       placeholder="Confirm new password"
-                    />
+                    /><button type="button" className="btn position-absolute top-50 end-0 translate-middle-y border-0 text-muted px-3" onClick={() => setShowConfirmPassword(!showConfirmPassword)} aria-label={showConfirmPassword ? "Hide password confirmation" : "Show password confirmation"}><i className={`bi ${showConfirmPassword ? "bi-eye-slash" : "bi-eye"}`}></i></button></div>
                     {pwdErrors.confirmPassword && <div className="invalid-feedback d-block small mt-1">{pwdErrors.confirmPassword}</div>}
                   </div>
                 </div>
@@ -314,36 +352,6 @@ export default function ProfileDashboard() {
             </div>
           </div>
 
-          <div className="card border-0 rounded-3 mb-4 profile-card">
-            <div className="card-body p-4">
-              <h5 className="text-white fw-semibold mb-4 border-start border-success border-3 ps-2">Manage Notification Preferences</h5>
-
-              <div className="d-flex justify-content-between align-items-center py-2 border-bottom border-white-05">
-                <span className="text-muted small fw-medium">Email Alerts</span>
-                <div className="form-check form-switch m-0">
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    role="switch"
-                    checked={notificationPrefs.emailAlerts}
-                    onChange={() => handleNotificationChange("emailAlerts")}
-                  />
-                </div>
-              </div>
-              <div className="d-flex justify-content-between align-items-center py-2 mt-2">
-                <span className="text-muted small fw-medium">Push Notifications</span>
-                <div className="form-check form-switch m-0">
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    role="switch"
-                    checked={notificationPrefs.pushNotifications}
-                    onChange={() => handleNotificationChange("pushNotifications")}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* Right Column: Favorites Manager & Personalized Sports Feed */}

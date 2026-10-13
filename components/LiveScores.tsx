@@ -1,146 +1,106 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { LiveScoreMatch } from "@/types";
-import { liveScoresData } from "@/data/mockData";
 import { useFavorites } from "@/components/FavoritesContext";
+import { cricketApi, mapCricketMatch } from "@/lib/cricket-api";
+import { mapNflMatch, mapSoccerMatch, nflApi, soccerApi } from "@/lib/sports-api";
+
+const toCard = (match: ReturnType<typeof mapCricketMatch> | ReturnType<typeof mapSoccerMatch> | ReturnType<typeof mapNflMatch>): LiveScoreMatch => ({
+  id: match.id,
+  league: `${match.competitionName} • ${match.matchName}`,
+  time: match.matchTime,
+  status: match.matchStatus,
+  homeTeam: match.team1Name,
+  homeLogo: match.team1Logo,
+  homeScore: match.team1Score,
+  homeOvers: match.team1Overs,
+  awayTeam: match.team2Name,
+  awayLogo: match.team2Logo,
+  awayScore: match.team2Score,
+  awayOvers: match.team2Overs,
+  note: match.note,
+  venue: match.venue,
+  sport: match.sport,
+});
 
 export default function LiveScores() {
-  const [activeTab, setActiveTab] = useState<"all" | "cricket" | "football" | "NFL" | "AFL">("all");
+  const [activeTab, setActiveTab] = useState<"all" | "cricket" | "football" | "NFL">("all");
+  const [matches, setMatches] = useState<LiveScoreMatch[]>([]);
+  const [error, setError] = useState<string | null>(null);
   const { isFavoriteTeam, isFavoriteCompetition } = useFavorites();
 
+  useEffect(() => {
+    let cancelled = false;
+    const loadLiveMatches = async () => {
+      const responses = await Promise.allSettled([
+        cricketApi.matches("live"),
+        soccerApi.matches("live"),
+        nflApi.matches("live"),
+      ]);
+      const mapped = responses.flatMap((result, index) => {
+        if (result.status !== "fulfilled") return [];
+        const mapper = index === 0 ? mapCricketMatch : index === 1 ? mapSoccerMatch : mapNflMatch;
+        return result.value.map((raw) => toCard(mapper(raw)));
+      });
+      if (cancelled) return;
+      setMatches(mapped);
+      setError(responses.every((result) => result.status === "rejected") ? "Unable to load live scores from the sports providers." : null);
+    };
+
+    void loadLiveMatches();
+    const interval = window.setInterval(() => { void loadLiveMatches(); }, 30000);
+    return () => { cancelled = true; window.clearInterval(interval); };
+  }, []);
+
   const getMatchLink = (match: LiveScoreMatch) => {
-    if (match.id) return `/live-scores/${match.id}`;
-    if (match.sport === "football") return "/live-scores/match-2";
-    if (match.sport === "NFL") return "/live-scores/match-3";
-    return "/live-scores/match-1";
+    if (!match.id) return "/live-scores";
+    const sport = match.sport.toLowerCase() === "football" ? "?sport=football" : match.sport.toLowerCase() === "nfl" ? "?sport=nfl" : "?sport=cricket";
+    return `/live-scores/${match.id}${sport}`;
   };
 
-  const filteredMatches = activeTab === "all"
-    ? liveScoresData
-    : liveScoresData.filter((match) => match.sport === activeTab);
-
-  // Prioritize live matches involving favorite teams or competitions
+  const filteredMatches = activeTab === "all" ? matches : matches.filter((match) => match.sport === activeTab);
   const sortedMatches = [...filteredMatches].sort((a, b) => {
     const aFav = isFavoriteTeam(a.homeTeam) || isFavoriteTeam(a.awayTeam) || isFavoriteCompetition(a.league);
     const bFav = isFavoriteTeam(b.homeTeam) || isFavoriteTeam(b.awayTeam) || isFavoriteCompetition(b.league);
-    if (aFav && !bFav) return -1;
-    if (!aFav && bFav) return 1;
-    return 0;
+    return aFav === bFav ? 0 : aFav ? -1 : 1;
   });
 
   return (
     <aside className="live-scores-section bg-card rounded-3 py-4 px-3 border border-dark">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h2 className="h5 m-0 fw-semibold">Live Scores</h2>
-        <Link href="/live-scores" className="text-success text-decoration-none small fw-medium">
-          View All
-        </Link>
+        <Link href="/live-scores" className="text-success text-decoration-none small fw-medium">View All</Link>
       </div>
-
-      <ul className="nav nav-pills custom-tabs mb-3 flex-nowrap overflow-x-auto scrollbar-none gap-2" id="scores-tab" role="tablist">
-        {(["all", "cricket", "football", "NFL", "AFL"] as const).map((tab) => (
+      <ul className="nav nav-pills custom-tabs mb-3 flex-nowrap overflow-x-auto scrollbar-none gap-2">
+        {(["all", "cricket", "football", "NFL"] as const).map((tab) => (
           <li className="nav-item" role="presentation" key={tab}>
-            <button
-              className={`nav-link ${activeTab === tab ? "active" : ""}`}
-              onClick={() => setActiveTab(tab)}
-              type="button"
-              role="tab"
-            >
+            <button className={`nav-link ${activeTab === tab ? "active" : ""}`} onClick={() => setActiveTab(tab)} type="button">
               {tab === "all" ? "All" : tab.charAt(0).toUpperCase() + tab.slice(1)}
             </button>
           </li>
         ))}
       </ul>
-
       <div className="scores-list">
-        <div className="tab-content">
-          <div className="tab-pane fade show active" role="tabpanel">
-            {sortedMatches.length > 0 ? (
-              sortedMatches.map((match: LiveScoreMatch, idx: number) => {
-                const isMatchFav = isFavoriteTeam(match.homeTeam) || isFavoriteTeam(match.awayTeam) || isFavoriteCompetition(match.league);
-
-                return (
-                  <Link
-                    key={idx}
-                    href={getMatchLink(match)}
-                    className="score-box d-block text-decoration-none rounded-3 p-3 mb-3 border border-dark"
-                  >
-                    <div className="d-flex justify-content-between align-items-center mb-2">
-                      <span className="small text-muted text-truncate" style={{ maxWidth: "160px" }}>{match.league}</span>
-                      <div className="d-flex align-items-center gap-2">
-                        {match.status === "LIVE" ? (
-                          <span className="badge bg-danger">LIVE</span>
-                        ) : (
-                          <span className="text-success small">{match.status}</span>
-                        )}
-                      </div>
-                    </div>
-
-                  <div className="d-flex justify-content-between align-items-center mb-3">
-                    <div className="d-flex align-items-center">
-                      <Image
-                        src={match.homeLogo}
-                        alt={match.homeTeam}
-                        width={20}
-                        height={20}
-                        className="me-2"
-                      />
-                      <span className="text-light fw-medium">{match.homeTeam}</span>
-                    </div>
-                    <span className="text-light fw-bold">
-                      {match.homeScore}{" "}
-                      {match.homeOvers && (
-                        <span className="text-muted fw-normal small">{match.homeOvers}</span>
-                      )}
-                    </span>
-                  </div>
-
-                  <div className="d-flex justify-content-between align-items-center mb-2">
-                    <div className="d-flex align-items-center">
-                      <Image
-                        src={match.awayLogo}
-                        alt={match.awayTeam}
-                        width={20}
-                        height={20}
-                        className="me-2"
-                      />
-                      <span className="text-light fw-medium">{match.awayTeam}</span>
-                    </div>
-                    <span className="text-light fw-bold">
-                      {match.awayScore}{" "}
-                      {match.awayOvers && (
-                        <span className="text-muted fw-normal small">{match.awayOvers}</span>
-                      )}
-                    </span>
-                  </div>
-
-                  {match.note && (
-                    <div className="small text-success mt-2">{match.note}</div>
-                  )}
-
-                  {match.venue && (
-                    <div className="text-muted mt-2 fs-11">
-                      {match.venue}
-                    </div>
-                  )}
-                </Link>
-              );
-            })
-            ) : (
-              <div className="p-3 text-center text-muted small">No Live Match</div>
-            )}
-
-            <Link
-              href="/live-scores"
-              className="btn btn-outline-success w-100 mt-2 p-3 rounded-3 text-uppercase fw-medium fs-13"
-            >
-              View All Live Scores
-            </Link>
-          </div>
-        </div>
+        {sortedMatches.length > 0 ? sortedMatches.slice(0, 5).map((match, idx) => (
+          <Link key={`${match.sport}-${match.id || "live"}-${idx}`} href={getMatchLink(match)} className="score-box d-block text-decoration-none rounded-3 p-3 mb-3 border border-dark">
+            <div className="d-flex justify-content-between align-items-center mb-2">
+              <span className="small text-muted text-truncate" style={{ maxWidth: "160px" }}>{match.league}</span>
+              {match.status === "LIVE" ? <span className="badge bg-danger">LIVE</span> : <span className="text-success small">{match.status}</span>}
+            </div>
+            {[{ name: match.homeTeam, logo: match.homeLogo, score: match.homeScore, overs: match.homeOvers }, { name: match.awayTeam, logo: match.awayLogo, score: match.awayScore, overs: match.awayOvers }].map((team, teamIndex) => (
+              <div key={`${match.id || idx}-team-${teamIndex}-${team.name}`} className="d-flex justify-content-between align-items-center mb-2">
+                <div className="d-flex align-items-center"><Image src={team.logo} alt={team.name} width={20} height={20} className="me-2" /><span className="text-light fw-medium">{team.name}</span></div>
+                <span className="text-light fw-bold">{team.score} {team.overs && <span className="text-muted fw-normal small">{team.overs}</span>}</span>
+              </div>
+            ))}
+            {match.note && <div className="small text-success mt-2">{match.note}</div>}
+            {match.venue && <div className="text-muted mt-2 fs-11">{match.venue}</div>}
+          </Link>
+        )) : <div className="p-3 text-center text-muted small">{error || "No live match"}</div>}
+        <Link href="/live-scores" className="btn btn-outline-success w-100 mt-2 p-3 rounded-3 text-uppercase fw-medium fs-13">View All Live Scores</Link>
       </div>
     </aside>
   );

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-labelledby="title desc">
+  <title id="title">Team logo unavailable</title>
+  <desc id="desc">Neutral team logo placeholder</desc>
+  <rect width="96" height="96" rx="18" fill="#1a2332"/>
+  <path d="M48 14 76 24v22c0 17-11 28-28 36C31 74 20 63 20 46V24l28-10Z" fill="#526174"/>
+  <path d="M48 28v31M32 43h32" stroke="#aeb9c8" stroke-width="6" stroke-linecap="round" opacity=".75"/>
+</svg>

@@ -7,7 +7,6 @@ import HorizontalBanner from "@/components/HorizontalBanner";
 import CricketNews from "@/components/CricketNews";
 import FootballNews from "@/components/FootballNews";
 import NFLNews from "@/components/NFLNews";
-import AFLNews from "@/components/AFLNews";
 
 // Sidebar Components
 import LiveScores from "@/components/LiveScores";
@@ -17,7 +16,7 @@ import PopularTeams from "@/components/PopularTeams";
 
 export default function Home() {
   return (
-    <main className="container custom-container mt-4 mb-5">
+    <main className="container custom-container home-page mt-4 mb-5">
       <div className="row g-4">
         {/* Main Content Column (Left side on desktop, stacked on mobile) */}
         <div className="col-lg-8">
@@ -34,7 +33,6 @@ export default function Home() {
           <CricketNews />
           <FootballNews />
           <NFLNews />
-          <AFLNews />
 
 
 

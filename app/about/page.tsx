@@ -1,7 +1,17 @@
 import React from "react";
 import Link from "next/link";
+import { contentApi } from "@/lib/content-api";
+import { buildSeoMetadata, getSeoDefaultsForPath } from "@/lib/seo";
 
-export const metadata = { title: "About Us – The SportsVerge" };
+export async function generateMetadata() {
+  const path = "/about";
+  const seo = await contentApi.seo(path).catch(() => null);
+  const defaults = getSeoDefaultsForPath(path);
+  return buildSeoMetadata(seo?.data, {
+    title: defaults.defaultTitle,
+    description: defaults.defaultDescription,
+  }, path, { preferDefaults: true });
+}
 
 const stats = [
   { label: "Live Matches", value: "500+", icon: "bi-broadcast" },
@@ -73,13 +83,13 @@ export default function AboutPage() {
                 Built by Sports Fans, <span className="text-success">For Sports Fans</span>
               </h2>
               <p className="text-muted lh-lg mb-3" style={{ fontSize: "15px" }}>
-                SportsVerge was founded with a simple vision: every sports fan deserves instant, reliable, and beautifully presented sports information. From live cricket scores to NFL standings, from AFL match reports to World Cup football coverage — we cover it all.
+                SportsVerge was founded with a simple vision: every sports fan deserves instant, reliable, and beautifully presented sports information. From live cricket scores to NFL standings and World Cup football coverage — we cover it all.
               </p>
               <p className="text-muted lh-lg mb-4" style={{ fontSize: "15px" }}>
                 Our editorial team works around the clock to bring you breaking news, expert analysis, and deep-dive features that go beyond the scoreboard. Whether you are a casual viewer or a die-hard fanatic, SportsVerge is built for you.
               </p>
               <div className="d-flex flex-wrap gap-2">
-                {["Cricket", "Football", "NFL", "AFL", "Live Scores", "News"].map((tag) => (
+                {["Cricket", "Football", "NFL", "Live Scores", "News"].map((tag) => (
                   <span key={tag} className="badge rounded-pill px-3 py-2 fw-semibold" style={{ background: "rgba(26,140,61,0.15)", color: "#86efac", border: "1px solid rgba(26,140,61,0.3)", fontSize: "12px" }}>
                     {tag}
                   </span>

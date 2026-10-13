@@ -1,13 +1,23 @@
 import React from "react";
 import Link from "next/link";
 import PageHeader from "@/components/PageHeader";
+import { contentApi } from "@/lib/content-api";
+import { buildSeoMetadata, getSeoDefaultsForPath } from "@/lib/seo";
 
-export const metadata = { title: "How to Use SportsVerge – The SportsVerge" };
+export async function generateMetadata() {
+  const path = "/how-to-use";
+  const seo = await contentApi.seo(path).catch(() => null);
+  const defaults = getSeoDefaultsForPath(path);
+  return buildSeoMetadata(seo?.data, {
+    title: defaults.defaultTitle,
+    description: defaults.defaultDescription,
+  }, path, { preferDefaults: true });
+}
 
 const steps = [
   { num: "01", icon: "bi-house-door-fill", color: "#22c55e", title: "Start on the Homepage", desc: "The homepage gives you a live snapshot — hero news banner, live scores sidebar, upcoming fixtures, and the latest articles from every sport category." },
-  { num: "02", icon: "bi-broadcast", color: "#3b82f6", title: "Check Live Scores", desc: "Navigate to Live Scores to see real-time match updates across Cricket, Football, NFL, and AFL. Click any match to open its detailed scorecard or match stats page." },
-  { num: "03", icon: "bi-newspaper", color: "#f59e0b", title: "Read the News", desc: "Go to the News section to browse our editorial articles. Use the category tabs (Cricket, Football, NFL, AFL) or the search bar to find exactly what you're looking for." },
+  { num: "02", icon: "bi-broadcast", color: "#3b82f6", title: "Check Live Scores", desc: "Navigate to Live Scores to see real-time match updates across Cricket, Football, and NFL. Click any match to open its detailed scorecard or match stats page." },
+  { num: "03", icon: "bi-newspaper", color: "#f59e0b", title: "Read the News", desc: "Go to the News section to browse our editorial articles. Use the category tabs for Cricket, Football, and NFL or the search bar to find exactly what you're looking for." },
   { num: "04", icon: "bi-calendar-event", color: "#ec4899", title: "Plan with Fixtures", desc: "Check the Fixtures page to see upcoming matches across all sports. Filter by date or sport and never miss a game." },
   { num: "05", icon: "bi-bar-chart-line", color: "#8b5cf6", title: "Track Standings", desc: "View team standings and league tables on the Standings page. See where your favorite team sits in the table after each round of games." },
   { num: "06", icon: "bi-search", color: "#06b6d4", title: "Use the Search", desc: "Use the search icon in the navigation bar to quickly find news articles, match results, or teams across the entire SportsVerge platform." },

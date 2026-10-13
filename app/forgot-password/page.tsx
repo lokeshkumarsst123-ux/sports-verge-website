@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { apiErrorMessage, apiFieldErrors, authApi } from "@/lib/auth-api";
 
 export default function ForgotPasswordPage() {
   const [flowStep, setFlowStep] = useState<"email" | "link_sent" | "reset_form" | "success">("email");
@@ -17,6 +18,18 @@ export default function ForgotPasswordPage() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [globalError, setGlobalError] = useState("");
+
+  useEffect(() => {
+    const token = new URLSearchParams(window.location.search).get("token");
+    if (token) {
+      const timer = window.setTimeout(() => {
+        setOtp(token);
+        setFlowStep("reset_form");
+      }, 0);
+      return () => window.clearTimeout(timer);
+    }
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -26,7 +39,7 @@ export default function ForgotPasswordPage() {
     }
   };
 
-  const handleSendResetLink = (e: React.FormEvent) => {
+  const handleSendResetLink = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.trim()) {
       setErrors({ email: "Email address is required." });
@@ -39,15 +52,20 @@ export default function ForgotPasswordPage() {
 
     setLoading(true);
     setErrors({});
+    setGlobalError("");
 
-    // Simulate sending reset email
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      await authApi.forgotPassword({ email: email.trim() });
       setFlowStep("link_sent");
-    }, 1500);
+    } catch (error) {
+      setGlobalError(apiErrorMessage(error));
+      setErrors(apiFieldErrors(error));
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleResetPassword = (e: React.FormEvent) => {
+  const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     const newErrors: { [key: string]: string } = {};
 
@@ -72,28 +90,32 @@ export default function ForgotPasswordPage() {
 
     setLoading(true);
     setErrors({});
+    setGlobalError("");
 
-    // Simulate updating credentials in database
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      await authApi.resetPassword({
+        token: otp,
+        newPassword: passwords.password,
+        confirmPassword: passwords.confirmPassword,
+      });
       setFlowStep("success");
-    }, 1500);
+    } catch (error) {
+      const fieldErrors = apiFieldErrors(error);
+      setGlobalError(apiErrorMessage(error));
+      setErrors({ ...fieldErrors, password: fieldErrors.password || fieldErrors.newPassword || "" });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleVerifyOTP = (e: React.FormEvent) => {
     e.preventDefault();
-    if (otp.length < 4) {
-      setErrors({ otp: "Please enter a valid OTP." });
+    if (otp.length < 32) {
+      setErrors({ otp: "Please paste the reset token from your email." });
       return;
     }
-    setLoading(true);
     setErrors({});
-
-    // Simulate OTP verification
-    setTimeout(() => {
-      setLoading(false);
-      setFlowStep("reset_form");
-    }, 1500);
+    setFlowStep("reset_form");
   };
 
   return (
@@ -126,11 +148,17 @@ export default function ForgotPasswordPage() {
 
         {/* Card Body */}
         <div className="card bg-card border border-dark rounded-4 p-4 p-md-5">
+          {globalError && (
+            <div className="alert alert-danger bg-danger bg-opacity-10 border-danger border-opacity-20 text-danger small rounded-3 p-3 mb-4" role="alert">
+              {globalError}
+            </div>
+          )}
+
           {flowStep === "email" && (
             <>
               <h3 className="text-white fw-bold mb-1">Reset Password</h3>
               <p className="text-muted small mb-4">
-                Enter your registered email address below and we'll send you a password reset link.
+                Enter your registered email address below and we&apos;ll send you a password reset link.
               </p>
 
               <form onSubmit={handleSendResetLink} className="d-flex flex-column gap-3">
@@ -185,23 +213,22 @@ export default function ForgotPasswordPage() {
               <div className="d-inline-flex align-items-center justify-content-center bg-success bg-opacity-10 text-success rounded-circle p-3 mb-4 w-64 h-64">
                 <i className="bi bi-shield-lock-fill fs-28"></i>
               </div>
-              <h4 className="text-white fw-bold">Verify OTP</h4>
+              <h4 className="text-white fw-bold">Check Your Email</h4>
               <p className="text-muted small my-3 lh-1-6">
-                A secure OTP has been dispatched to <strong className="text-light">{email}</strong>. 
-                Please enter the OTP below to verify your identity.
+                If an account exists for <strong className="text-light">{email}</strong>, a secure password reset link has been sent. You can also paste the reset token below.
               </p>
 
               <form onSubmit={handleVerifyOTP} className="my-4">
                 <div className="mb-3">
                   <input
                     type="text"
-                    maxLength={6}
+                    maxLength={128}
                     value={otp}
                     onChange={(e) => {
                       setOtp(e.target.value.replace(/[^0-9]/g, ''));
                       if (errors.otp) setErrors({});
                     }}
-                    placeholder="Enter 6-digit OTP"
+                    placeholder="Paste reset token"
                     className={`form-control bg-dark text-white border-0 text-center fw-bold fs-4 py-3 ls-05 ${
                       errors.otp ? "is-invalid" : ""
                     }`}
@@ -211,22 +238,22 @@ export default function ForgotPasswordPage() {
 
                 <button
                   type="submit"
-                  disabled={loading || otp.length < 4}
+                  disabled={loading || otp.length < 32}
                   className="btn btn-login w-100 fw-semibold text-uppercase py-3 position-relative d-flex justify-content-center align-items-center fs-13"
                 >
                   {loading ? (
                     <>
                       <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                      Verifying...
+                      Continuing...
                     </>
                   ) : (
-                    "Verify OTP"
+                    "Continue"
                   )}
                 </button>
               </form>
 
               <div className="text-center mt-2">
-                <span className="text-muted small">Didn't get the link? </span>
+                <span className="text-muted small">Didn&apos;t get the link? </span>
                 <button
                   onClick={() => {
                     setFlowStep("email");
@@ -266,6 +293,7 @@ export default function ForgotPasswordPage() {
                       type="button"
                       className="btn position-absolute top-50 end-0 translate-middle-y border-0 text-muted px-3"
                       onClick={() => setShowPassword(!showPassword)}
+                      aria-label={showPassword ? "Hide password" : "Show password"}
                     >
                       <i className={`bi ${showPassword ? "bi-eye-slash" : "bi-eye"}`}></i>
                     </button>
@@ -293,6 +321,7 @@ export default function ForgotPasswordPage() {
                       type="button"
                       className="btn position-absolute top-50 end-0 translate-middle-y border-0 text-muted px-3"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      aria-label={showConfirmPassword ? "Hide password confirmation" : "Show password confirmation"}
                     >
                       <i className={`bi ${showConfirmPassword ? "bi-eye-slash" : "bi-eye"}`}></i>
                     </button>

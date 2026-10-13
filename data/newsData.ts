@@ -12,7 +12,7 @@ export interface NewsArticle {
   relatedIds: string[];
 }
 
-export const newsArticles: NewsArticle[] = [
+const legacyNewsArticles: NewsArticle[] = [
   {
     id: "cricket-hero-1",
     image: "/assets/imgs/banner/news-banner_1.webp",
@@ -209,3 +209,5 @@ export const newsArticles: NewsArticle[] = [
     relatedIds: ["general-1"]
   }
 ];
+
+export const newsArticles = legacyNewsArticles.filter((article) => article.category !== "AFL");

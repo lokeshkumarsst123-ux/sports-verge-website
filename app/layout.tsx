@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { Outfit, Space_Grotesk, Inter } from "next/font/google";
+import type { CSSProperties } from "react";
+import { Suspense } from "react";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -7,44 +8,61 @@ import Preloader from "@/components/Preloader";
 import ThemeProvider from "@/components/ThemeProvider";
 import FavoritesProvider from "@/components/FavoritesContext";
 import AdProvider from "@/components/AdContext";
+import SiteSettingsProvider from "@/components/SiteSettingsContext";
 import Script from "next/script";
+import { headers } from "next/headers";
+import { contentApi } from "@/lib/content-api";
+import { buildSeoMetadata } from "@/lib/seo";
 
-const outfit = Outfit({
-  variable: "--font-outfit",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
-});
-
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-space-grotesk",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-export const metadata: Metadata = {
+const fallbackMetadata: Metadata = {
   title: "SportsVerge - Premium Sports Data & Live Analytics Platform",
   description: "Experience real-time sports statistics, predictive analytics, and premium content on the Next-Gen sports platform.",
   keywords: "sports analytics, real-time sports, live sports statistics, sports verge",
   authors: [{ name: "SportsVerge Team" }],
-  icons: {
-    icon: "/assets/imgs/favicon.svg",
-  },
+  icons: { icon: "/assets/imgs/favicon.svg" },
 };
 
-export default function RootLayout({
+const getRequestPath = async () => {
+  try {
+    const requestHeaders = await headers();
+    return requestHeaders.get("x-seo-path") || "/";
+  } catch {
+    return "/";
+  }
+};
+
+const fallbackFontVariables = {
+  "--font-outfit": "'Outfit', Arial, sans-serif",
+  "--font-space-grotesk": "'Space Grotesk', Arial, sans-serif",
+  "--font-inter": "'Inter', Arial, sans-serif",
+} as CSSProperties;
+
+export async function generateMetadata(): Promise<Metadata> {
+  const path = await getRequestPath();
+  const seo = await contentApi.seo(path).catch(() => null);
+  if (!seo) return fallbackMetadata;
+  return {
+    ...fallbackMetadata,
+    ...buildSeoMetadata(seo.data, {
+      title: fallbackMetadata.title,
+      description: fallbackMetadata.description,
+      keywords: fallbackMetadata.keywords,
+    }, path),
+  };
+}
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const path = await getRequestPath();
+  const seo = await contentApi.seo(path).catch(() => null);
+  const structuredData = seo?.data?.settings?.structuredData && Object.keys(seo.data.settings.structuredData).length ? seo.data.settings.structuredData : null;
   return (
-    <html lang="en" className={`${outfit.variable} ${spaceGrotesk.variable} ${inter.variable}`}>
+    <html lang="en" className="font-outfit" data-scroll-behavior="smooth" style={fallbackFontVariables}>
       <head>
+        {structuredData && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />}
         <link rel="icon" href="/assets/imgs/favicon.svg" type="image/png" />
 
         {/* Lower precedence for external libraries */}
@@ -74,14 +92,18 @@ export default function RootLayout({
       </head>
       <body>
         <ThemeProvider>
-          <FavoritesProvider>
-            <AdProvider>
-              <Preloader />
-              <Header />
-              {children}
-              <Footer />
-            </AdProvider>
-          </FavoritesProvider>
+          <Suspense fallback={null}>
+            <SiteSettingsProvider>
+              <FavoritesProvider>
+                <AdProvider>
+                  <Preloader />
+                  <Header />
+                  {children}
+                  <Footer />
+                </AdProvider>
+              </FavoritesProvider>
+            </SiteSettingsProvider>
+          </Suspense>
         </ThemeProvider>
         <Script
           src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"

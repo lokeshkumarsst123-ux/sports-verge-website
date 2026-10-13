@@ -6,9 +6,9 @@ const faqGroups = [
   {
     group: "General", icon: "bi-question-circle-fill", color: "#22c55e",
     faqs: [
-      { q: "What is The SportsVerge?", a: "A comprehensive sports platform offering live scores, news, fixtures, and standings across Cricket, Football, NFL, AFL, and more." },
+      { q: "What is The SportsVerge?", a: "A comprehensive sports platform offering live scores, news, fixtures, and standings across Cricket, Football, NFL, and more." },
       { q: "Is SportsVerge free to use?", a: "Yes! Core features are completely free. Browse live scores, read news, and explore standings without any subscription." },
-      { q: "Which sports does SportsVerge cover?", a: "Cricket, Football, NFL, AFL, and General Sports. More sports are being added regularly." },
+      { q: "Which sports does SportsVerge cover?", a: "Cricket, Football, NFL, and General Sports. More sports are being added regularly." },
     ]
   },
   {

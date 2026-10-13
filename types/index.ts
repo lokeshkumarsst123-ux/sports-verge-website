@@ -13,9 +13,12 @@ export interface FixtureItem {
   homeLogo: string;
   awayLogo: string;
   day: string;
+  date?: string;
   time: string;
   venue: string;
-  type: "football" | "cricket" | "NFL" | "AFL";
+  type: "football" | "cricket" | "NFL";
+  sport?: string;
+  status?: "upcoming" | "live" | "completed";
 }
 
 export interface ResultItem {
@@ -30,7 +33,7 @@ export interface ResultItem {
   awayScore?: string;
   result: string;
   date: string;
-  type: "football" | "cricket" | "NFL" | "AFL";
+  type: "football" | "cricket" | "NFL";
 }
 
 export interface NewsItem {
@@ -44,7 +47,7 @@ export interface PlayerItem {
   image: string;
   name: string;
   team: string;
-  sport: "cricket" | "football" | "NFL" | "AFL";
+  sport: "cricket" | "football" | "NFL";
 }
 
 export interface LiveScoreMatch {
@@ -62,7 +65,7 @@ export interface LiveScoreMatch {
   awayOvers?: string;
   note?: string;
   venue?: string;
-  sport: "cricket" | "football" | "NFL" | "AFL";
+  sport: "cricket" | "football" | "NFL";
 }
 
 export interface StandingFootballRow {
@@ -322,7 +325,7 @@ export interface NFLMatchData {
 
 export interface LiveScoreMatchDetail {
   id: string;
-  sport: "cricket" | "football" | "NFL" | "AFL";
+  sport: "cricket" | "football" | "NFL";
   competitionName: string;
   matchName: string;
   team1Logo: string;
@@ -333,7 +336,7 @@ export interface LiveScoreMatchDetail {
   team2Name: string;
   team2Score: string;
   team2Overs?: string;
-  matchStatus: "LIVE" | "BREAK" | "HALF TIME" | "1ST INNINGS" | "2ND INNINGS" | "FINISHED" | FootballMatchStatus | NFLMatchStatus;
+  matchStatus: string;
   matchTime: string;
   venue: string;
   lastUpdated: string;
@@ -354,111 +357,4 @@ export interface LiveScoreMatchDetail {
   // NFL-specific optional fields
   nflData?: NFLMatchData;
 
-  // AFL-specific optional fields
-  aflData?: AFLMatchData;
-}
-
-export interface AFLQuarterScore {
-  q1: string;
-  q2: string;
-  q3: string;
-  q4: string;
-  final: string;
-}
-
-export interface AFLTeamStats {
-  goals: number;
-  behinds: number;
-  disposals: number;
-  kicks: number;
-  handballs: number;
-  marks: number;
-  tackles: number;
-  inside50s: number;
-  clearances: number;
-  hitOuts: number;
-  contestedPossessions: number;
-  uncontestedPossessions: number;
-  turnovers: number;
-  interchangeCount: number;
-}
-
-export interface AFLPlayerLeader {
-  name: string;
-  value: string | number;
-}
-
-export interface AFLScoringTimelineEvent {
-  quarter: string;
-  time: string;
-  player: string;
-  type: "Goal" | "Behind";
-  team: 1 | 2;
-}
-
-export interface AFLMatchEvent {
-  quarter: string;
-  time: string;
-  type: "Goal" | "Behind" | "Interchange" | "Injury";
-  detail: string;
-  team: 1 | 2;
-}
-
-export interface AFLTeamRoster {
-  starting18: string[];
-  interchange: string[];
-  coach: string;
-}
-
-export interface AFLMatchData {
-  league: string;
-  season: string;
-  round: string;
-  matchDate: string;
-  matchTime: string;
-  stadium: string;
-  city: string;
-  umpires: string;
-  
-  quarter: string;
-  gameClock: string;
-  matchStatus: string;
-
-  team1Score: { goals: number, behinds: number, total: number };
-  team2Score: { goals: number, behinds: number, total: number };
-  
-  quarterScores: {
-    team1: AFLQuarterScore;
-    team2: AFLQuarterScore;
-  };
-  
-  team1Stats: AFLTeamStats;
-  team2Stats: AFLTeamStats;
-  
-  leadersTeam1: {
-    mostGoals: AFLPlayerLeader;
-    mostDisposals: AFLPlayerLeader;
-    mostMarks: AFLPlayerLeader;
-    mostTackles: AFLPlayerLeader;
-    mostClearances: AFLPlayerLeader;
-    mostHitOuts: AFLPlayerLeader;
-  };
-  
-  leadersTeam2: {
-    mostGoals: AFLPlayerLeader;
-    mostDisposals: AFLPlayerLeader;
-    mostMarks: AFLPlayerLeader;
-    mostTackles: AFLPlayerLeader;
-    mostClearances: AFLPlayerLeader;
-    mostHitOuts: AFLPlayerLeader;
-  };
-  
-  scoringTimeline: AFLScoringTimelineEvent[];
-  events: AFLMatchEvent[];
-  
-  team1Roster: AFLTeamRoster;
-  team2Roster: AFLTeamRoster;
-  
-  attendance: string;
-  weather: string;
 }

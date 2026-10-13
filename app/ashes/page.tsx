@@ -1,39 +1,123 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PageHeader from "@/components/PageHeader";
-
-const ashesSchedule = [
-  { test: "1st Test", date: "June 16-20, 2026", venue: "Edgbaston, Birmingham", status: "Completed", scoreAus: "386 & 282/8", scoreEng: "393/8d & 273", result: "Australia won by 2 wickets" },
-  { test: "2nd Test", date: "June 28-July 2, 2026", venue: "Lord's, London", status: "Completed", scoreAus: "416 & 279", scoreEng: "325 & 327", result: "Australia won by 43 runs" },
-  { test: "3rd Test", date: "July 6-10, 2026", venue: "Headingley, Leeds", status: "Completed", scoreAus: "263 & 224", scoreEng: "237 & 254/7", result: "England won by 3 wickets" },
-  { test: "4th Test", date: "July 19-23, 2026", venue: "Old Trafford, Manchester", status: "Completed", scoreAus: "317 & 214/5", scoreEng: "592", result: "Match Drawn" },
-  { test: "5th Test", date: "July 27-31, 2026", venue: "The Oval, London", status: "Completed", scoreAus: "295 & 334", scoreEng: "283 & 395", result: "England won by 49 runs" },
-];
-
-const ashesStats = {
-  batting: [
-    { rank: 1, player: "Usman Khawaja", team: "Australia", runs: "496", avg: "49.60", hs: "141" },
-    { rank: 2, player: "Zak Crawley", team: "England", runs: "480", avg: "53.33", hs: "189" },
-    { rank: 3, player: "Joe Root", team: "England", runs: "412", avg: "51.50", hs: "118*" },
-  ],
-  bowling: [
-    { rank: 1, player: "Stuart Broad", team: "England", wickets: "22", avg: "26.22", econ: "3.39" },
-    { rank: 2, player: "Mitchell Starc", team: "Australia", wickets: "23", avg: "27.08", econ: "4.37" },
-    { rank: 3, player: "Chris Woakes", team: "England", wickets: "19", avg: "18.14", econ: "3.12" },
-  ],
-};
+import { cricketApi, findCricketCompetition, mapCricketFixture } from "@/lib/cricket-api";
 
 export default function AshesPage() {
   const [activeTab, setActiveTab] = useState<"matches" | "stats" | "history">("matches");
+  const [competitionId, setCompetitionId] = useState<string | null>(null);
+  const [schedule, setSchedule] = useState<any[]>([]);
+  const [matchPage, setMatchPage] = useState(1);
+  const [matchTotalPages, setMatchTotalPages] = useState(1);
+  const [matchTotalItems, setMatchTotalItems] = useState(0);
+  const [matchLoading, setMatchLoading] = useState(false);
+  const [battingStats, setBattingStats] = useState<any[]>([]);
+  const [bowlingStats, setBowlingStats] = useState<any[]>([]);
+  const [competitionTitle, setCompetitionTitle] = useState("The Ashes");
+  const [hasCompetition, setHasCompetition] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    const loadCompetition = async () => {
+      try {
+        const competitions = await cricketApi.competitionsAll();
+        const competition = findCricketCompetition(competitions, ["the ashes", "ashes"]);
+        if (!competition?.cid) {
+          if (!cancelled) setError("The Ashes is not available in the current Entity Sports competition feed.");
+          return;
+        }
+        const [info, batting, bowling] = await Promise.all([
+          cricketApi.competition(String(competition.cid)),
+          cricketApi.competitionStats(String(competition.cid), "batting_most_runs"),
+          cricketApi.competitionStats(String(competition.cid), "bowling_top_wicket_takers"),
+        ]);
+        const toStats = (data: any) => Array.isArray(data?.stats) ? data.stats : [];
+        const mapBatting = toStats(batting).map((item: any, index: number) => ({
+          rank: index + 1,
+          player: item.player?.title || item.player?.short_name || "Unknown player",
+          team: item.team?.title || item.team?.name || "Unknown team",
+          runs: item.runs ?? "—",
+          avg: item.average ?? "—",
+          hs: item.highest ?? "—",
+        }));
+        const mapBowling = toStats(bowling).map((item: any, index: number) => ({
+          rank: index + 1,
+          player: item.player?.title || item.player?.short_name || "Unknown player",
+          team: item.team?.title || item.team?.name || "Unknown team",
+          wickets: item.wickets ?? "—",
+          avg: item.average ?? "—",
+          econ: item.econ ?? "—",
+        }));
+        if (!cancelled) {
+          setCompetitionTitle(competition.title || "The Ashes");
+          setCompetitionId(String(competition.cid));
+          setHasCompetition(true);
+          setBattingStats(mapBatting);
+          setBowlingStats(mapBowling);
+        }
+      } catch (requestError) {
+        if (!cancelled) setError(requestError instanceof Error ? requestError.message : "Unable to load Ashes data.");
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+    void loadCompetition();
+    return () => { cancelled = true; };
+  }, []);
+
+  useEffect(() => {
+    if (!competitionId || activeTab !== "matches") return;
+    let cancelled = false;
+    const loadMatches = async () => {
+      setMatchLoading(true);
+      setError(null);
+      try {
+        const page = await cricketApi.competitionMatchesPage(competitionId, matchPage);
+        const mappedSchedule = page.items.map((item: any, index: number) => {
+          const fixture = mapCricketFixture(item);
+          const teamA = String(item.teama?.name || "").toLowerCase();
+          const scoreA = item.teama?.scores_full || item.teama?.scores || "";
+          const scoreB = item.teamb?.scores_full || item.teamb?.scores || "";
+          return {
+            test: item.subtitle || `Test ${(page.page - 1) * 9 + index + 1}`,
+            date: fixture.date,
+            venue: fixture.venue,
+            status: fixture.status === "completed" ? "Completed" : fixture.status === "live" ? "Live" : "Upcoming",
+            scoreAus: teamA.includes("australia") ? scoreA : scoreB,
+            scoreEng: teamA.includes("england") ? scoreA : scoreB,
+            result: item.result || item.status_note,
+          };
+        });
+        if (!cancelled) {
+          setSchedule(mappedSchedule);
+          setMatchTotalPages(page.totalPages);
+          setMatchTotalItems(page.totalItems);
+        }
+      } catch (requestError) {
+        if (!cancelled) setError(requestError instanceof Error ? requestError.message : "Unable to load Ashes matches.");
+      } finally {
+        if (!cancelled) setMatchLoading(false);
+      }
+    };
+    void loadMatches();
+    return () => { cancelled = true; };
+  }, [activeTab, competitionId, matchPage]);
+
+  useEffect(() => {
+    setMatchPage(1);
+  }, [activeTab]);
 
   return (
     <main className="font-outfit">
       <PageHeader
-        title="The Ashes 2026"
+        title={competitionTitle}
         subtitle="Australia vs England Test Series match schedules, stats leaders, results, and team news."
         className="mb-5"
       />
+      {error && <div className="container custom-container mb-4"><div className="alert alert-warning mb-0">{error}</div></div>}
 
       {/* Tabs */}
       <div className="container custom-container mb-4">
@@ -58,8 +142,9 @@ export default function AshesPage() {
 
       <div className="container custom-container">
         {activeTab === "matches" && (
+          <>
           <div className="d-flex flex-column gap-4">
-            {ashesSchedule.map((m, idx) => (
+            {schedule.length ? schedule.map((m, idx) => (
               <div key={idx} className="premium-table-container p-4">
                 <div className="row align-items-center">
                   <div className="col-md-3 mb-2 mb-md-0">
@@ -103,11 +188,22 @@ export default function AshesPage() {
                   </div>
                 </div>
               </div>
-            ))}
+            )) : <div className="text-center text-muted py-5">{loading ? "Loading Ashes data…" : "No Ashes schedule available from Entity Sports."}</div>}
           </div>
+          {matchTotalPages > 1 && (
+            <div className="ranking-pagination mt-4">
+              <button type="button" disabled={matchPage <= 1 || matchLoading} onClick={() => setMatchPage((page) => Math.max(1, page - 1))}>Previous</button>
+              <span>Page {matchPage} of {matchTotalPages}</span>
+              <button type="button" disabled={matchPage >= matchTotalPages || matchLoading} onClick={() => setMatchPage((page) => Math.min(matchTotalPages, page + 1))}>Next</button>
+            </div>
+          )}
+          <div className="ranking-pagination-summary mt-2">
+            Showing {matchTotalItems ? ((matchPage - 1) * 9) + 1 : 0}-{Math.min(matchPage * 9, matchTotalItems)} of {matchTotalItems} matches
+          </div>
+          </>
         )}
 
-        {activeTab === "stats" && (
+        {activeTab === "stats" && hasCompetition && (
           <div className="row g-5">
             <div className="col-lg-6">
               <h5 className="fw-bold text-white mb-4 font-space-grotesk">Most Runs</h5>
@@ -124,7 +220,7 @@ export default function AshesPage() {
                       </tr>
                     </thead>
                     <tbody>
-                      {ashesStats.batting.map((p) => (
+                      {battingStats.length ? battingStats.map((p) => (
                         <tr key={p.rank}>
                           <td className="premium-table-rank text-start text-success">#{p.rank}</td>
                           <td className="premium-table-team text-start">
@@ -137,7 +233,7 @@ export default function AshesPage() {
                           <td className="premium-table-stat text-center">{p.avg}</td>
                           <td className="premium-table-stat text-center">{p.hs}</td>
                         </tr>
-                      ))}
+                      )) : <tr><td colSpan={5} className="text-center text-muted py-4">No batting statistics available from Entity Sports.</td></tr>}
                     </tbody>
                   </table>
                 </div>
@@ -159,7 +255,7 @@ export default function AshesPage() {
                       </tr>
                     </thead>
                     <tbody>
-                      {ashesStats.bowling.map((p) => (
+                      {bowlingStats.length ? bowlingStats.map((p) => (
                         <tr key={p.rank}>
                           <td className="premium-table-rank text-start text-success">#{p.rank}</td>
                           <td className="premium-table-team text-start">
@@ -172,13 +268,17 @@ export default function AshesPage() {
                           <td className="premium-table-stat text-center">{p.avg}</td>
                           <td className="premium-table-stat text-center">{p.econ}</td>
                         </tr>
-                      ))}
+                      )) : <tr><td colSpan={5} className="text-center text-muted py-4">No bowling statistics available from Entity Sports.</td></tr>}
                     </tbody>
                   </table>
                 </div>
               </div>
             </div>
           </div>
+        )}
+
+        {activeTab === "stats" && !hasCompetition && (
+          <div className="premium-table-container p-5 text-center text-muted">Ashes statistics are not available from Entity Sports.</div>
         )}
 
         {activeTab === "history" && (

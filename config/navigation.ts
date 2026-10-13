@@ -38,21 +38,12 @@ export const mainMenuItems: MenuItem[] = [
     title: "NFL",
     href: "#",
     children: [
-      { title: "Live Scores", href: "/live-scores" },
-
-      { title: "Teams", href: "/teams" },
-    ],
-  },
-  {
-    title: "AFL",
-    href: "#",
-    children: [
-      { title: "Fixtures", href: "/fixtures" },
-      { title: "Ladder", href: "/standings" },
-      { title: "Stats", href: "/stats" },
+      { title: "Live Scores", href: "/live-scores?sport=nfl" },
+      { title: "Teams", href: "/teams?sport=nfl" },
     ],
   },
   { title: "News", href: "/news" },
+  { title: "Tips", href: "/tips" },
   { title: "Live Scores", href: "/live-scores" },
   { title: "Fixtures", href: "/fixtures" },
   {
@@ -62,10 +53,9 @@ export const mainMenuItems: MenuItem[] = [
     icon: "bi bi-plus-lg ms-1",
     children: [
       { title: "Standings", href: "/standings" },
+      { title: "Rankings", href: "/rankings" },
+      { title: "Teams", href: "/teams" },
       { title: "Stats", href: "/stats" },
-      { title: "Fantasy Leagues", href: "/fantasy" },
-      { title: "Podcasts & Video", href: "/podcasts" },
-      { title: "Esports", href: "/esports" },
       { title: "Betting Odds", href: "/betting-odds" },
       { title: "Contact Us", href: "/contact" },
     ],

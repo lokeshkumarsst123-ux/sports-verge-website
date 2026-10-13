@@ -1,8 +1,18 @@
 import React from "react";
 import Link from "next/link";
 import PageHeader from "@/components/PageHeader";
+import { contentApi } from "@/lib/content-api";
+import { buildSeoMetadata, getSeoDefaultsForPath } from "@/lib/seo";
 
-export const metadata = { title: "Help Center – The SportsVerge" };
+export async function generateMetadata() {
+  const path = "/help-center";
+  const seo = await contentApi.seo(path).catch(() => null);
+  const defaults = getSeoDefaultsForPath(path);
+  return buildSeoMetadata(seo?.data, {
+    title: defaults.defaultTitle,
+    description: defaults.defaultDescription,
+  }, path, { preferDefaults: true });
+}
 
 const topics = [
   { icon: "bi-broadcast", color: "#22c55e", title: "Live Scores", desc: "How to read live scores, understand updates, and enable alerts.", href: "/faqs#LiveScores" },
