@@ -69,11 +69,17 @@ export default function Hero() {
               }}
             />
             <div className="featured-overlay" />
-            <div className="carousel-caption custom-caption w-75 text-start">
-              <span className="badge fw-normal bg-dark mb-3 rounded-pill small">FEATURED NEWS</span>
-              <h2 className="fw-semibold mb-2">{article.title}</h2>
-              <p className="text-light small mb-3">{article.summary}</p>
-              <span className="btn btn-success px-4 py-2">
+            <div className="carousel-caption custom-caption w-75 text-start hero-caption-custom">
+              <span className="badge fw-bold mb-3 rounded-pill hero-badge-custom">
+                FEATURED NEWS
+              </span>
+              <h2 className="fw-bold mb-2 hero-title-custom text-white-force">
+                {article.title}
+              </h2>
+              <p className="small mb-3 hero-summary-custom text-white-force">
+                {article.summary}
+              </p>
+              <span className="btn fw-bold px-4 py-2 rounded-pill shadow-sm d-inline-flex align-items-center hero-btn-custom">
                 Read Full Story <i className="bi bi-arrow-right ms-2" aria-hidden="true" />
               </span>
             </div>

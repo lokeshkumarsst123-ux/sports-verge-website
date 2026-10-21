@@ -88,10 +88,10 @@ export default function Standings() {
   }, [selected, sport]);
 
   return (
-    <section className="standings-section bg-card rounded-3 border border-dark mt-4 p-4">
+    <section className="standings-section bg-card rounded-4 border mt-4 p-4 standings-section-wrap">
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2 className="h5 m-0 fw-semibold border-start border-success border-3 ps-2">Standings</h2>
-        <Link href="/standings" className="text-success text-decoration-none small fw-medium">View Table</Link>
+        <h2 className="h5 m-0 fw-bold border-start border-3 ps-2 widget-heading">Standings</h2>
+        <Link href="/standings" className="small widget-view-all">View Table <i className="bi bi-chevron-right" /></Link>
       </div>
 
       <div className="nav nav-pills custom-tabs flex-nowrap overflow-auto scrollbar-none gap-2 mb-3">
@@ -107,7 +107,7 @@ export default function Standings() {
         ))}
       </div>
 
-      <div className="position-relative border-top border-bottom border-dark py-2 mb-3">
+      <div className="position-relative border-top border-bottom py-2 mb-3 standings-divider">
         <div ref={competitionRef} className="d-flex gap-2 overflow-auto scrollbar-none standings-competition-scroll">
           {available.length ? available.slice(0, 10).map((competition) => (
             <button
@@ -118,29 +118,31 @@ export default function Standings() {
             >
               {competition.name}
             </button>
-          )) : <span className="text-muted small px-2 py-2">Loading competitions…</span>}
+          )) : <span className="small px-2 py-2 widget-empty-text">Loading competitions…</span>}
         </div>
         {available.length > 4 && <button type="button" className="standings-scroll-arrow" onClick={() => competitionRef.current?.scrollBy({ left: 180, behavior: "smooth" })} aria-label="More competitions"><i className="bi bi-chevron-right" /></button>}
       </div>
 
       <div className="table-responsive standings-table-wrap">
-        <table className="table table-dark table-borderless align-middle mb-0 standings-table">
-          <thead><tr><th>#</th><th>Team</th><th>P</th><th>GD</th><th>Pts</th></tr></thead>
+        <table className="table table-borderless align-middle mb-0 standings-table standings-table-custom">
+          <thead className="standings-thead-custom">
+            <tr><th>#</th><th>TEAM</th><th>P</th><th>GD</th><th>PTS</th></tr>
+          </thead>
           <tbody>
-            {loading ? <tr><td colSpan={5} className="text-center text-muted py-4">Loading…</td></tr> : rows.length ? rows.slice(0, 6).map((row, index) => (
-              <tr key={`${row.rank}-${row.team}-${index}`}>
-                <td className="text-muted">{row.rank}</td>
-                <td><div className="d-flex align-items-center gap-2 text-light fw-semibold"><img src={imageUrl(row.teamLogo)} alt="" width={22} height={22} className="standings-team-logo" onError={(event) => { if (!event.currentTarget.src.endsWith(placeholderLogo)) event.currentTarget.src = placeholderLogo; }} /><span className="text-truncate">{row.team}</span></div></td>
-                <td className="text-muted">{row.played}</td>
-                <td className="text-muted">{row.goalDifference}</td>
-                <td className="text-light fw-bold">{row.points}</td>
+            {loading ? <tr><td colSpan={5} className="text-center py-4 widget-empty-text">Loading…</td></tr> : rows.length ? rows.slice(0, 6).map((row, index) => (
+              <tr key={`${row.rank}-${row.team}-${index}`} className="standings-row-custom">
+                <td className="standings-rank-custom">{row.rank}</td>
+                <td><div className="d-flex align-items-center gap-2 fw-bold standings-team-name-custom"><img src={imageUrl(row.teamLogo)} alt="" width={22} height={22} className="standings-team-logo" onError={(event) => { if (!event.currentTarget.src.endsWith(placeholderLogo)) event.currentTarget.src = placeholderLogo; }} /><span className="text-truncate">{row.team}</span></div></td>
+                <td className="standings-stat-custom">{row.played}</td>
+                <td className="standings-stat-custom">{row.goalDifference}</td>
+                <td className="standings-points-custom">{row.points}</td>
               </tr>
-            )) : <tr><td colSpan={5} className="text-center text-muted py-4">{message || "No standings available"}</td></tr>}
+            )) : <tr><td colSpan={5} className="text-center py-4 widget-empty-text">{message || "No standings available"}</td></tr>}
           </tbody>
         </table>
       </div>
 
-      <Link href="/standings" className="btn standings-all-button w-100 mt-3">All Standings</Link>
+      <Link href="/standings" className="btn w-100 mt-3 p-2.5 rounded-pill text-uppercase widget-btn-cta">All Standings</Link>
     </section>
   );
 }

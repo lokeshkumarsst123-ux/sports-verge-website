@@ -69,10 +69,14 @@ export default function LiveScores() {
   });
 
   return (
-    <aside className="live-scores-section bg-card rounded-3 py-4 px-3 border border-dark">
+    <aside className="live-scores-section bg-card rounded-4 py-4 px-3 border">
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2 className="h5 m-0 fw-semibold">Live Scores</h2>
-        <Link href="/live-scores" className="text-success text-decoration-none small fw-medium">View All</Link>
+        <h2 className="h5 m-0 fw-bold border-start border-3 ps-2 widget-heading">
+          Live Scores
+        </h2>
+        <Link href="/live-scores" className="small widget-view-all">
+          View All <i className="bi bi-chevron-right" />
+        </Link>
       </div>
       <ul className="nav nav-pills custom-tabs mb-3 flex-nowrap overflow-x-auto scrollbar-none gap-2">
         {(["all", "cricket", "football", "NFL"] as const).map((tab) => (
@@ -85,22 +89,22 @@ export default function LiveScores() {
       </ul>
       <div className="scores-list">
         {sortedMatches.length > 0 ? sortedMatches.slice(0, 5).map((match, idx) => (
-          <Link key={`${match.sport}-${match.id || "live"}-${idx}`} href={getMatchLink(match)} className="score-box d-block text-decoration-none rounded-3 p-3 mb-3 border border-dark">
+          <Link key={`${match.sport}-${match.id || "live"}-${idx}`} href={getMatchLink(match)} className="score-box fixtures-card-custom d-block text-decoration-none rounded-3 p-3 mb-3 shadow-sm">
             <div className="d-flex justify-content-between align-items-center mb-2">
-              <span className="small text-muted text-truncate" style={{ maxWidth: "160px" }}>{match.league}</span>
-              {match.status === "LIVE" ? <span className="badge bg-danger">LIVE</span> : <span className="text-success small">{match.status}</span>}
+              <span className="small text-truncate fixture-league-custom">{match.league}</span>
+              {match.status === "LIVE" ? <span className="badge rounded-pill fw-bold badge-live">LIVE</span> : <span className="small fw-semibold result-status-custom">{match.status}</span>}
             </div>
             {[{ name: match.homeTeam, logo: match.homeLogo, score: match.homeScore, overs: match.homeOvers }, { name: match.awayTeam, logo: match.awayLogo, score: match.awayScore, overs: match.awayOvers }].map((team, teamIndex) => (
               <div key={`${match.id || idx}-team-${teamIndex}-${team.name}`} className="d-flex justify-content-between align-items-center mb-2">
-                <div className="d-flex align-items-center"><Image src={team.logo} alt={team.name} width={20} height={20} className="me-2" /><span className="text-light fw-medium">{team.name}</span></div>
-                <span className="text-light fw-bold">{team.score} {team.overs && <span className="text-muted fw-normal small">{team.overs}</span>}</span>
+                <div className="d-flex align-items-center"><Image src={team.logo} alt={team.name} width={20} height={20} className="me-2" /><span className="fw-bold fixture-team-name-custom">{team.name}</span></div>
+                <span className="fw-bold fixture-time-custom">{team.score} {team.overs && <span className="fw-normal small fixture-venue-custom">{team.overs}</span>}</span>
               </div>
             ))}
-            {match.note && <div className="small text-success mt-2">{match.note}</div>}
-            {match.venue && <div className="text-muted mt-2 fs-11">{match.venue}</div>}
+            {match.note && <div className="small mt-2 result-status-custom">{match.note}</div>}
+            {match.venue && <div className="mt-2 fs-11 fixture-venue-custom">{match.venue}</div>}
           </Link>
-        )) : <div className="p-3 text-center text-muted small">{error || "No live match"}</div>}
-        <Link href="/live-scores" className="btn btn-outline-success w-100 mt-2 p-3 rounded-3 text-uppercase fw-medium fs-13">View All Live Scores</Link>
+        )) : <div className="p-3 text-center small widget-empty-text">{error || "No live match"}</div>}
+        <Link href="/live-scores" className="btn w-100 mt-2 p-2.5 rounded-pill text-uppercase widget-btn-cta">View All Live Scores</Link>
       </div>
     </aside>
   );

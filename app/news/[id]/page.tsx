@@ -134,14 +134,14 @@ export default function NewsDetailsPage() {
 
   if (!article) {
     return (
-      <main className="font-outfit text-white">
-        <div className="text-center p-5 bg-card border border-dark rounded-4 shadow-lg" style={{ maxWidth: "480px" }}>
+      <main className="font-outfit" style={{ color: "#1C1F22" }}>
+        <div className="text-center p-5 rounded-4 shadow-sm" style={{ maxWidth: "480px", background: "#FFFFFF", border: "1px solid #EAE5DC", margin: "40px auto" }}>
           <div className="mb-4" style={{ fontSize: "4rem" }}>📰</div>
-          <h2 className="fw-bold mb-2 text-white">Article Not Found</h2>
+          <h2 className="fw-bold mb-2" style={{ color: "#1C1F22" }}>Article Not Found</h2>
           <p className="text-muted small mb-4">
             {loadError || "The news article you are looking for does not exist or has been archived."}
           </p>
-          <Link href="/news" className="btn btn-success fw-bold px-5 py-2 rounded-pill">
+          <Link href="/news" className="btn fw-bold px-5 py-2 rounded-pill shadow-sm" style={{ backgroundColor: "#FFCC00", color: "#1C1F22", border: "none" }}>
             ← Back to News
           </Link>
         </div>
@@ -150,24 +150,24 @@ export default function NewsDetailsPage() {
   }
 
   return (
-    <main className="font-outfit text-white">
-      <div className="container custom-container">
+    <main className="font-outfit" style={{ color: "#1C1F22" }}>
+      <div className="container custom-container py-4">
 
         {/* ─── Breadcrumb ─── */}
         <nav aria-label="breadcrumb" className="mb-4">
           <ol className="breadcrumb mb-0 align-items-center" style={{ background: "none", padding: 0 }}>
             <li className="breadcrumb-item">
-              <Link href="/" className="text-decoration-none text-muted hover-text-success d-flex align-items-center gap-1 fs-13">
+              <Link href="/" className="text-decoration-none text-muted d-flex align-items-center gap-1 fs-13">
                 <i className="bi bi-house-door-fill"></i> Home
               </Link>
             </li>
             <li className="breadcrumb-item">
-              <Link href="/news" className="text-decoration-none text-muted hover-text-success fs-13">
+              <Link href="/news" className="text-decoration-none text-muted fs-13">
                 News
               </Link>
             </li>
             <li className="breadcrumb-item active d-flex align-items-center" aria-current="page">
-              <span className="badge bg-success rounded-pill px-3 py-1 fs-11 fw-semibold">
+              <span className="badge rounded-pill px-3 py-1 fs-11 fw-semibold" style={{ backgroundColor: "#FFCC00", color: "#1C1F22" }}>
                 {article.category}
               </span>
             </li>
@@ -180,24 +180,24 @@ export default function NewsDetailsPage() {
             <article>
               {/* Category + Read Time */}
               <div className="d-flex align-items-center gap-3 mb-3">
-                <span className="badge bg-success rounded-pill px-3 py-2 fs-11 text-uppercase fw-bold letter-spacing-1">
+                <span className="badge rounded-pill px-3 py-2 fs-11 text-uppercase fw-bold letter-spacing-1" style={{ backgroundColor: "#FFCC00", color: "#1C1F22" }}>
                   {article.category}
                 </span>
-                <span className="text-muted fs-12 d-flex align-items-center gap-1">
-                  <i className="bi bi-clock text-success"></i>
+                <span className="fs-12 d-flex align-items-center gap-1" style={{ color: "#5A626A" }}>
+                  <i className="bi bi-clock" style={{ color: "#4A90E2" }}></i>
                   {article.readTime}
                 </span>
               </div>
 
               {/* Title */}
-              <h1 className="fw-bold text-white mb-4 lh-sm font-space-grotesk" style={{ fontSize: "clamp(1.6rem, 4vw, 2.4rem)" }}>
+              <h1 className="fw-bold mb-4 lh-sm font-space-grotesk" style={{ fontSize: "clamp(1.6rem, 4vw, 2.4rem)", color: "#1C1F22" }}>
                 {article.title}
               </h1>
 
               {/* Author Bar + Share */}
               <div
-                className="d-flex flex-wrap align-items-center justify-content-between gap-3 rounded-3 mb-4 p-3"
-                style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}
+                className="d-flex flex-wrap align-items-center justify-content-between gap-3 rounded-3 mb-4 p-3 shadow-sm"
+                style={{ background: "#FFFFFF", border: "1px solid #EAE5DC" }}
               >
                 <div className="d-flex align-items-center gap-3">
                   {article.authorImage && (
@@ -205,11 +205,11 @@ export default function NewsDetailsPage() {
                       src={article.authorImage}
                       alt={article.author}
                       className="rounded-circle"
-                      style={{ width: "42px", height: "42px", objectFit: "cover", border: "2px solid rgba(34,197,94,0.4)" }}
+                      style={{ width: "42px", height: "42px", objectFit: "cover", border: "2px solid #FFCC00" }}
                     />
                   )}
                   <div>
-                    <span className="text-white fw-semibold d-block" style={{ fontSize: "13px" }}>{article.author}</span>
+                    <span className="fw-semibold d-block" style={{ fontSize: "13px", color: "#1C1F22" }}>{article.author}</span>
                     <span className="text-muted" style={{ fontSize: "11px" }}>Published on {article.date}</span>
                   </div>
                 </div>
@@ -228,12 +228,13 @@ export default function NewsDetailsPage() {
                       target="_blank"
                       rel="noopener noreferrer"
                       title={s.title}
-                      className="d-flex align-items-center justify-content-center text-white transition-all"
+                      className="d-flex align-items-center justify-content-center transition-all"
                       style={{
                         width: "32px", height: "32px", borderRadius: "50%",
-                        background: "rgba(255,255,255,0.07)",
-                        border: "1px solid rgba(255,255,255,0.12)",
+                        background: "#FAF6EF",
+                        border: "1px solid #EAE5DC",
                         fontSize: "13px",
+                        color: "#1C1F22",
                         textDecoration: "none",
                       }}
                     >
@@ -244,9 +245,9 @@ export default function NewsDetailsPage() {
                     onClick={handleCopyLink}
                     className="btn btn-sm d-flex align-items-center gap-1 fw-semibold transition-all"
                     style={{
-                      background: copied ? "rgba(34,197,94,0.15)" : "rgba(255,255,255,0.07)",
-                      border: `1px solid ${copied ? "rgba(34,197,94,0.4)" : "rgba(255,255,255,0.12)"}`,
-                      color: copied ? "#22c55e" : "#fff",
+                      background: copied ? "#FFCC00" : "#FAF6EF",
+                      border: "1px solid #EAE5DC",
+                      color: "#1C1F22",
                       borderRadius: "20px",
                       fontSize: "11px",
                       padding: "5px 12px",
@@ -259,7 +260,7 @@ export default function NewsDetailsPage() {
               </div>
 
               {/* Hero Image */}
-              <div className="rounded-4 overflow-hidden mb-5 border border-dark" style={{ height: "420px" }}>
+              <div className="rounded-4 overflow-hidden mb-5 border border-secondary-subtle shadow-sm" style={{ height: "420px" }}>
                 <img
                   src={article.image}
                   alt={article.title}
@@ -271,12 +272,12 @@ export default function NewsDetailsPage() {
               <div className="mb-5">
                 <p
                   className="fw-semibold lh-lg mb-4 ps-3"
-                  style={{ fontSize: "15px", color: "#86efac", borderLeft: "3px solid #22c55e", fontStyle: "italic" }}
+                  style={{ fontSize: "15px", color: "#1C1F22", borderLeft: "3px solid #FFCC00", fontStyle: "italic" }}
                 >
                   {article.summary}
                 </p>
                 {article.content.split("\n\n").map((p, idx) => (
-                  <p key={idx} className="lh-lg text-light mb-4" style={{ fontSize: "15px", lineHeight: "1.85" }}>
+                  <p key={idx} className="lh-lg mb-4" style={{ fontSize: "15px", lineHeight: "1.85", color: "#2B3035" }}>
                     {p}
                   </p>
                 ))}
@@ -326,9 +327,9 @@ export default function NewsDetailsPage() {
             <div className="sticky-lg-top" style={{ top: "90px" }}>
 
               {/* Related Stories */}
-              <div className="rounded-4 p-4 mb-4" style={{ background: "var(--bg-card)", border: "1px solid var(--border-dark)" }}>
-                <h5 className="fw-bold text-white mb-4 font-space-grotesk d-flex align-items-center gap-2" style={{ fontSize: "15px" }}>
-                  <span className="d-inline-block" style={{ width: "3px", height: "18px", background: "var(--accent-green)", borderRadius: "2px" }}></span>
+              <div className="rounded-4 p-4 mb-4 shadow-sm" style={{ background: "var(--bg-card)", border: "1px solid var(--border-dark)" }}>
+                <h5 className="fw-bold mb-4 font-space-grotesk d-flex align-items-center gap-2" style={{ fontSize: "15px", color: "#1C1F22" }}>
+                  <span className="d-inline-block" style={{ width: "3px", height: "18px", background: "#FFCC00", borderRadius: "2px" }}></span>
                   Related Stories
                 </h5>
 
@@ -341,7 +342,7 @@ export default function NewsDetailsPage() {
                         key={rel.id}
                         href={`/news/${rel.id}`}
                         className="text-decoration-none d-flex gap-3 align-items-start p-2 rounded-3 transition-all"
-                        style={{ background: "rgba(255,255,255,0.03)" }}
+                        style={{ background: "#FAF6EF", border: "1px solid #EAE5DC" }}
                       >
                         <div
                           className="rounded-2 overflow-hidden flex-shrink-0"
@@ -351,8 +352,8 @@ export default function NewsDetailsPage() {
                         </div>
                         <div className="flex-grow-1 min-w-0">
                           <h6
-                            className="text-white fw-semibold mb-1 hover-text-success transition-all"
-                            style={{ fontSize: "12px", lineHeight: "1.4", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}
+                            className="fw-bold mb-1 transition-all"
+                            style={{ fontSize: "12px", lineHeight: "1.4", color: "#1C1F22", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}
                           >
                             {rel.title}
                           </h6>
@@ -365,9 +366,9 @@ export default function NewsDetailsPage() {
               </div>
 
               {/* Categories */}
-              <div className="rounded-4 p-4" style={{ background: "var(--bg-card)", border: "1px solid var(--border-dark)" }}>
-                <h5 className="fw-bold text-white mb-3 font-space-grotesk d-flex align-items-center gap-2" style={{ fontSize: "15px" }}>
-                  <span className="d-inline-block" style={{ width: "3px", height: "18px", background: "var(--accent-green)", borderRadius: "2px" }}></span>
+              <div className="rounded-4 p-4 shadow-sm" style={{ background: "var(--bg-card)", border: "1px solid var(--border-dark)" }}>
+                <h5 className="fw-bold mb-3 font-space-grotesk d-flex align-items-center gap-2" style={{ fontSize: "15px", color: "#1C1F22" }}>
+                  <span className="d-inline-block" style={{ width: "3px", height: "18px", background: "#FFCC00", borderRadius: "2px" }}></span>
                   Browse Categories
                 </h5>
                 <div className="d-flex flex-column gap-2">
@@ -379,8 +380,9 @@ export default function NewsDetailsPage() {
                         href={`/news?category=${cat.name}`}
                         className="text-decoration-none d-flex align-items-center justify-content-between rounded-3 px-3 py-2 transition-all"
                         style={{
-                          background: isActive ? "rgba(34,197,94,0.12)" : "rgba(255,255,255,0.04)",
-                          border: isActive ? "1px solid rgba(34,197,94,0.3)" : "1px solid rgba(255,255,255,0.07)",
+                          background: isActive ? "#FFCC00" : "#FAF6EF",
+                          border: isActive ? "1px solid #FFCC00" : "1px solid #EAE5DC",
+                          color: "#1C1F22",
                         }}
                       >
                         <div className="d-flex align-items-center gap-2">
@@ -390,11 +392,11 @@ export default function NewsDetailsPage() {
                           >
                             <i className={`bi ${cat.icon}`} style={{ fontSize: "12px", color: cat.color }}></i>
                           </div>
-                          <span className="fw-semibold" style={{ fontSize: "13px", color: isActive ? "#86efac" : "#e5e7eb" }}>
+                          <span className="fw-semibold" style={{ fontSize: "13px", color: "#1C1F22" }}>
                             {cat.name}
                           </span>
                         </div>
-                        <i className="bi bi-chevron-right" style={{ fontSize: "11px", color: isActive ? "#22c55e" : "#6b7280" }}></i>
+                        <i className="bi bi-chevron-right" style={{ fontSize: "11px", color: "#1C1F22" }}></i>
                       </Link>
                     );
                   })}

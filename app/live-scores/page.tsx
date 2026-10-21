@@ -128,9 +128,10 @@ export default function LiveScoresPage() {
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
           <div>
             <h1
-              className="fw-bold text-white mb-2 font-space-grotesk ls-minus-05"
+              className="fw-bold mb-2 font-space-grotesk ls-minus-05"
+              style={{ color: "#1C1F22" }}
             >
-              Live <span className="text-success">Scores</span>
+              Live <span style={{ color: "#4A90E2" }}>Scores</span>
             </h1>
             <p className="text-muted mb-0 fs-14">Real-time scores from all supported sports.</p>
           </div>

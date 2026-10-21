@@ -88,13 +88,13 @@ export default function Header() {
 
   return (
     <header className="site-header sticky-top">
-      <nav className="navbar navbar-expand-xl navbar-dark">
+      <nav className="navbar navbar-expand-xl">
         <div className="container custom-container">
           {/* Logo */}
 
           <Link href="/" className="navbar-brand me-auto">
             {siteSettings.logoUrl ? <img src={siteSettings.logoUrl} alt={siteSettings.websiteName} width={180} height={45} className="brand-logo" /> : <Image
-              src="/assets/imgs/logo-white.svg"
+              src="/assets/imgs/logo.svg"
               alt={siteSettings.websiteName}
               width={180}
               height={45}
@@ -109,7 +109,8 @@ export default function Header() {
             <div className="search-wrapper d-inline-block" ref={searchWrapperRef}>
               <Link
                 href="#"
-                className="control-icon text-white"
+                className="control-icon"
+                style={{ color: "#1C1F22" }}
                 id="searchToggle"
                 onClick={(e) => {
                   e.preventDefault();
@@ -147,18 +148,18 @@ export default function Header() {
             <div className="d-none d-xl-flex align-items-center position-relative" ref={profileDropdownRef}>
               <Link
                 href="/join-tipster"
-                className="d-inline-flex align-items-center gap-2 text-nowrap fw-semibold text-decoration-none transition-all ms-3"
+                className="d-inline-flex align-items-center gap-2 text-nowrap fw-bold text-decoration-none transition-all ms-3"
                 style={{
                   fontSize: "13.5px",
                   padding: "7px 16px",
                   borderRadius: "6px",
-                  color: "#ffffff",
-                  background: "rgba(34, 197, 94, 0.14)",
-                  border: "1px solid rgba(34, 197, 94, 0.45)",
+                  color: "#1C1F22",
+                  background: "#FFCC00",
+                  border: "1px solid #FFCC00",
                   lineHeight: "1.4",
                 }}
               >
-                <i className="bi bi-stars text-success" style={{ fontSize: "13px" }}></i>
+                <i className="bi bi-stars" style={{ fontSize: "13px", color: "#1C1F22" }}></i>
                 <span>Join as a Tipster</span>
               </Link>
               {user ? (
@@ -169,10 +170,10 @@ export default function Header() {
                     style={{ outline: "none" }}
                   >
                     <div className="d-flex flex-column text-end me-3" style={{ maxWidth: "150px" }}>
-                      <span className="text-white fw-semibold small lh-1-2 hover-text-success transition-all text-truncate d-block">
+                      <span className="fw-semibold small lh-1-2 transition-all text-truncate d-block" style={{ color: "#1C1F22" }}>
                         {user.firstName} {user.lastName}
                       </span>
-                      <span className="text-success fs-11 text-truncate d-block">{user.email}</span>
+                      <span className="fs-11 text-truncate d-block" style={{ color: "#4A90E2" }}>{user.email}</span>
                     </div>
                     <div
                       className="rounded-circle d-flex align-items-center justify-content-center text-white shadow-sm header-user-avatar hover-glow"
@@ -186,15 +187,16 @@ export default function Header() {
                       style={{
                         top: "100%",
                         width: "180px",
-                        background: "rgba(18, 18, 18, 0.95)",
-                        backdropFilter: "blur(8px)",
+                        background: "#FFFFFF",
                         border: "1px solid var(--border-dark)",
+                        boxShadow: "0 10px 30px rgba(28, 31, 34, 0.12)",
                         zIndex: 1000
                       }}
                     >
                       <Link
                         href="/profile"
                         className="dropdown-item-premium d-flex align-items-center gap-2 px-3 py-2 text-decoration-none rounded mb-1 fs-14"
+                        style={{ color: "#1C1F22" }}
                         onClick={() => setIsProfileDropdownOpen(false)}
                       >
                         <i className="bi bi-person-fill text-success"></i>
@@ -203,6 +205,7 @@ export default function Header() {
                       <Link
                         href="/tipster/dashboard"
                         className="dropdown-item-premium d-flex align-items-center gap-2 px-3 py-2 text-decoration-none rounded mb-1 fs-14"
+                        style={{ color: "#1C1F22" }}
                         onClick={() => setIsProfileDropdownOpen(false)}
                       >
                         <i className="bi bi-speedometer2 text-success"></i>
@@ -211,6 +214,7 @@ export default function Header() {
                       <Link
                         href="/my-purchased-tips"
                         className="dropdown-item-premium d-flex align-items-center gap-2 px-3 py-2 text-decoration-none rounded mb-1 fs-14"
+                        style={{ color: "#1C1F22" }}
                         onClick={() => setIsProfileDropdownOpen(false)}
                       >
                         <i className="bi bi-unlock-fill text-success"></i>
@@ -257,7 +261,7 @@ export default function Header() {
             {/* Mobile-only Top Profile Section */}
             <div className="d-xl-none mb-3 pb-3 border-bottom border-secondary border-opacity-10 pt-2">
               {user ? (
-                <div className="d-flex flex-column gap-3 p-3 bg-dark rounded-3 border border-secondary border-opacity-25">
+                <div className="d-flex flex-column gap-3 p-3 bg-white rounded-3 border border-dark">
                   {/* User info row */}
                   <div className="d-flex align-items-center">
                     <div
@@ -266,8 +270,8 @@ export default function Header() {
                       {user.firstName.charAt(0)}{user.lastName.charAt(0)}
                     </div>
                     <div className="d-flex flex-column min-w-0" style={{ maxWidth: "180px" }}>
-                      <span className="text-white fw-bold fs-15 text-truncate d-block">{user.firstName} {user.lastName}</span>
-                      <span className="text-success small fs-12 text-truncate d-block">{user.email}</span>
+                      <span className="fw-bold fs-15 text-truncate d-block" style={{ color: "#1C1F22" }}>{user.firstName} {user.lastName}</span>
+                      <span className="small fs-12 text-truncate d-block" style={{ color: "#4A90E2" }}>{user.email}</span>
                     </div>
                   </div>
                   {/* Action buttons row */}
@@ -300,15 +304,15 @@ export default function Header() {
               <div className="mt-2">
                 <Link
                   href="/join-tipster"
-                  className="w-100 d-flex align-items-center justify-content-center gap-2 text-decoration-none fw-semibold rounded-2 py-2"
+                  className="w-100 d-flex align-items-center justify-content-center gap-2 text-decoration-none fw-bold rounded-2 py-2"
                   style={{
                     fontSize: "13.5px",
-                    color: "#ffffff",
-                    background: "rgba(34, 197, 94, 0.14)",
-                    border: "1px solid rgba(34, 197, 94, 0.45)",
+                    color: "#1C1F22",
+                    background: "#FFCC00",
+                    border: "1px solid #FFCC00",
                   }}
                 >
-                  <i className="bi bi-stars text-success" style={{ fontSize: "13px" }}></i>
+                  <i className="bi bi-stars" style={{ fontSize: "13px", color: "#1C1F22" }}></i>
                   <span>Join as a Tipster</span>
                 </Link>
               </div>

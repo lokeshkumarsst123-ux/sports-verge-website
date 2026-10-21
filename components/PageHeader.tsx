@@ -13,7 +13,7 @@ export default function PageHeader({
   title,
   subtitle,
   badge,
-  verticalBarColor = "var(--accent-green)",
+  verticalBarColor = "#FFCC00",
   className = "mb-5",
   children,
 }: PageHeaderProps) {
@@ -26,9 +26,9 @@ export default function PageHeader({
               className="badge rounded-pill px-3 py-2 mb-3 fw-semibold text-uppercase"
               style={{
                 fontSize: "11px",
-                background: "rgba(26,140,61,0.15)",
-                color: "#86efac",
-                border: "1px solid rgba(26,140,61,0.3)",
+                background: "rgba(74, 144, 226, 0.12)",
+                color: "#4A90E2",
+                border: "1px solid rgba(74, 144, 226, 0.3)",
                 letterSpacing: "0.05em",
               }}
             >
@@ -41,8 +41,8 @@ export default function PageHeader({
               style={{ width: "4px", height: "32px", background: verticalBarColor, flexShrink: 0 }}
             ></span>
             <h1
-              className="fw-bold text-white mb-0 font-space-grotesk text-uppercase"
-              style={{ fontSize: "clamp(1.6rem, 4vw, 2.4rem)", letterSpacing: "-0.02em" }}
+              className="fw-bold mb-0 font-space-grotesk text-uppercase"
+              style={{ fontSize: "clamp(1.6rem, 4vw, 2.4rem)", letterSpacing: "-0.02em", color: "#1C1F22" }}
             >
               {title}
             </h1>

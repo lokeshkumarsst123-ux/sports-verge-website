@@ -107,7 +107,7 @@ export default function RegisterPage() {
         <div className="text-center mb-4">
           <Link href="/" className="d-inline-block">
             <Image
-              src="/assets/imgs/logo-white.svg"
+              src="/assets/imgs/logo.svg"
               alt="SportsVerge"
               width={180}
               height={45}
@@ -118,11 +118,11 @@ export default function RegisterPage() {
         </div>
 
         {/* Card Body */}
-        <div className="card bg-card border border-dark rounded-4 p-4 p-md-5">
+        <div className="card auth-card p-4 p-md-5">
           {step === "form" && (
             <>
-              <h3 className="text-white fw-semibold mb-1">Create Account</h3>
-              <p className="text-muted small mb-4">
+              <h3 className="auth-title h3 mb-1">Create Account</h3>
+              <p className="auth-subtitle mb-4">
                 Get started today and experience premium sports analytics.
               </p>
 
@@ -135,16 +135,15 @@ export default function RegisterPage() {
               <form onSubmit={handleSubmit} className="d-flex flex-column gap-3">
                 <div className="row g-3">
                   <div className="col-6">
-                    <label className="form-label text-muted small fw-medium mb-1">FIRST NAME</label>
+                    <label className="auth-label">FIRST NAME</label>
                     <input
                       type="text"
                       name="firstName"
                       value={formData.firstName}
                       onChange={handleInputChange}
-                      className={`form-control bg-dark text-white fw-medium border-0 ${
+                      className={`form-control auth-input ${
                         errors.firstName ? "is-invalid" : ""
                       }`}
-                      
                       placeholder="John"
                     />
                     {errors.firstName && (
@@ -152,16 +151,15 @@ export default function RegisterPage() {
                     )}
                   </div>
                   <div className="col-6">
-                    <label className="form-label text-muted small fw-medium mb-1">LAST NAME</label>
+                    <label className="auth-label">LAST NAME</label>
                     <input
                       type="text"
                       name="lastName"
                       value={formData.lastName}
                       onChange={handleInputChange}
-                      className={`form-control bg-dark text-white fw-medium border-0 ${
+                      className={`form-control auth-input ${
                         errors.lastName ? "is-invalid" : ""
                       }`}
-                      
                       placeholder="Doe"
                     />
                     {errors.lastName && (
@@ -171,16 +169,15 @@ export default function RegisterPage() {
                 </div>
 
                 <div>
-                  <label className="form-label text-muted small fw-medium mb-1">EMAIL ADDRESS</label>
+                  <label className="auth-label">EMAIL ADDRESS</label>
                   <input
                     type="email"
                     name="email"
                     value={formData.email}
                     onChange={handleInputChange}
-                    className={`form-control bg-dark text-white fw-medium border-0 ${
+                    className={`form-control auth-input ${
                       errors.email ? "is-invalid" : ""
                     }`}
-                    
                     placeholder="john@example.com"
                   />
                   {errors.email && (
@@ -189,22 +186,21 @@ export default function RegisterPage() {
                 </div>
 
                 <div>
-                  <label className="form-label text-muted small fw-medium mb-1">PASSWORD</label>
+                  <label className="auth-label">PASSWORD</label>
                   <div className="position-relative">
                     <input
                       type={showPassword ? "text" : "password"}
                       name="password"
                       value={formData.password}
                       onChange={handleInputChange}
-                      className={`form-control bg-dark text-white fw-medium border-0 pe-5 ${
+                      className={`form-control auth-input pe-5 ${
                         errors.password ? "is-invalid" : ""
                       }`}
-                      
                       placeholder="••••••••"
                     />
                     <button
                       type="button"
-                      className="btn position-absolute top-50 end-0 translate-middle-y border-0 text-muted px-3"
+                      className="auth-eye-btn position-absolute top-50 end-0 translate-middle-y"
                       onClick={() => setShowPassword(!showPassword)}
                       aria-label={showPassword ? "Hide password" : "Show password"}
                     >
@@ -217,22 +213,21 @@ export default function RegisterPage() {
                 </div>
 
                 <div>
-                  <label className="form-label text-muted small fw-medium mb-1">CONFIRM PASSWORD</label>
+                  <label className="auth-label">CONFIRM PASSWORD</label>
                   <div className="position-relative">
                     <input
                       type={showConfirmPassword ? "text" : "password"}
                       name="confirmPassword"
                       value={formData.confirmPassword}
                       onChange={handleInputChange}
-                      className={`form-control bg-dark text-white fw-medium border-0 pe-5 ${
+                      className={`form-control auth-input pe-5 ${
                         errors.confirmPassword ? "is-invalid" : ""
                       }`}
-                      
                       placeholder="••••••••"
                     />
                     <button
                       type="button"
-                      className="btn position-absolute top-50 end-0 translate-middle-y border-0 text-muted px-3"
+                      className="auth-eye-btn position-absolute top-50 end-0 translate-middle-y"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                       aria-label={showConfirmPassword ? "Hide password confirmation" : "Show password confirmation"}
                     >
@@ -252,14 +247,13 @@ export default function RegisterPage() {
                     required
                   />
                   <label className="form-check-label text-muted small" htmlFor="termsCheck">
-                    I agree to the <Link href="/terms-of-use" className="text-success text-decoration-none">Terms of Service</Link> & <Link href="/privacy-policy" className="text-success text-decoration-none">Privacy Policy</Link>
+                    I agree to the <Link href="/terms-of-use" className="auth-link">Terms of Service</Link> & <Link href="/privacy-policy" className="auth-link">Privacy Policy</Link>
                   </label>
                 </div>
 
                 <button
                   type="submit"
                   className="btn btn-signup w-100 fw-semibold text-uppercase py-2.5 mt-3 ls-05"
-                  
                   disabled={loading}
                 >
                   Create Account
@@ -268,7 +262,7 @@ export default function RegisterPage() {
 
               <div className="text-center mt-4">
                 <span className="text-muted small">Already have an account? </span>
-                <Link href="/login" className="text-success text-decoration-none small fw-semibold">
+                <Link href="/login" className="auth-link small fw-semibold">
                   Sign In
                 </Link>
               </div>

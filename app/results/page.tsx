@@ -74,27 +74,27 @@ export default function ResultsPage() {
             {filteredResults.length === 0 ? (
               <div className="text-center py-5 rounded-4" style={{ background: "var(--bg-card)", border: "1px solid var(--border-dark)" }}>
                 <i className="bi bi-calendar2-x text-muted fs-2 mb-3 d-block"></i>
-                <h6 className="text-light">{error || `No recent results found for ${activeTab}`}</h6>
+                <h6 style={{ color: "#1C1F22" }}>{error || `No recent results found for ${activeTab}`}</h6>
               </div>
             ) : filteredResults.map((result, index) => {
               const color = sportColors[result.sport];
               return (
-                <Link key={`${result.sport}-${result.id || "result"}-${index}`} href={getMatchLink(result.sport, result.id)} className="rounded-4 p-4 d-block text-decoration-none" style={{ background: "var(--bg-card)", border: "1px solid var(--border-dark)" }}>
+                <Link key={`${result.sport}-${result.id || "result"}-${index}`} href={getMatchLink(result.sport, result.id)} className="rounded-4 p-4 d-block text-decoration-none shadow-sm" style={{ background: "var(--bg-card)", border: "1px solid var(--border-dark)" }}>
                   <div className="d-flex flex-wrap align-items-center justify-content-between gap-3">
                     <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center gap-2 gap-sm-3 flex-grow-1 w-100">
                       <span className="badge rounded-pill px-3 py-1 fw-semibold" style={{ fontSize: "10px", background: `${color}15`, color, border: `1px solid ${color}30` }}>{result.sport}</span>
                       <div className="w-100 flex-grow-1">
                         <div className="text-muted mb-1" style={{ fontSize: "11px" }}>{result.league} · {result.date}</div>
                         <div className="d-flex align-items-center gap-3 flex-wrap">
-                          <span className="fw-semibold text-white" style={{ fontSize: "14px" }}>{result.home}</span>
+                          <span className="fw-bold" style={{ fontSize: "14px", color: "#1C1F22" }}>{result.home}</span>
                           <span className="fw-bold font-space-grotesk" style={{ fontSize: "16px", color }}>{result.homeScore || "—"}</span>
                           <span className="text-muted fw-bold" style={{ fontSize: "13px" }}>vs</span>
                           <span className="fw-bold font-space-grotesk" style={{ fontSize: "16px", color: "#6b7280" }}>{result.awayScore || "—"}</span>
-                          <span className="fw-semibold text-muted" style={{ fontSize: "14px" }}>{result.away}</span>
+                          <span className="fw-bold" style={{ fontSize: "14px", color: "#1C1F22" }}>{result.away}</span>
                         </div>
                       </div>
                     </div>
-                    <div className="text-start text-sm-end w-100 w-sm-auto flex-shrink-0 mt-2 mt-sm-0"><span className="badge rounded-pill px-3 py-1" style={{ fontSize: "11px", background: "rgba(26,140,61,0.15)", color: "#86efac", border: "1px solid rgba(26,140,61,0.3)" }}>✓ {result.result}</span></div>
+                    <div className="text-start text-sm-end w-100 w-sm-auto flex-shrink-0 mt-2 mt-sm-0"><span className="badge rounded-pill px-3 py-1" style={{ fontSize: "11px", background: "rgba(74, 144, 226, 0.12)", color: "#4A90E2", border: "1px solid rgba(74, 144, 226, 0.3)" }}>✓ {result.result}</span></div>
                   </div>
                 </Link>
               );

@@ -74,10 +74,14 @@ export default function PopularTeams() {
   const toggle = (name: string) => isFavoriteTeam(name) ? removeFavoriteTeam(name) : addFavoriteTeam(name);
 
   return (
-    <aside className="popular-teams-section bg-card rounded-3 p-4 border border-dark mt-4 sticky-top popular-teams-aside">
+    <aside className="popular-teams-section bg-card rounded-4 p-4 border mt-4 sticky-top popular-teams-aside">
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2 className="h5 m-0 fw-semibold border-start border-success border-3 ps-2">Popular Teams</h2>
-        <Link href="/teams" className="text-success text-decoration-none small fw-medium">View All</Link>
+        <h2 className="h5 m-0 fw-bold border-start border-3 ps-2 widget-heading">
+          Popular Teams
+        </h2>
+        <Link href="/teams" className="small widget-view-all">
+          View All <i className="bi bi-chevron-right" />
+        </Link>
       </div>
       <div className="popular-teams-list pe-4 popular-teams-scroll-list">
         {teams.length ? teams.map((team) => {
@@ -86,12 +90,12 @@ export default function PopularTeams() {
             <div key={team.id} className="d-flex align-items-center justify-content-between mb-3">
               <Link href={`/fixtures?sport=${sportParam(team.sport)}&search=${encodeURIComponent(team.name)}`} className="d-flex align-items-center text-decoration-none flex-grow-1 team-link">
                 <div className="popular-team-logo-wrapper"><Image src={team.logo} alt={team.name} fill sizes="24px" className="logo-fit-contain" /></div>
-                <span className="text-light fw-medium small">{team.name} <span className="text-muted ms-1 fs-11">({team.sport})</span></span>
+                <span className="fw-bold small fixture-team-name-custom">{team.name} <span className="ms-1 fs-11 team-sport-custom">({team.sport})</span></span>
               </Link>
               <button className={`btn btn-link p-0 star-toggle ${favorite ? "active text-warning" : "text-muted"}`} onClick={() => toggle(team.name)} aria-label="Bookmark team"><i className={`bi ${favorite ? "bi-star-fill text-warning" : "bi-star"}`}></i></button>
             </div>
           );
-        }) : <div className="text-muted small">No provider teams available.</div>}
+        }) : <div className="small py-2 widget-empty-text">No provider teams available.</div>}
       </div>
     </aside>
   );

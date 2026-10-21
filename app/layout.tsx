@@ -32,9 +32,9 @@ const getRequestPath = async () => {
 };
 
 const fallbackFontVariables = {
-  "--font-outfit": "'Outfit', Arial, sans-serif",
-  "--font-space-grotesk": "'Space Grotesk', Arial, sans-serif",
-  "--font-inter": "'Inter', Arial, sans-serif",
+  "--font-outfit": "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+  "--font-space-grotesk": "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+  "--font-inter": "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
 } as CSSProperties;
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -60,7 +60,7 @@ export default async function RootLayout({
   const seo = await contentApi.seo(path).catch(() => null);
   const structuredData = seo?.data?.settings?.structuredData && Object.keys(seo.data.settings.structuredData).length ? seo.data.settings.structuredData : null;
   return (
-    <html lang="en" className="font-outfit" data-scroll-behavior="smooth" style={fallbackFontVariables}>
+    <html lang="en" data-scroll-behavior="smooth" style={fallbackFontVariables}>
       <head>
         {structuredData && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />}
         <link rel="icon" href="/assets/imgs/favicon.svg" type="image/png" />

@@ -1,7 +1,11 @@
 /* Custom CSS for SportsVerge */
 :root {
-  --custom-primary: #198754;
-  /* dark green */
+  --custom-primary: #FFCC00;
+  --accent-gold: #FFCC00;
+  --accent-gold-hover: #E6B800;
+  --accent-sky: #4A90E2;
+  --accent-sky-hover: #357ABD;
+  --text-charcoal: #1C1F22;
   --bs-breadcrumb-divider-color: #6b7280;
   --bs-breadcrumb-item-active-color: #6b7280;
 }
@@ -15,33 +19,37 @@ html,
 body {
   overflow: visible !important;
   overflow-x: visible !important;
+  background-color: #FFFDF9 !important;
+  color: #1C1F22 !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
 }
 
 .ms-badge {
   padding: 15px 15px 10px !important;
-  background-color: #000000 !important;
-  /* Higher contrast background */
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background-color: #FFFDF9 !important;
+  border: 1px solid var(--border-dark, #EAE5DC);
 }
 
 .text-muted {
-  color: #adb5bd !important
+  color: #5C646D !important
 }
 
-/* Lighter gray for better contrast on dark */
 .text-success {
-  color: #4ade80 !important;
+  color: #1C1F22 !important;
 }
 
-/* Brighter green for contrast on dark */
+/* Gold CTA buttons with crisp charcoal typography */
 .btn-success {
-  background-color: #198754 !important;
-  color: #ffffff !important;
-  border-color: #198754 !important;
+  background-color: #FFCC00 !important;
+  color: #1C1F22 !important;
+  border-color: #FFCC00 !important;
+  font-weight: 700 !important;
 }
 
 .btn-success:hover {
-  background-color: #146c43 !important;
+  background-color: #E6B800 !important;
+  border-color: #E6B800 !important;
+  color: #1C1F22 !important;
 }
 
 
@@ -56,7 +64,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: #070b12;
+  background-color: #FFFDF9;
   z-index: 99999;
   display: flex;
   align-items: center;
@@ -91,8 +99,8 @@ body {
 .custom-spinner {
   width: 80px;
   height: 80px;
-  border: 3px solid rgba(26, 140, 61, 0.1);
-  border-top-color: #1a8c3d;
+  border: 3px solid rgba(255, 204, 0, 0.2);
+  border-top-color: #FFCC00;
   border-radius: 50%;
   animation: spin 1s cubic-bezier(0.55, 0.055, 0.675, 0.19) infinite;
 }
@@ -101,7 +109,7 @@ body {
   position: absolute;
   width: 70px;
   height: 70px;
-  background: radial-gradient(circle, rgba(26, 140, 61, 0.25) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(255, 204, 0, 0.2) 0%, transparent 70%);
   border-radius: 50%;
   animation: pulse 1.5s ease-in-out infinite alternate;
 }
@@ -116,7 +124,7 @@ body {
 
 .preloader-brand {
   font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
-  color: #ffffff;
+  color: #1C1F22;
   font-weight: 700;
   letter-spacing: 2px;
   font-size: 28px;
@@ -127,7 +135,7 @@ body {
 .loading-bar {
   width: 140px;
   height: 3px;
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: rgba(28, 31, 34, 0.08);
   border-radius: 3px;
   overflow: hidden;
   margin-bottom: 12px;
@@ -136,12 +144,12 @@ body {
 .loading-progress {
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, #1a8c3d, transparent);
+  background: linear-gradient(90deg, transparent, #4A90E2, transparent);
   animation: loadingProgress 1.5s ease-in-out infinite;
 }
 
 .preloader-tagline {
-  color: #a0a5ad;
+  color: #5C646D;
   font-size: 13px;
   letter-spacing: 1px;
   margin: 0;
@@ -252,26 +260,50 @@ body {
 }
 
 /* Custom premium checkboxes */
+.form-check:not(.form-switch) {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 10px !important;
+  padding-left: 0 !important;
+}
+
+.form-check:not(.form-switch) .form-check-input {
+  float: none !important;
+  margin-left: 0 !important;
+  margin-top: 3px !important;
+  flex-shrink: 0 !important;
+}
+
 .form-check-input {
-  background-color: #111622 !important;
-  border: 1px solid var(--border-dark, #2a303c) !important;
+  background-color: #FFFFFF !important;
+  border: 1.5px solid #DCD7CE !important;
   cursor: pointer;
-  width: 1.15em !important;
-  height: 1.15em !important;
-  border-radius: 4px !important;
+  width: 18px !important;
+  height: 18px !important;
+  border-radius: 5px !important;
   box-shadow: none !important;
   transition: all 0.2s ease-in-out;
 }
 
+.form-check-input:hover {
+  border-color: #FFCC00 !important;
+}
+
 .form-check-input:checked {
-  background-color: var(--accent-green) !important;
-  border-color: var(--accent-green) !important;
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m6 10 3 3 6-6'/%3e%3c/svg%3e") !important;
+  background-color: #FFCC00 !important;
+  border-color: #FFCC00 !important;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%231C1F22' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m5 10 3.5 3.5 6.5-6.5'/%3e%3c/svg%3e") !important;
 }
 
 .form-check-input:focus {
-  border-color: var(--accent-green) !important;
-  box-shadow: 0 0 0 0.25rem rgba(26, 140, 97, 0.15) !important;
+  border-color: #FFCC00 !important;
+  box-shadow: 0 0 0 3px rgba(255, 204, 0, 0.25) !important;
+  outline: none !important;
+}
+
+.form-check-label {
+  cursor: pointer;
+  line-height: 1.45 !important;
 }
 
 /* Form switch toggle override with ON/OFF text */
@@ -336,11 +368,12 @@ body {
 /* Fix disabled state for buttons */
 .btn-signup:disabled,
 .btn-success:disabled {
-  background-color: var(--custom-primary, #198754) !important;
-  color: rgba(255, 255, 255, 0.85) !important;
-  border-color: var(--custom-primary, #198754) !important;
-  opacity: 0.75 !important;
+  background-color: #E6E2D8 !important;
+  color: #8C939D !important;
+  border-color: #DDD8CE !important;
+  opacity: 0.85 !important;
   cursor: not-allowed !important;
+  box-shadow: none !important;
 }
 
 /* Auto-refactored inline styles */
@@ -379,30 +412,189 @@ body {
 
 /* Auth Layout Styles */
 .auth-main-bg {
-  background-color: #070b12;
+  background-color: #FFFDF9 !important;
+  min-height: 100vh;
 }
 
-.mesh-glow-1 {
-  width: 400px;
-  height: 400px;
-  background: radial-gradient(circle, rgba(57, 255, 20, 0.05) 0%, transparent 70%);
-  top: -100px;
-  right: -100px;
-  z-index: 1;
+.mesh-glow-1,
+.auth-glow-top-left {
+  width: 420px !important;
+  height: 420px !important;
+  background: radial-gradient(circle, rgba(255, 204, 0, 0.09) 0%, transparent 70%) !important;
+  top: -120px !important;
+  left: -120px !important;
+  z-index: 1 !important;
+  pointer-events: none !important;
 }
 
-.mesh-glow-2 {
-  width: 450px;
-  height: 450px;
-  background: radial-gradient(circle, rgba(26, 140, 61, 0.04) 0%, transparent 70%);
-  bottom: -150px;
-  left: -150px;
-  z-index: 1;
+.mesh-glow-2,
+.auth-glow-bottom-right {
+  width: 460px !important;
+  height: 460px !important;
+  background: radial-gradient(circle, rgba(74, 144, 226, 0.08) 0%, transparent 70%) !important;
+  bottom: -160px !important;
+  right: -160px !important;
+  z-index: 1 !important;
+  pointer-events: none !important;
 }
 
 .auth-card-wrapper {
-  max-width: 460px;
+  max-width: 460px !important;
   z-index: 10;
+  width: 100%;
+}
+
+.auth-card {
+  background-color: #FFFFFF !important;
+  border: 1px solid #EAE5DC !important;
+  border-radius: 18px !important;
+  box-shadow: 0 16px 40px rgba(28, 31, 34, 0.06), 0 2px 6px rgba(28, 31, 34, 0.03) !important;
+}
+
+.auth-role-tabs {
+  background-color: #F7F5EE !important;
+  border: 1px solid #EAE5DC !important;
+  border-radius: 12px !important;
+  padding: 4px !important;
+}
+
+.auth-role-tab {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  border: none !important;
+  border-radius: 9px !important;
+  padding: 8px 14px !important;
+  transition: all 0.2s ease-in-out !important;
+  color: #5C646D !important;
+  background: transparent !important;
+}
+
+.auth-role-tab:hover {
+  color: #1C1F22 !important;
+}
+
+.auth-role-tab.active {
+  background-color: #FFCC00 !important;
+  color: #1C1F22 !important;
+  font-weight: 700 !important;
+  box-shadow: 0 2px 8px rgba(255, 204, 0, 0.28) !important;
+}
+
+.auth-title {
+  color: #1C1F22 !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.3px !important;
+}
+
+.auth-subtitle {
+  color: #5C646D !important;
+  font-size: 13.5px !important;
+  line-height: 1.45 !important;
+}
+
+.auth-label {
+  color: #1C1F22 !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.6px !important;
+  text-transform: uppercase !important;
+  margin-bottom: 6px !important;
+  display: block;
+}
+
+.auth-input,
+.auth-card input.form-control,
+.auth-main-bg input.form-control {
+  background-color: #FFFFFF !important;
+  border: 1px solid #DCD7CE !important;
+  color: #1C1F22 !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  border-radius: 10px !important;
+  padding: 11px 14px !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.auth-input:focus,
+.auth-card input.form-control:focus,
+.auth-main-bg input.form-control:focus {
+  background-color: #FFFFFF !important;
+  border-color: #FFCC00 !important;
+  color: #1C1F22 !important;
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(255, 204, 0, 0.22) !important;
+}
+
+.auth-input::placeholder,
+.auth-card input.form-control::placeholder,
+.auth-main-bg input.form-control::placeholder {
+  color: #8C939D !important;
+  opacity: 0.8 !important;
+}
+
+.auth-input:-webkit-autofill,
+.auth-input:-webkit-autofill:hover, 
+.auth-input:-webkit-autofill:focus,
+.auth-card input.form-control:-webkit-autofill,
+.auth-card input.form-control:-webkit-autofill:hover,
+.auth-card input.form-control:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0px 1000px #FFFFFF inset !important;
+  -webkit-text-fill-color: #1C1F22 !important;
+}
+
+.auth-eye-btn {
+  color: #5C646D !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 14px !important;
+  height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: color 0.15s ease !important;
+}
+
+.auth-eye-btn:hover {
+  color: #1C1F22 !important;
+}
+
+.auth-link {
+  color: #4A90E2 !important;
+  text-decoration: none !important;
+  font-weight: 600 !important;
+  transition: color 0.15s ease !important;
+}
+
+.auth-link:hover {
+  color: #357ABD !important;
+  text-decoration: underline !important;
+}
+
+.auth-badge-pro {
+  background-color: rgba(74, 144, 226, 0.1) !important;
+  color: #4A90E2 !important;
+  border: 1px solid rgba(74, 144, 226, 0.25) !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  padding: 4px 10px !important;
+  border-radius: 999px !important;
+}
+
+.auth-icon-circle {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 204, 0, 0.18) !important;
+  color: #1C1F22 !important;
+  font-size: 28px;
+  border: 1px solid rgba(255, 204, 0, 0.4);
+}
+
+.auth-footer-divider {
+  border-top: 1px solid #EAE5DC !important;
 }
 
 .ls-05 {
@@ -420,8 +612,22 @@ body {
 
 
 .footer-section {
-  background-color: #050b14;
-  border-top: 1px solid var(--border-dark);
+  background-color: #FAF6EF;
+  border-top: 1px solid var(--border-dark, #EAE5DC);
+  color: #1C1F22;
+}
+
+.footer-section .footer-title {
+  color: #1C1F22 !important;
+}
+
+.footer-section .footer-link {
+  color: #5C646D !important;
+  transition: color 0.2s ease;
+}
+
+.footer-section .footer-link:hover {
+  color: var(--accent-sky, #4A90E2) !important;
 }
 
 /* Extra utility classes */
@@ -641,7 +847,7 @@ body {
 }
 
 .font-space-grotesk {
-  font-family: var(--font-space-grotesk) !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
 }
 
 .fs-10 {
@@ -969,11 +1175,12 @@ body {
 }
 
 .bg-page {
-  background-color: #070b12 !important;
+  background-color: #FFFDF9 !important;
+  color: #1C1F22 !important;
 }
 
 .font-outfit {
-  font-family: var(--font-outfit) !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
 }
 
 .z-5 {
@@ -1883,24 +2090,6 @@ body {
 }
 
 /* Auth Pages Styles */
-.auth-glow-top-left {
-  width: 400px !important;
-  height: 400px !important;
-  background: radial-gradient(circle, rgba(57, 255, 20, 0.05) 0%, transparent 70%) !important;
-  top: -100px !important;
-  left: -100px !important;
-  z-index: 1 !important;
-}
-
-.auth-glow-bottom-right {
-  width: 450px !important;
-  height: 450px !important;
-  background: radial-gradient(circle, rgba(26, 140, 61, 0.04) 0%, transparent 70%) !important;
-  bottom: -150px !important;
-  right: -150px !important;
-  z-index: 1 !important;
-}
-
 .text-inherit {
   color: inherit !important;
 }
@@ -2509,11 +2698,18 @@ body {
 }
 
 .bg-card {
-  background-color: #111622 !important;
+  background-color: #FFFFFF !important;
+  color: #1C1F22 !important;
+  border-color: #EAE5DC !important;
+  box-shadow: 0 4px 18px rgba(28, 31, 34, 0.04) !important;
 }
 
 .hover-bg-dark {
   transition: background-color 0.2s ease !important;
+}
+
+.hover-bg-dark:hover {
+  background-color: #FAF6EF !important;
 }
 
 .fixture-card-grid {
@@ -2522,30 +2718,31 @@ body {
 
 /* Contact Us Module Additions */
 .contact-card {
-  background: #111622 !important;
-  border: 1px solid rgba(255, 255, 255, 0.05) !important;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25) !important;
+  background: #FFFFFF !important;
+  color: #1C1F22 !important;
+  border: 1px solid #EAE5DC !important;
+  box-shadow: 0 4px 20px rgba(28, 31, 34, 0.05) !important;
   transition: transform 0.3s ease, border-color 0.3s ease !important;
 }
 
 .contact-card:hover {
-  border-color: rgba(26, 140, 61, 0.3) !important;
+  border-color: var(--accent-sky, #4A90E2) !important;
 }
 
 .custom-input {
-  background-color: #0b0f17 !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  color: #fff !important;
+  background-color: #FFFDF9 !important;
+  border: 1px solid #EAE5DC !important;
+  color: #1C1F22 !important;
   transition: all 0.2s ease-in-out !important;
 }
 
-/* Placeholder contrast fix for dark mode */
+/* Placeholder contrast fix */
 .form-control::placeholder,
 .custom-input::placeholder,
 input::placeholder,
 textarea::placeholder {
-  color: #8a99ad !important;
-  opacity: 1 !important;
+  color: #5C646D !important;
+  opacity: 0.8 !important;
 }
 
 /* Chrome, Safari, Opera */
@@ -2553,8 +2750,8 @@ textarea::placeholder {
 .custom-input::-webkit-input-placeholder,
 input::-webkit-input-placeholder,
 textarea::-webkit-input-placeholder {
-  color: #8a99ad !important;
-  opacity: 1 !important;
+  color: #5C646D !important;
+  opacity: 0.8 !important;
 }
 
 /* Firefox 19+ */
@@ -2562,8 +2759,8 @@ textarea::-webkit-input-placeholder {
 .custom-input::-moz-placeholder,
 input::-moz-placeholder,
 textarea::-moz-placeholder {
-  color: #8a99ad !important;
-  opacity: 1 !important;
+  color: #5C646D !important;
+  opacity: 0.8 !important;
 }
 
 /* IE 10-11 */
@@ -2571,15 +2768,15 @@ textarea::-moz-placeholder {
 .custom-input:-ms-input-placeholder,
 input:-ms-input-placeholder,
 textarea:-ms-input-placeholder {
-  color: #8a99ad !important;
-  opacity: 1 !important;
+  color: #5C646D !important;
+  opacity: 0.8 !important;
 }
 
 .custom-input:focus {
-  background-color: #0b0f17 !important;
-  border-color: #1a8c3d !important;
-  box-shadow: 0 0 0 3px rgba(26, 140, 61, 0.15) !important;
-  color: #fff !important;
+  background-color: #FFFFFF !important;
+  border-color: var(--accent-gold, #FFCC00) !important;
+  box-shadow: 0 0 0 3px rgba(255, 204, 0, 0.2) !important;
+  color: #1C1F22 !important;
   outline: none !important;
 }
 
@@ -2891,22 +3088,22 @@ textarea:-ms-input-placeholder {
 .odds-sport-badge {
   flex: 0 0 auto;
   padding: 3px 10px;
-  color: #6ee7a0;
-  background: rgba(26, 140, 61, 0.14);
-  border: 1px solid rgba(26, 140, 61, 0.4);
+  color: #4A90E2;
+  background: rgba(74, 144, 226, 0.12);
+  border: 1px solid rgba(74, 144, 226, 0.3);
   border-radius: 999px;
   font-size: 9px;
   font-weight: 700;
 }
 
 .odds-provider-status {
-  color: #6ee7a0;
+  color: #4A90E2;
   white-space: nowrap;
 }
 
 .odds-match-card h2 {
   margin: 14px 0 16px;
-  color: #fff;
+  color: #1C1F22;
   font-family: var(--font-space-grotesk, Arial, sans-serif);
   font-size: 16px;
   font-weight: 700;
@@ -2914,7 +3111,7 @@ textarea:-ms-input-placeholder {
 
 .odds-match-card h2 span {
   margin: 0 5px;
-  color: #8a96a8;
+  color: #8C96A0;
   font-weight: 400;
 }
 
@@ -2931,21 +3128,29 @@ textarea:-ms-input-placeholder {
   justify-content: center;
   min-height: 62px;
   padding: 10px;
-  background: #070b12;
-  border: 1px solid #2a3444;
-  border-radius: 6px;
+  background: #FAF6EF;
+  border: 1px solid #EAE5DC;
+  border-radius: 8px;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.odds-option:hover {
+  background: #FFFDF9;
+  border-color: #FFCC00;
 }
 
 .odds-option span {
-  color: #d7deea;
+  color: #5A626A;
   font-size: 11px;
+  font-weight: 600;
 }
 
 .odds-option strong {
   margin-top: 6px;
-  color: #6ee7a0;
+  color: #4A90E2;
   font-family: var(--font-space-grotesk, Arial, sans-serif);
-  font-size: 13px;
+  font-size: 14px;
+  font-weight: 700;
 }
 
 .odds-state {
@@ -2954,9 +3159,9 @@ textarea:-ms-input-placeholder {
   justify-content: center;
   min-height: 150px;
   padding: 30px;
-  color: #b6c2d3;
-  background: var(--bg-card, #111722);
-  border: 1px solid var(--border-dark, #273141);
+  color: #5A626A;
+  background: #FFFFFF;
+  border: 1px solid #EAE5DC;
   border-radius: 14px;
   text-align: center;
 }
@@ -2967,12 +3172,12 @@ textarea:-ms-input-placeholder {
 }
 
 .odds-empty-state strong {
-  color: #fff;
+  color: #1C1F22;
 }
 
 .odds-empty-state span {
   max-width: 680px;
-  color: #aeb9ca;
+  color: #5A626A;
   font-size: 12px;
 }
 
@@ -3146,3 +3351,461 @@ textarea:-ms-input-placeholder {
     padding: 14px;
   }
 }
+
+/* ==========================================================================
+   SportsVerge Visual Identity Refinement (Client Specified Theme)
+   Palette:
+   • Canvas / Background: #FFFDF9 (Premium Cream)
+   • Typography & Structure: #1C1F22 (Crisp Charcoal)
+   • Interactive Anchors & CTAs: #FFCC00 (Gold)
+   • Real-Time Data Shifts & Highlights: #4A90E2 (Sky Blue)
+   ========================================================================== */
+
+/* Canvas Base */
+html,
+body,
+main,
+.home-page {
+  background-color: #FFFDF9 !important;
+  color: #1C1F22 !important;
+}
+
+/* Headings & Text */
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+  color: #1C1F22;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+}
+
+/* Explicit text overrides for hero overlays, banners, and dark media elements */
+.carousel-caption h1,
+.carousel-caption h2,
+.carousel-caption h3,
+.carousel-caption h4,
+.carousel-caption h5,
+.carousel-caption h6,
+.custom-caption h1,
+.custom-caption h2,
+.custom-caption h3,
+.custom-caption h4,
+.custom-caption h5,
+.custom-caption h6,
+.featured-news-section h2,
+.featured-overlay ~ * h2,
+.featured-news-card h2,
+.dark-overlay-content h1,
+.dark-overlay-content h2,
+.dark-overlay-content p,
+.text-white-force {
+  color: #FFFFFF !important;
+}
+
+.carousel-caption p,
+.custom-caption p,
+.featured-news-section p {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Cards & Containers on Cream Canvas */
+.bg-card,
+.fixtures-section,
+.results-section,
+.popular-players,
+.news-section,
+.live-scores-section,
+.popular-teams-section,
+.standings-section,
+.score-box,
+.fixture-card,
+.player-card,
+.news-card,
+.bg-dark-subtle,
+.compact-overview-scorecard,
+.horizontal-ad-section {
+  background-color: #FFFFFF !important;
+  border-color: #EAE5DC !important;
+  color: #1C1F22 !important;
+  box-shadow: 0 4px 18px rgba(28, 31, 34, 0.04) !important;
+}
+
+.score-box,
+.fixture-card,
+.player-card,
+.news-card {
+  background-color: #FFFDF9 !important;
+  border: 1px solid #EAE5DC !important;
+}
+
+.score-box:hover,
+.fixture-card:hover,
+.player-card:hover,
+.news-card:hover {
+  border-color: #4A90E2 !important;
+  background-color: #FFFFFF !important;
+  box-shadow: 0 8px 24px rgba(74, 144, 226, 0.12) !important;
+  transform: translateY(-2px);
+  transition: all 0.2s ease-in-out;
+}
+
+/* Tab Navigation Pills (High contrast editorial pills) */
+.custom-tabs .nav-link,
+.nav-pills .nav-link,
+.stats-sport-tabs button,
+.standings-sport-tabs button {
+  background-color: #FFFDF9 !important;
+  border: 1px solid #EAE5DC !important;
+  color: #5C646D !important;
+  font-weight: 500 !important;
+  font-size: 13px !important;
+  transition: all 0.2s ease;
+}
+
+.custom-tabs .nav-link:hover,
+.nav-pills .nav-link:hover,
+.stats-sport-tabs button:hover,
+.standings-sport-tabs button:hover {
+  border-color: #FFCC00 !important;
+  color: #1C1F22 !important;
+  background-color: #FAF6EF !important;
+}
+
+.custom-tabs .nav-link.active,
+.nav-pills .nav-link.active,
+.stats-sport-tabs button.active,
+.standings-sport-tabs button.active {
+  background-color: #FFCC00 !important;
+  border-color: #FFCC00 !important;
+  color: #1C1F22 !important;
+  font-weight: 700 !important;
+  box-shadow: 0 2px 8px rgba(255, 204, 0, 0.3) !important;
+}
+
+/* Typography Overrides inside Cards */
+.bg-card .text-light,
+.bg-card .text-white:not(.badge):not(.btn):not(.preserve-white),
+.score-box .text-light,
+.score-box .text-white:not(.badge):not(.btn),
+.fixture-card .text-light,
+.fixture-card .text-white:not(.badge):not(.btn),
+.player-card .text-light,
+.player-card .text-white:not(.badge):not(.btn),
+.popular-teams-section .text-light,
+.standings-section .text-light,
+.news-card .text-white:not(.badge):not(.btn) {
+  color: #1C1F22 !important;
+}
+
+.text-muted {
+  color: #5C646D !important;
+}
+
+.border-dark {
+  border-color: #EAE5DC !important;
+}
+
+/* Interactive Gold CTAs */
+.btn-success,
+.btn-signup {
+  background-color: #FFCC00 !important;
+  border-color: #FFCC00 !important;
+  color: #1C1F22 !important;
+  font-weight: 700 !important;
+}
+
+.btn-success:hover,
+.btn-signup:hover {
+  background-color: #E6B800 !important;
+  border-color: #E6B800 !important;
+  color: #1C1F22 !important;
+}
+
+.btn-outline-success {
+  color: #1C1F22 !important;
+  border-color: #1C1F22 !important;
+  background-color: transparent !important;
+  font-weight: 600 !important;
+}
+
+.btn-outline-success:hover {
+  background-color: #FFCC00 !important;
+  border-color: #FFCC00 !important;
+  color: #1C1F22 !important;
+}
+
+/* Section Headings Accent line */
+.border-success,
+.border-start.border-success {
+  border-color: #FFCC00 !important;
+}
+
+/* Real-Time Data Shifts & Strategic Highlights (Sky Blue #4A90E2) */
+a.text-success,
+.text-success {
+  color: #4A90E2 !important;
+}
+
+a.text-success:hover,
+.text-success:hover {
+  color: #357ABD !important;
+}
+
+.badge.bg-danger,
+.badge-live {
+  background-color: #4A90E2 !important;
+  color: #FFFFFF !important;
+  font-weight: 700 !important;
+  border: none !important;
+  box-shadow: 0 2px 8px rgba(74, 144, 226, 0.35) !important;
+}
+
+/* Standings Table */
+.table-dark {
+  --bs-table-bg: transparent !important;
+  --bs-table-color: #1C1F22 !important;
+  --bs-table-border-color: #EAE5DC !important;
+}
+
+.table-dark thead th {
+  color: #5C646D !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  border-bottom: 2px solid #EAE5DC !important;
+}
+
+.table-dark tbody td {
+  border-bottom: 1px solid #EAE5DC !important;
+  color: #1C1F22 !important;
+}
+
+/* Slider Arrows */
+.slider-arrow {
+  background-color: #FFFFFF !important;
+  border: 1px solid #EAE5DC !important;
+  color: #1C1F22 !important;
+  box-shadow: 0 2px 8px rgba(28, 31, 34, 0.08) !important;
+}
+
+.slider-arrow:hover {
+  background-color: #FFCC00 !important;
+  border-color: #FFCC00 !important;
+  color: #1C1F22 !important;
+}
+
+/* ==========================================================================
+   THEME COMPONENT CLASSES (Replaces inline styles)
+   ========================================================================== */
+
+/* Section / Widget Headings & View All */
+.widget-heading {
+  color: #1C1F22 !important;
+  border-left: 3px solid #FFCC00 !important;
+}
+
+.widget-view-all {
+  color: #4A90E2 !important;
+  text-decoration: none !important;
+  font-weight: 600 !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.widget-view-all:hover {
+  color: #357ABD !important;
+}
+
+.widget-btn-cta {
+  background-color: #FFCC00 !important;
+  color: #1C1F22 !important;
+  border: none !important;
+  font-weight: 700 !important;
+  box-shadow: 0 2px 8px rgba(255, 204, 0, 0.25) !important;
+}
+
+.widget-btn-cta:hover {
+  background-color: #E6B800 !important;
+  color: #1C1F22 !important;
+}
+
+.widget-empty-text {
+  color: #5C646D !important;
+}
+
+/* Standings Component */
+.standings-section-wrap {
+  border-color: #EAE5DC !important;
+}
+
+.standings-divider {
+  border-color: #EAE5DC !important;
+}
+
+.standings-table-custom {
+  color: #1C1F22 !important;
+}
+
+.standings-thead-custom {
+  color: #4A525B !important;
+  border-bottom: 1px solid #EAE5DC !important;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.standings-row-custom {
+  border-bottom: 1px solid #FAF6EF !important;
+}
+
+.standings-rank-custom {
+  color: #6C757D !important;
+}
+
+.standings-team-name-custom {
+  color: #1C1F22 !important;
+}
+
+.standings-stat-custom {
+  color: #4A525B !important;
+}
+
+.standings-points-custom {
+  color: #1C1F22 !important;
+  font-weight: 700;
+}
+
+/* Hero Carousel */
+.hero-caption-custom {
+  z-index: 5;
+}
+
+.hero-badge-custom {
+  background-color: #FFCC00 !important;
+  color: #1C1F22 !important;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+}
+
+.hero-title-custom {
+  color: #FFFFFF !important;
+  font-size: clamp(1.4rem, 3vw, 2.2rem);
+  line-height: 1.25;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+}
+
+.hero-summary-custom {
+  color: rgba(255, 255, 255, 0.95) !important;
+  font-size: 14px;
+  line-height: 1.6;
+  max-width: 560px;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+}
+
+.hero-btn-custom {
+  background-color: #FFCC00 !important;
+  color: #1C1F22 !important;
+  border: none !important;
+  font-size: 13px;
+}
+
+.hero-btn-custom:hover {
+  background-color: #E6B800 !important;
+  color: #1C1F22 !important;
+}
+
+/* Category News Cards */
+.cat-news-card-custom {
+  background-color: #FFFFFF !important;
+  border: 1px solid #EAE5DC !important;
+}
+
+.cat-news-card-custom:hover {
+  border-color: #4A90E2 !important;
+  box-shadow: 0 6px 20px rgba(28, 31, 34, 0.06) !important;
+}
+
+.cat-news-img-wrap {
+  width: 240px;
+  height: 150px;
+}
+
+.cat-news-title-custom {
+  color: #1C1F22 !important;
+  font-size: 15px;
+}
+
+.cat-news-summary-custom {
+  color: #2D3238 !important;
+  font-size: 13px;
+}
+
+.cat-news-date-custom {
+  color: #6C757D !important;
+}
+
+/* Upcoming Fixtures & Recent Results */
+.fixtures-card-custom {
+  background-color: #FFFFFF !important;
+  border: 1px solid #EAE5DC !important;
+}
+
+.fixtures-card-custom:hover {
+  border-color: #4A90E2 !important;
+  box-shadow: 0 6px 18px rgba(28, 31, 34, 0.06) !important;
+}
+
+.fixture-league-custom {
+  color: #4A525B !important;
+  max-width: 160px;
+}
+
+.fixture-team-name-custom {
+  color: #1C1F22 !important;
+  max-width: 80px;
+}
+
+.fixture-vs-custom {
+  color: #6C757D !important;
+}
+
+.fixture-day-custom {
+  color: #4A525B !important;
+}
+
+.fixture-time-custom {
+  color: #1C1F22 !important;
+  font-size: 14px;
+}
+
+.fixture-venue-custom {
+  color: #6C757D !important;
+}
+
+.result-status-custom {
+  color: #4A90E2 !important;
+}
+
+.result-date-custom {
+  color: #6C757D !important;
+}
+
+/* Popular Players & Teams */
+.player-card-custom {
+  background-color: #FFFFFF !important;
+  border: 1px solid #EAE5DC !important;
+}
+
+.player-card-custom:hover {
+  border-color: #4A90E2 !important;
+}
+
+.player-name-custom {
+  color: #1C1F22 !important;
+}
+
+.player-sub-custom {
+  color: #5C646D !important;
+}
+
+.team-sport-custom {
+  color: #5C646D !important;
+}
+

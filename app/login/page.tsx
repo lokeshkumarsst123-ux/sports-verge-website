@@ -139,16 +139,16 @@ export default function LoginPage() {
 
   return (
     <main className="min-vh-100 d-flex align-items-center justify-content-center py-5 px-3 position-relative overflow-hidden auth-main-bg">
-      {/* Background Mesh Glows */}
+      {/* Background Ambient Glows */}
       <div className="position-absolute rounded-circle auth-glow-top-left"></div>
       <div className="position-absolute rounded-circle auth-glow-bottom-right"></div>
 
-      <div className="w-100 position-relative auth-card-wrapper" style={{ maxWidth: "460px" }}>
+      <div className="w-100 position-relative auth-card-wrapper">
         {/* Logo Header */}
         <div className="text-center mb-4">
           <Link href="/" className="d-inline-block">
             <Image
-              src="/assets/imgs/logo-white.svg"
+              src="/assets/imgs/logo.svg"
               alt="SportsVerge"
               width={180}
               height={45}
@@ -159,27 +159,15 @@ export default function LoginPage() {
         </div>
 
         {/* Card Body */}
-        <div className="card bg-card border border-dark rounded-4 p-4 p-md-5 mb-4 shadow-lg">
+        <div className="card auth-card p-4 p-md-5 mb-4">
           {/* Role Selector Tabs (User vs Tipster) */}
-          <div
-            className="p-1 rounded-3 mb-4 d-flex align-items-center"
-            style={{
-              background: "rgba(255, 255, 255, 0.05)",
-              border: "1px solid rgba(255, 255, 255, 0.1)",
-            }}
-          >
+          <div className="auth-role-tabs mb-4 d-flex align-items-center">
             <button
               type="button"
               onClick={() => handleRoleChange("user")}
-              className={`btn flex-fill rounded-3 py-2 px-3 fw-semibold font-space-grotesk d-inline-flex align-items-center justify-content-center gap-2 border-0 ${
-                loginRole === "user" ? "text-white" : "text-secondary"
+              className={`btn flex-fill auth-role-tab d-inline-flex align-items-center justify-content-center gap-2 ${
+                loginRole === "user" ? "active" : ""
               }`}
-              style={{
-                fontSize: "13px",
-                transition: "all 0.25s ease",
-                backgroundColor: loginRole === "user" ? "#22c55e" : "transparent",
-                boxShadow: loginRole === "user" ? "0 4px 12px rgba(34, 197, 94, 0.35)" : "none",
-              }}
             >
               <i className="bi bi-person-fill"></i>
               <span>User Sign In</span>
@@ -188,15 +176,9 @@ export default function LoginPage() {
             <button
               type="button"
               onClick={() => handleRoleChange("tipster")}
-              className={`btn flex-fill rounded-3 py-2 px-3 fw-semibold font-space-grotesk d-inline-flex align-items-center justify-content-center gap-2 border-0 ${
-                loginRole === "tipster" ? "text-white" : "text-secondary"
+              className={`btn flex-fill auth-role-tab d-inline-flex align-items-center justify-content-center gap-2 ${
+                loginRole === "tipster" ? "active" : ""
               }`}
-              style={{
-                fontSize: "13px",
-                transition: "all 0.25s ease",
-                backgroundColor: loginRole === "tipster" ? "#22c55e" : "transparent",
-                boxShadow: loginRole === "tipster" ? "0 4px 12px rgba(34, 197, 94, 0.35)" : "none",
-              }}
             >
               <i className="bi bi-speedometer2"></i>
               <span>Tipster Studio</span>
@@ -207,27 +189,19 @@ export default function LoginPage() {
           {loginRole === "tipster" ? (
             <div className="mb-4">
               <div className="d-flex align-items-center justify-content-between mb-1 flex-wrap gap-2">
-                <h3 className="text-white fw-bold mb-0 font-space-grotesk">Tipster Studio</h3>
-                <span
-                  className="badge rounded-pill font-space-grotesk fw-bold px-2.5 py-1"
-                  style={{
-                    background: "rgba(34, 197, 94, 0.15)",
-                    color: "#4ade80",
-                    border: "1px solid rgba(34, 197, 94, 0.35)",
-                    fontSize: "11px",
-                  }}
-                >
-                  <i className="bi bi-patch-check-fill me-1 text-success"></i> PRO CREATOR
+                <h3 className="auth-title h3 mb-0">Tipster Studio</h3>
+                <span className="auth-badge-pro">
+                  <i className="bi bi-patch-check-fill me-1"></i> PRO CREATOR
                 </span>
               </div>
-              <p className="text-muted small mb-0">
+              <p className="auth-subtitle mb-0">
                 Sign in to your Tipster Studio to publish tips and track performance.
               </p>
             </div>
           ) : (
             <div className="mb-4">
-              <h3 className="text-white fw-bold mb-1 font-space-grotesk">Sign In</h3>
-              <p className="text-muted small mb-0">
+              <h3 className="auth-title h3 mb-1">Sign In</h3>
+              <p className="auth-subtitle mb-0">
                 Enter your credentials to access your sports dashboard.
               </p>
             </div>
@@ -249,7 +223,7 @@ export default function LoginPage() {
 
           <form onSubmit={handleSubmit} className="d-flex flex-column gap-3">
             <div>
-              <label className="form-label text-muted small fw-medium mb-1">
+              <label className="auth-label">
                 {loginRole === "tipster" ? "TIPSTER EMAIL ADDRESS" : "EMAIL ADDRESS"}
               </label>
               <input
@@ -257,7 +231,7 @@ export default function LoginPage() {
                 name="email"
                 value={formData.email}
                 onChange={handleInputChange}
-                className={`form-control bg-dark text-white fw-medium border-0 ${
+                className={`form-control auth-input ${
                   errors.email ? "is-invalid" : ""
                 }`}
                 placeholder={
@@ -269,10 +243,10 @@ export default function LoginPage() {
 
             <div>
               <div className="d-flex justify-content-between align-items-center mb-1">
-                <label className="form-label text-muted small fw-medium m-0">PASSWORD</label>
+                <label className="auth-label mb-0">PASSWORD</label>
                 <Link
                   href="/forgot-password"
-                  className="text-success text-decoration-none small fs-12"
+                  className="auth-link small fs-12"
                 >
                   Forgot Password?
                 </Link>
@@ -283,14 +257,14 @@ export default function LoginPage() {
                   name="password"
                   value={formData.password}
                   onChange={handleInputChange}
-                  className={`form-control bg-dark text-white fw-medium border-0 pe-5 ${
+                  className={`form-control auth-input pe-5 ${
                     errors.password ? "is-invalid" : ""
                   }`}
                   placeholder="••••••••"
                 />
                 <button
                   type="button"
-                  className="btn position-absolute top-50 end-0 translate-middle-y border-0 text-muted px-3"
+                  className="auth-eye-btn position-absolute top-50 end-0 translate-middle-y"
                   onClick={() => setShowPassword(!showPassword)}
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
@@ -304,14 +278,8 @@ export default function LoginPage() {
 
             <button
               type="submit"
-              className="btn btn-signup w-100 fw-semibold text-uppercase py-2.5 mt-3 ls-05 font-space-grotesk d-inline-flex align-items-center justify-content-center gap-2"
+              className="btn btn-signup w-100 fw-semibold text-uppercase py-2.5 mt-3 ls-05 d-inline-flex align-items-center justify-content-center gap-2"
               disabled={loading}
-              style={{
-                background: "#22c55e",
-                borderColor: "#22c55e",
-                color: "#ffffff",
-                boxShadow: "0 4px 15px rgba(34, 197, 94, 0.35)",
-              }}
             >
               {loading ? (
                 <>
@@ -334,13 +302,13 @@ export default function LoginPage() {
           </form>
 
           {/* Footer Navigation */}
-          <div className="text-center mt-4 pt-3 border-top border-secondary border-opacity-20">
+          <div className="text-center mt-4 pt-3 auth-footer-divider">
             {loginRole === "tipster" ? (
               <div className="d-flex align-items-center justify-content-between">
                 <span className="text-muted small">Not a Tipster yet?</span>
                 <Link
                   href="/tipster-register"
-                  className="text-success text-decoration-none small fw-semibold"
+                  className="auth-link small"
                 >
                   Join as Pro Tipster
                 </Link>
@@ -350,7 +318,7 @@ export default function LoginPage() {
                 <span className="text-muted small">New to SportsVerge?</span>
                 <Link
                   href="/register"
-                  className="text-success text-decoration-none small fw-semibold"
+                  className="auth-link small"
                 >
                   Create Account
                 </Link>

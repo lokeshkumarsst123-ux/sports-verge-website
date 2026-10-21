@@ -22,7 +22,7 @@ export default function Footer() {
           <div className="col-lg-3 pe-lg-4">
             <div className="mb-3 footer-logo-wrapper">
               {siteSettings.logoUrl ? <img src={siteSettings.logoUrl} alt={siteSettings.websiteName} className="object-fit-contain" style={{ width: "100%", height: "100%" }} /> : <Image
-                src="/assets/imgs/logo-white.svg"
+                src="/assets/imgs/logo.svg"
                 alt={siteSettings.websiteName}
                 fill className="object-fit-contain"
               />}
@@ -117,8 +117,8 @@ export default function Footer() {
                 <i className="bi bi-lightning-charge"></i>
               </div>
               <div>
-                <div className="text-light fw-semibold small lh-1 mb-1">Real-time Scores</div>
-                <div className="text-muted fs-11">
+                <div className="fw-semibold small lh-1 mb-1" style={{ color: "#1C1F22" }}>Real-time Scores</div>
+                <div className="fs-11" style={{ color: "#5A626A" }}>
                   Lightning fast updates
                 </div>
               </div>
@@ -131,8 +131,8 @@ export default function Footer() {
                 <i className="bi bi-bar-chart"></i>
               </div>
               <div>
-                <div className="text-light fw-semibold small lh-1 mb-1">Stats & Insights</div>
-                <div className="text-muted fs-11">
+                <div className="fw-semibold small lh-1 mb-1" style={{ color: "#1C1F22" }}>Stats & Insights</div>
+                <div className="fs-11" style={{ color: "#5A626A" }}>
                   Detailed sports statistics
                 </div>
               </div>
@@ -145,8 +145,8 @@ export default function Footer() {
                 <i className="bi bi-newspaper"></i>
               </div>
               <div>
-                <div className="text-light fw-semibold small lh-1 mb-1">In-depth Coverage</div>
-                <div className="text-muted fs-11">
+                <div className="fw-semibold small lh-1 mb-1" style={{ color: "#1C1F22" }}>In-depth Coverage</div>
+                <div className="fs-11" style={{ color: "#5A626A" }}>
                   News, analysis & more
                 </div>
               </div>
@@ -159,8 +159,8 @@ export default function Footer() {
                 <i className="bi bi-star"></i>
               </div>
               <div>
-                <div className="text-light fw-semibold small lh-1 mb-1">Personalized</div>
-                <div className="text-muted fs-11">
+                <div className="fw-semibold small lh-1 mb-1" style={{ color: "#1C1F22" }}>Personalized</div>
+                <div className="fs-11" style={{ color: "#5A626A" }}>
                   Tailored to your favorites
                 </div>
               </div>
