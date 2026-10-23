@@ -1,0 +1,1744 @@
+/* ==========================================================================
+   The Sports Verge - Tip & Tipster Styling
+   Theme: Warm Ivory Cream (#FFFDF9) & Sleek Charcoal (#1C1F22) with Gold Accents (#FFCC00)
+   ========================================================================== */
+
+.tip-module {
+  --tip-green: #16a34a;
+  --tip-gold: #ffcc00;
+  --tip-gold-hover: #f5c200;
+  --tip-dark: #1c1f22;
+  --tip-muted: #6b7280;
+  --tip-panel: #ffffff;
+  --tip-surface: #faf6ef;
+  --tip-border: #eae5dc;
+  --tip-border-subtle: #f3ece1;
+  --tip-text-body: 1rem;
+  --tip-text-control: 0.9375rem;
+  --tip-text-small: 0.875rem;
+
+  background: #fffdf9;
+  padding: 48px 0 72px;
+  color: #1c1f22;
+  font-family: var(--font-outfit), Outfit, Arial, sans-serif;
+  font-size: var(--tip-text-body);
+  line-height: 1.6;
+  min-height: 65vh;
+}
+
+.tip-module .tip-container {
+  max-width: 1160px;
+  margin: auto;
+  padding: 0 24px;
+}
+
+.tip-module h1 {
+  font-size: 32px;
+  letter-spacing: -0.5px;
+  font-weight: 800;
+  font-family: var(--font-space-grotesk), "Space Grotesk", sans-serif;
+  color: #1c1f22;
+  /* margin: 16px 0 8px; */
+}
+
+.tip-module h2,
+.tip-module h3 {
+  font-family: var(--font-space-grotesk), "Space Grotesk", sans-serif;
+  font-weight: 700;
+  color: #1c1f22;
+}
+
+.tip-module h2 {
+  font-size: 20px;
+}
+
+.tip-module p {
+  line-height: 1.65;
+  color: #4b5563;
+}
+
+.tip-module .muted,
+.tip-module .text-secondary {
+  color: var(--tip-muted) !important;
+}
+
+.tip-module small,
+.tip-module .small {
+  font-size: var(--tip-text-small);
+}
+
+.tip-module .tip-topline,
+.tip-module .tip-toolbar,
+.tip-module .tip-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.tip-module .tip-topline {
+  margin-bottom: 28px;
+}
+
+/* ==========================================================================
+   Pills and Buttons
+   ========================================================================== */
+.tip-module .tip-pill {
+  border: 1px solid var(--tip-border);
+  border-radius: 99px;
+  padding: 8px 18px;
+  color: #1c1f22;
+  background: #ffffff;
+  font-size: var(--tip-text-small);
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.tip-module .tip-pill:hover {
+  background: var(--tip-surface);
+  border-color: #d8d1c5;
+  color: #1c1f22;
+}
+
+.tip-module .tip-pill.active {
+  background: #1c1f22;
+  border-color: #1c1f22;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(28, 31, 34, 0.15);
+}
+
+.tip-module .tip-primary {
+  background: #ffcc00;
+  border: 1px solid #ffcc00;
+  color: #1c1f22;
+  border-radius: 99px;
+  padding: 11px 24px;
+  font-weight: 700;
+  font-size: var(--tip-text-control);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(255, 204, 0, 0.25);
+}
+
+.tip-module .tip-primary:hover {
+  background: var(--tip-gold-hover);
+  border-color: #e6b800;
+  color: #1c1f22;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(255, 204, 0, 0.35);
+}
+
+.tip-module button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.tip-module .tip-danger {
+  background: #ef4444;
+  border-color: #ef4444;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.2);
+}
+
+.tip-module .tip-danger:hover {
+  background: #dc2626;
+  border-color: #dc2626;
+  color: #ffffff;
+}
+
+/* ==========================================================================
+   Panels, Cards, and Heroes
+   ========================================================================== */
+.tip-module .membership-card,
+.tip-module .tip-panel {
+  background: #ffffff;
+  border: 1px solid var(--tip-border);
+  border-radius: 18px;
+  padding: 28px;
+  box-shadow: 0 4px 20px rgba(28, 31, 34, 0.04);
+}
+
+.tip-module .tip-hero {
+  background: #ffffff !important;
+  border: 1px solid var(--tip-border) !important;
+  border-radius: 20px !important;
+  padding: 34px 38px !important;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 26px;
+  color: #1c1f22 !important;
+  box-shadow: 0 4px 20px rgba(28, 31, 34, 0.04) !important;
+}
+
+.tip-module .tip-hero h1,
+.tip-module .tip-hero h2,
+.tip-module .tip-hero .tip-hero-copy h2 {
+  color: #1c1f22 !important;
+  font-family:
+    var(--font-space-grotesk), "Space Grotesk", sans-serif !important;
+  font-weight: 800 !important;
+}
+
+.tip-module .tip-hero p,
+.tip-module .tip-hero .muted {
+  color: #4b5563 !important;
+}
+
+.tip-module .tip-hero .tip-status {
+  background: #fef3c7 !important;
+  border: 1px solid #fde68a !important;
+  color: #92400e !important;
+}
+
+.tip-module .tip-hero .tip-status.active {
+  background: #ecfdf5 !important;
+  border-color: #a7f3d0 !important;
+  color: #047857 !important;
+}
+
+.tip-module .tip-hero .tip-pill {
+  background: #ffcc00 !important;
+  border: 1px solid #ffcc00 !important;
+  color: #1c1f22 !important;
+  font-weight: 700 !important;
+  border-radius: 99px !important;
+}
+
+.tip-module .tip-hero .tip-pill:hover {
+  background: #f5c200 !important;
+  border-color: #e6b800 !important;
+  color: #1c1f22 !important;
+}
+
+.tip-module .tip-avatar {
+  width: 86px;
+  height: 86px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #ffcc00;
+  box-shadow: 0 0 18px rgba(255, 204, 0, 0.35);
+  flex-shrink: 0;
+}
+
+.tip-module .tip-hero-copy {
+  flex: 1;
+  min-width: 0;
+}
+
+.tip-module .tip-hero-copy h2 {
+  font-size: 26px;
+  margin: 0 0 8px;
+}
+
+.tip-module .tip-hero-copy p {
+  margin: 8px 0;
+  overflow-wrap: anywhere;
+}
+
+.tip-module .tip-hero-actions {
+  display: grid;
+  gap: 10px;
+  min-width: 235px;
+}
+
+/* ==========================================================================
+   Badges, Status, and Sport Tags
+   ========================================================================== */
+.tip-module .tip-tags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tip-module .tip-tag {
+  font-size: var(--tip-text-small);
+  font-weight: 700;
+  background: var(--tip-surface);
+  border: 1px solid var(--tip-border);
+  border-radius: 99px;
+  padding: 4px 12px;
+  color: #4b5563;
+  font-size: 10px;
+}
+
+.tip-module .tip-tag[data-sport="Cricket"] {
+  background: #ecfdf5;
+  color: #047857;
+  border-color: #a7f3d0;
+}
+
+.tip-module .tip-tag[data-sport="Football"] {
+  background: #eff6ff;
+  color: #1d4ed8;
+  border-color: #bfdbfe;
+}
+
+.tip-module .tip-tag[data-sport="NFL"] {
+  background: #fffbeb;
+  color: #b45309;
+  border-color: #fde68a;
+}
+
+.tip-module .tip-tag[data-sport="AFL"] {
+  background: #fdf2f8;
+  color: #be185d;
+  border-color: #fbcfe8;
+}
+
+.tip-module .tip-status {
+  font-size: var(--tip-text-small);
+  background: #fef3c7;
+  border: 1px solid #fde68a;
+  color: #92400e;
+  border-radius: 99px;
+  padding: 4px 12px;
+  display: inline-block;
+  font-weight: 700;
+}
+
+.tip-module .tip-status.active {
+  background: #ecfdf5;
+  border-color: #a7f3d0;
+  color: #047857;
+}
+
+.tip-module .tip-status.pending {
+  background: #fffbeb;
+  color: #b45309;
+  border-color: #fde68a;
+}
+
+.tip-module .tip-status.tip-paid-price {
+  background: #fef2f2;
+  border-color: #fecaca;
+  color: #b91c1c;
+  white-space: nowrap;
+}
+
+/* ==========================================================================
+   Stat Grids
+   ========================================================================== */
+.tip-module .tip-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin: 24px 0;
+}
+
+.tip-module .tip-stat {
+  background: #ffffff;
+  border: 1px solid var(--tip-border);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 2px 10px rgba(28, 31, 34, 0.03);
+  position: relative;
+}
+
+.tip-module .tip-stat small {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--tip-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  display: block;
+}
+
+.tip-module .tip-stat strong {
+  font-size: 32px;
+  font-family: var(--font-space-grotesk), "Space Grotesk", sans-serif;
+  color: #1c1f22;
+  display: block;
+  margin: 8px 0;
+  line-height: 1.2;
+}
+
+.tip-module .tip-stat span:not(.tip-dash-stat-icon) {
+  font-size: var(--tip-text-small);
+  color: var(--tip-muted);
+}
+
+.tip-module .tip-stat .tip-dash-stat-icon {
+  position: absolute;
+  top: 20px;
+  right: 18px;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: #faf6ef;
+  color: #1c1f22;
+}
+
+.tip-module .tip-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--tip-border);
+  padding-bottom: 16px;
+  margin: 20px 0;
+}
+
+.tip-module .tip-two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+  margin-bottom: 24px;
+}
+
+.tip-module .tip-detail-list {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 16px;
+  font-size: var(--tip-text-control);
+  margin: 20px 0;
+}
+
+.tip-module .tip-detail-list dt {
+  color: var(--tip-muted);
+  font-weight: 500;
+}
+
+.tip-module .tip-detail-list dd {
+  font-weight: 700;
+  color: #1c1f22;
+  text-align: right;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.tip-module .tip-heading {
+  border-bottom: 1px solid var(--tip-border-subtle);
+  padding-bottom: 14px;
+  margin-bottom: 20px;
+}
+
+.tip-module .tip-heading h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+/* ==========================================================================
+   Prediction Rows and Odds
+   ========================================================================== */
+.tip-module .tip-prediction-row {
+  background: #fff;
+  border: 1px solid var(--tip-border);
+  border-radius: 16px;
+  padding: 22px;
+  display: grid;
+  grid-template-columns: 1fr 120px auto;
+  gap: 24px;
+  align-items: center;
+  margin-top: 16px;
+  transition: all 0.2s ease;
+}
+
+.tip-module .tip-prediction-row:hover {
+  border-color: #d8d1c5;
+  box-shadow: 0 4px 16px rgba(28, 31, 34, 0.05);
+}
+
+.tip-module .tip-prediction-row h3 {
+  font-size: 16px;
+  margin: 10px 0 6px;
+  color: #1c1f22;
+}
+
+.tip-module .tip-odds {
+  background: #ffffff;
+  border: 1px solid var(--tip-border);
+  border-radius: 12px;
+  padding: 16px 12px;
+  text-align: center;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+}
+
+.tip-module .tip-odds small {
+  display: block;
+  color: var(--tip-muted);
+  font-size: var(--tip-text-small);
+}
+
+.tip-module .tip-odds strong {
+  display: block;
+  font-size: 24px;
+  font-family: var(--font-space-grotesk), "Space Grotesk", sans-serif;
+  color: #1c1f22;
+}
+
+/* ==========================================================================
+   Prediction Card Grid
+   ========================================================================== */
+.tip-module .tip-card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+}
+
+.tip-module .tip-prediction-card {
+  background: #ffffff;
+  border: 1px solid var(--tip-border);
+  border-radius: 18px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  box-shadow: 0 4px 18px rgba(28, 31, 34, 0.04);
+  transition: all 0.2s ease;
+}
+
+.tip-module .tip-prediction-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 26px rgba(28, 31, 34, 0.08);
+  border-color: #d8d1c5;
+}
+
+.tip-module .tip-prediction-card.premium {
+  border-color: #fcd34d;
+  background: #ffffff;
+}
+
+.tip-module .tip-card-author {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid var(--tip-border-subtle);
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+}
+
+.tip-module .tip-card-author img {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #ffcc00;
+}
+
+.tip-module .tip-card-author a {
+  font-weight: 700;
+  font-size: var(--tip-text-small);
+  color: #1c1f22;
+  text-decoration: none;
+}
+
+.tip-module .tip-card-author a:hover {
+  color: #b45309;
+}
+
+.tip-module .tip-card-author small {
+  display: block;
+  color: var(--tip-muted);
+  font-size: var(--tip-text-small);
+}
+
+.tip-module .tip-card-author .tip-status {
+  margin-left: auto;
+}
+
+.tip-module .tip-prediction-card h3 {
+  font-size: 16px;
+  margin: 12px 0;
+  color: #1c1f22;
+}
+
+.tip-module .tip-selection {
+  background: #fff;
+  border: 1px solid var(--tip-border);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.tip-module .tip-selection small {
+  font-size: var(--tip-text-small);
+  color: var(--tip-muted);
+}
+
+.tip-module .tip-selection strong {
+  display: block;
+  font-size: var(--tip-text-control);
+  color: #1c1f22;
+  margin: 6px 0;
+}
+
+.tip-module .tip-card-footer {
+  margin-top: auto;
+  padding-top: 18px;
+  border-top: 1px solid var(--tip-border-subtle);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.tip-module .tip-card-footer small {
+  font-size: var(--tip-text-small);
+  color: var(--tip-muted);
+}
+
+/* ==========================================================================
+   Creator Grid (Tipsters)
+   ========================================================================== */
+.tip-module .tip-creator-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  margin: 22px 0 32px;
+}
+
+.tip-module .tip-creator-card {
+  border: 1px solid var(--tip-border);
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 22px;
+  box-shadow: 0 4px 18px rgba(28, 31, 34, 0.04);
+  transition: all 0.2s ease;
+}
+
+.tip-module .tip-creator-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(28, 31, 34, 0.07);
+}
+
+.tip-module .tip-mini-stats {
+  display: flex;
+  justify-content: space-between;
+  background: var(--tip-surface);
+  border: 1px solid var(--tip-border);
+  padding: 12px 16px;
+  margin: 14px 0;
+  border-radius: 10px;
+  text-align: center;
+  font-size: var(--tip-text-small);
+}
+
+.tip-module .tip-mini-stats small {
+  display: block;
+  color: var(--tip-muted);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.tip-module .tip-mini-stats strong {
+  color: #1c1f22;
+  font-size: 15px;
+}
+
+.tip-module .tip-search {
+  border: 1px solid var(--tip-border);
+  border-radius: 99px;
+  background: #ffffff;
+  color: #1c1f22;
+  padding: 13px 22px;
+  width: 100%;
+  max-width: 460px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  outline: none;
+  font-size: 14px;
+}
+
+.tip-module .tip-search::placeholder {
+  color: #9ca3af;
+}
+
+.tip-module .tip-search:focus {
+  border-color: #ffcc00;
+  box-shadow: 0 0 0 3px rgba(255, 204, 0, 0.25);
+}
+
+/* ==========================================================================
+   Form Controls
+   ========================================================================== */
+.tip-module .tip-form .form-control,
+.tip-module .tip-form .form-select {
+  background: #fff !important;
+  border: 1px solid var(--tip-border) !important;
+  color: #1c1f22 !important;
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: var(--tip-text-control);
+  min-height: 44px;
+  box-shadow: none;
+}
+
+.tip-module .tip-form .form-control::placeholder {
+  color: #9ca3af;
+}
+
+.tip-module .tip-form .form-control:focus,
+.tip-module .tip-form .form-select:focus {
+  background: #ffffff !important;
+  border-color: #ffcc00 !important;
+  box-shadow: 0 0 0 3px rgba(255, 204, 0, 0.2) !important;
+}
+
+.tip-module .tip-form .form-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #374151;
+  margin-bottom: 8px;
+  letter-spacing: 0.03em;
+}
+
+.tip-module .tip-form-section {
+  margin: 28px 0 20px;
+  border-bottom: 1px solid var(--tip-border-subtle);
+  padding-bottom: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1c1f22;
+}
+
+.tip-module .tip-visibility {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-top: 18px;
+}
+
+.tip-module .tip-visibility button {
+  position: relative;
+  background: #ffffff;
+  border: 1.5px solid var(--tip-border);
+  padding: 24px 26px;
+  text-align: left;
+  color: #1c1f22;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+}
+
+.tip-module .tip-visibility button:hover {
+  border-color: #d8d1c5;
+  background: var(--tip-surface);
+}
+
+.tip-module .tip-visibility button.selected {
+  border: 2px solid #ffcc00 !important;
+  background: rgba(255, 204, 0, 0.07) !important;
+  box-shadow: 0 4px 16px rgba(255, 204, 0, 0.15) !important;
+}
+
+.tip-module .tip-visibility button.premium.selected {
+  border: 2px solid #ffcc00 !important;
+  background: rgba(255, 204, 0, 0.07) !important;
+  box-shadow: 0 4px 16px rgba(255, 204, 0, 0.15) !important;
+}
+
+.tip-module .tip-visibility small {
+  display: block;
+  color: var(--tip-muted);
+  font-size: var(--tip-text-small);
+  margin-top: 8px;
+  padding-right: 28px;
+  line-height: 1.5;
+}
+
+.tip-module .tip-price-box {
+  background: var(--tip-surface);
+  border: 1px solid var(--tip-border);
+  border-radius: 16px;
+  padding: 24px;
+  margin-top: 22px;
+}
+
+.tip-price-box .tip-pill.active {
+  background: #ffcc00 !important;
+  border-color: #ffcc00 !important;
+  color: #1c1f22 !important;
+  font-weight: 700 !important;
+}
+
+.tip-module .tip-form-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  border-top: 1px solid var(--tip-border-subtle);
+  padding-top: 22px;
+  margin-top: 25px;
+}
+
+/* ==========================================================================
+   Subscription & Membership Plan Layout
+   ========================================================================== */
+.tip-module .tip-plan-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 26px;
+  align-items: start;
+}
+
+.tip-module .tip-plan-card {
+  width: 100%;
+  text-align: left;
+  color: #1c1f22;
+  background: #ffffff;
+  border: 1.5px solid var(--tip-border);
+  border-radius: 18px;
+  padding: 24px;
+  margin-bottom: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+}
+
+.tip-module .tip-plan-card:hover {
+  border-color: #d8d1c5;
+  transform: translateY(-1px);
+}
+
+.tip-module .tip-plan-card.selected {
+  border: 2px solid #ffcc00;
+  background: rgba(255, 204, 0, 0.04);
+  box-shadow: 0 6px 20px rgba(255, 204, 0, 0.15);
+}
+
+.tip-module .tip-plan-card ul {
+  list-style: none;
+  padding: 16px 0 0;
+  margin: 16px 0 0;
+  border-top: 1px solid var(--tip-border-subtle);
+  font-size: var(--tip-text-control);
+  line-height: 1.9;
+  color: #374151;
+}
+
+.tip-module .tip-plan-card li:before {
+  content: "\2713";
+  color: #16a34a;
+  font-weight: 900;
+  margin-right: 10px;
+}
+
+.tip-module .tip-checkout-title {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--tip-border-subtle);
+  padding-bottom: 18px;
+  margin-bottom: 22px;
+  color: #1c1f22;
+}
+
+.tip-module .tip-checkout-summary {
+  background: var(--tip-surface);
+  border: 1px solid var(--tip-border);
+  border-radius: 12px;
+  padding: 18px;
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: var(--tip-text-control);
+  color: #1c1f22;
+}
+
+.tip-module .tip-checkout-summary small {
+  display: block;
+  color: var(--tip-muted);
+  margin-top: 4px;
+}
+
+/* Modals */
+.tip-module .tip-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  background: rgba(28, 31, 34, 0.65);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+/* Dialog reset */
+dialog.tip-native-dialog {
+  border: none !important;
+  background: transparent !important;
+  padding: 0 !important;
+  margin: auto;
+  max-width: calc(100vw - 32px);
+  max-height: 90vh;
+  border-radius: 20px;
+  box-shadow: none;
+}
+
+dialog.tip-native-dialog::backdrop {
+  background: rgba(28, 31, 34, 0.65);
+  backdrop-filter: blur(6px);
+}
+
+.tip-module .tip-checkout-modal,
+.tip-native-dialog .tip-module.tip-checkout-modal {
+  width: 520px;
+  max-width: 100%;
+  max-height: 90vh;
+  overflow: auto;
+  background: #ffffff;
+  border: 1px solid var(--tip-border);
+  border-radius: 20px;
+  padding: 36px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  color: #1c1f22;
+}
+
+.tip-module .tip-modal-close {
+  background: none;
+  border: 0;
+  color: #6b7280;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.tip-module .tip-empty {
+  padding: 40px;
+  text-align: center;
+  color: var(--tip-muted);
+}
+
+.tip-module a:focus-visible,
+.tip-module button:focus-visible {
+  outline: 2px solid #ffcc00;
+  outline-offset: 3px;
+}
+
+/* ==========================================================================
+   Marketplace Page Specifics
+   ========================================================================== */
+.tip-module.tip-marketplace-page .tip-container {
+  max-width: 1298px;
+}
+
+.tip-marketplace-page .tip-hero {
+  background: linear-gradient(135deg, #faf6ef 0%, #ffffff 100%) !important;
+  border: 1px solid var(--tip-border) !important;
+  padding: 44px 48px;
+  gap: 36px;
+  margin-bottom: 42px;
+  box-shadow: 0 4px 24px rgba(28, 31, 34, 0.04) !important;
+}
+
+.tip-marketplace-page .tip-hero h1 {
+  font-size: 40px;
+  line-height: 1.15;
+  margin: 12px 0 14px;
+  color: #1c1f22 !important;
+  font-weight: 900;
+}
+
+.tip-marketplace-page .tip-hero-copy p {
+  font-size: var(--tip-text-body);
+  margin-bottom: 24px;
+  color: #4b5563 !important;
+}
+
+.tip-marketplace-page .tip-search {
+  max-width: 520px;
+}
+
+.tip-marketplace-page .tip-marketplace-join {
+  width: 340px;
+  max-width: 340px;
+  flex-shrink: 0;
+  padding: 28px;
+  background: #ffffff;
+  border: 1px solid var(--tip-border);
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  color: #1c1f22;
+}
+
+.tip-marketplace-page .tip-marketplace-join h2 {
+  font-size: 17px;
+  margin: 12px 0 8px;
+  color: #1c1f22;
+}
+
+.tip-marketplace-page .tip-marketplace-join p {
+  font-size: var(--tip-text-small);
+  margin-bottom: 20px;
+  color: #4b5563;
+}
+
+.tip-marketplace-page .tip-marketplace-join .tip-status {
+  background: #fef3c7;
+  color: #92400e;
+  border-color: #fde68a;
+}
+
+.tip-marketplace-page .tip-section-icon {
+  color: #f59e0b;
+  margin-right: 6px;
+}
+
+.tip-marketplace-page .tip-creator-identity {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+}
+
+.tip-marketplace-page .tip-creator-avatar {
+  position: relative;
+  display: block;
+  flex-shrink: 0;
+}
+
+.tip-marketplace-page .tip-creator-avatar img {
+  width: 52px;
+  height: 52px;
+  object-fit: cover;
+  border: 2px solid #ffcc00;
+  border-radius: 50%;
+}
+
+.tip-marketplace-page .tip-avatar-verified {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+  background: #ffcc00;
+  color: #1c1f22;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.tip-marketplace-page .tip-creator-name a {
+  font-size: var(--tip-text-body);
+  font-weight: 700;
+  color: #1c1f22;
+  text-decoration: none;
+}
+
+.tip-marketplace-page .tip-creator-name a:hover {
+  color: #b45309;
+}
+
+.tip-marketplace-page .tip-creator-name small {
+  display: block;
+  font-size: var(--tip-text-small);
+  color: var(--tip-muted);
+}
+
+.tip-marketplace-page .tip-profile-link {
+  color: #1c1f22;
+  border-color: #ffcc00;
+  background: #ffcc00;
+  font-weight: 700;
+}
+
+.tip-marketplace-page .tip-profile-link:hover {
+  background: var(--tip-gold-hover);
+  border-color: #e6b800;
+  color: #1c1f22;
+}
+
+.tip-marketplace-page .tip-creator-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 16px;
+}
+
+.tip-marketplace-page .tip-creator-actions .tip-pill {
+  padding: 8px 10px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.tip-marketplace-page .tip-access-tabs .tip-pill {
+  padding: 9px 18px;
+  font-size: 12px;
+  line-height: 1.3;
+  background: #ffffff;
+  border-color: var(--tip-border);
+  gap: 8px;
+}
+
+.tip-marketplace-page .tip-access-tabs .tip-pill.active {
+  background: #1c1f22;
+  border-color: #1c1f22;
+  color: #ffffff;
+}
+
+.tip-marketplace-page .tip-results-count {
+  font-size: var(--tip-text-control);
+  margin: 0 0 24px;
+}
+
+.tip-marketplace-page .tip-results-count strong {
+  color: #1c1f22;
+}
+
+/* Prediction card controls */
+.tip-module .tip-card-footer .tip-open-button,
+.tip-marketplace-page .tip-card-footer .tip-open-button {
+  padding: 8px 18px;
+  font-size: 12px;
+  font-weight: 700;
+  background: #ffcc00;
+  border-color: #ffcc00;
+  color: #1c1f22;
+}
+
+.tip-module .tip-card-footer .tip-unlock-button,
+.tip-marketplace-page .tip-card-footer .tip-unlock-button {
+  padding: 8px 18px;
+  font-size: var(--tip-text-small);
+  font-weight: 700;
+  background: #1c1f22;
+  border-color: #1c1f22;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(28, 31, 34, 0.15);
+}
+
+.tip-module .tip-card-footer .tip-unlock-button:hover,
+.tip-marketplace-page .tip-card-footer .tip-unlock-button:hover {
+  background: #374151;
+  border-color: #374151;
+  color: #ffffff;
+}
+
+/* ==========================================================================
+   Public Tipster Profile Page
+   ========================================================================== */
+.tip-module.tip-public-profile-page {
+  padding-top: 38px;
+}
+
+.tip-public-profile-hero {
+  border: 1px solid var(--tip-border);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 28px;
+  background: #ffffff;
+  box-shadow: 0 4px 20px rgba(28, 31, 34, 0.04);
+  color: #1c1f22;
+  margin-bottom: 24px;
+}
+
+.tip-public-avatar {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.tip-public-avatar img {
+  width: 84px;
+  height: 84px;
+  object-fit: cover;
+  border: 3px solid #ffcc00;
+  border-radius: 50%;
+}
+
+.tip-public-verified {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 22px;
+  height: 22px;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  background: #ffcc00;
+  color: #1c1f22;
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.tip-public-follow {
+  width: 256px;
+  flex-shrink: 0;
+  border: 1px solid var(--tip-border);
+  border-radius: 16px;
+  padding: 24px;
+  background: #faf6ef;
+  text-align: center;
+}
+
+.tip-public-follow strong {
+  display: block;
+  font-size: 28px;
+  font-family: var(--font-space-grotesk), "Space Grotesk", sans-serif;
+  color: #1c1f22;
+  margin: 4px 0 14px;
+}
+
+@media (max-width: 800px) {
+  .tip-public-profile-hero {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 20px;
+    gap: 20px;
+  }
+  .tip-public-follow {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+/* ==========================================================================
+   Creator Dashboard Page
+   ========================================================================== */
+.tip-module.tip-dashboard-page {
+  padding-top: 38px;
+}
+
+.tip-dashboard-page .tip-hero {
+  background: #ffffff;
+  border: 1px solid var(--tip-border);
+  border-radius: 18px;
+  padding: 30px 34px;
+  color: #1c1f22;
+  box-shadow: 0 4px 20px rgba(28, 31, 34, 0.04);
+}
+
+.tip-dashboard-page .tip-hero h2 {
+  color: #1c1f22 !important;
+}
+
+.tip-dashboard-page .tip-hero p,
+.tip-dashboard-page .tip-hero .muted {
+  color: #4b5563 !important;
+}
+
+.tip-dashboard-page .tip-dashboard-earnings {
+  background: #ffffff;
+  border: 1px solid var(--tip-border);
+}
+
+.tip-earnings-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin: 18px 0 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--tip-border-subtle);
+}
+
+.tip-earnings-summary small {
+  display: block;
+  font-size: 13px;
+  color: var(--tip-muted);
+}
+
+.tip-dashboard-page .tip-earnings-value {
+  display: block;
+  color: #1c1f22;
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1.2;
+  margin-top: 4px;
+  font-family: var(--font-space-grotesk), "Space Grotesk", sans-serif;
+}
+
+.tip-earnings-unlocks {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.tip-earnings-unlocks > strong {
+  display: block;
+  color: #16a34a;
+  font-size: 16px;
+  margin-top: 4px;
+}
+
+.tip-earnings-breakdown {
+  padding-top: 4px;
+}
+
+.tip-earnings-breakdown dl {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  font-size: 14px;
+  margin: 12px 0 16px;
+}
+
+.tip-earnings-breakdown dt {
+  color: var(--tip-muted);
+  font-weight: 500;
+}
+
+.tip-earnings-breakdown dd {
+  color: #1c1f22;
+  font-weight: 700;
+  text-align: right;
+  margin: 0;
+}
+
+.tip-earnings-stripe {
+  margin: 16px 0;
+  font-size: 13px;
+  border: 1px solid var(--tip-border);
+  background: var(--tip-surface);
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+
+.tip-earnings-stripe summary {
+  cursor: pointer;
+  color: #1c1f22;
+  font-weight: 700;
+}
+
+.tip-earnings-balance {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 12px 0;
+}
+
+.tip-earnings-balance small {
+  display: block;
+  color: var(--tip-muted);
+}
+
+.tip-earnings-balance strong {
+  display: block;
+  font-size: 17px;
+  font-weight: 800;
+  color: #1c1f22;
+  margin-top: 2px;
+}
+
+.tip-dashboard-page .tip-dashboard-edit {
+  color: #1c1f22;
+  background: #ffcc00;
+  border-color: #ffcc00;
+  font-weight: 700;
+}
+
+.tip-dashboard-page .tip-dashboard-edit:hover {
+  background: var(--tip-gold-hover);
+  color: #1c1f22;
+}
+
+.tip-dashboard-page .tip-dashboard-delete {
+  color: #ef4444;
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
+.tip-dashboard-page .tip-dashboard-delete:hover {
+  background: #fee2e2;
+}
+
+/* ==========================================================================
+   Activation & Membership Layout
+   ========================================================================== */
+.tip-module.tip-activation-page {
+  padding: 28px 0 60px;
+}
+
+.tip-activation-page .tip-plan-hero {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.tip-activation-page .tip-plan-hero img {
+  width: 170px;
+  margin-bottom: 14px;
+}
+
+.tip-activation-page .tip-plan-hero h1 {
+  font-size: 32px;
+  margin: 12px 0 10px;
+  font-weight: 800;
+}
+
+.tip-activation-profile {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  border: 1px solid var(--tip-border);
+  border-radius: 16px;
+  padding: 18px 20px;
+  margin-bottom: 24px;
+  background: #ffffff;
+  box-shadow: 0 2px 12px rgba(28, 31, 34, 0.04);
+}
+
+.tip-activation-profile.active {
+  border-color: #eae5dc;
+  background: #ffffff;
+}
+
+.tip-activation-profile .tip-activation-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  width: 100%;
+  padding-top: 14px;
+  border-top: 1px dashed #eae5dc;
+}
+
+@media (min-width: 768px) {
+  .tip-activation-profile {
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+    padding: 20px 24px;
+  }
+  .tip-activation-profile .tip-activation-footer {
+    width: auto;
+    margin-left: auto;
+    padding-top: 0;
+    border-top: none;
+  }
+}
+
+.tip-activation-page .tip-plan-card .h4 {
+  font-size: 22px;
+  color: #1c1f22;
+  font-weight: 800;
+}
+
+.tip-activation-page .tip-plan-card .tip-status {
+  background: #fef3c7;
+  color: #92400e;
+  border-color: #fde68a;
+}
+
+/* ==========================================================================
+   Tip Editor Page
+   ========================================================================== */
+.tip-module.tip-editor-page {
+  padding-top: 38px;
+}
+
+.tip-editor-page .tip-form {
+  background: #ffffff;
+  border: 1px solid var(--tip-border);
+  border-radius: 20px;
+  padding: 36px 42px;
+  box-shadow: 0 4px 24px rgba(28, 31, 34, 0.04);
+}
+
+.tip-editor-page .tip-visibility button:after {
+  content: "";
+  position: absolute;
+  right: 19px;
+  top: 22px;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #d1d5db;
+  border-radius: 50%;
+}
+
+.tip-editor-page .tip-visibility button.selected:after {
+  content: "\2713";
+  background: #ffcc00;
+  color: #1c1f22;
+  border-color: #ffcc00;
+  font-size: 12px;
+  font-weight: 900;
+  text-align: center;
+  line-height: 15px;
+}
+
+.tip-editor-page .tip-visibility button.premium.selected:after {
+  background: #1c1f22;
+  color: #ffffff;
+  border-color: #1c1f22;
+}
+
+/* Profile Avatars */
+.profile-avatar {
+  display: inline-block;
+  width: var(--profile-avatar-size, 48px);
+  height: var(--profile-avatar-size, 48px);
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.profile-avatar-initials {
+  display: inline-grid;
+  place-items: center;
+  background: linear-gradient(135deg, #ffcc00, #f59e0b);
+  color: #1c1f22;
+  font-weight: 800;
+  font-size: calc(var(--profile-avatar-size, 48px) * 0.35);
+  line-height: 1;
+  border: 2px solid #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.tip-module .tip-icon {
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   Responsive Adaptations
+   ========================================================================== */
+@media (max-width: 900px) {
+  .tip-module .tip-card-grid,
+  .tip-module .tip-creator-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .tip-marketplace-page .tip-marketplace-join {
+    width: 100%;
+    max-width: 100%;
+  }
+  .tip-module .tip-hero {
+    flex-wrap: wrap;
+    padding: 28px;
+  }
+  .tip-module .tip-hero-actions {
+    min-width: 0;
+    width: 100%;
+  }
+  .tip-module .tip-prediction-row {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 20px;
+  }
+  .tip-module .tip-prediction-row .tip-odds {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    width: 100%;
+  }
+  .tip-module .tip-prediction-row .tip-odds strong {
+    font-size: 20px;
+    margin: 0;
+  }
+  .tip-module .tip-dashboard-row-actions {
+    width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .tip-module {
+    padding-top: 28px;
+  }
+  .tip-module .tip-container {
+    padding: 0 16px;
+  }
+  .tip-module h1 {
+    font-size: 24px;
+  }
+  .tip-module .tip-hero {
+    padding: 22px;
+    gap: 16px;
+  }
+  .tip-module .tip-hero-copy h2 {
+    font-size: 20px;
+  }
+  .tip-module .tip-stat-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  .tip-module .tip-stat {
+    padding: 16px;
+  }
+  .tip-module .tip-stat strong {
+    font-size: 26px;
+  }
+  .tip-module .tip-two-col,
+  .tip-module .tip-plan-layout,
+  .tip-module .tip-card-grid,
+  .tip-module .tip-creator-grid,
+  .tip-module .tip-visibility,
+  .tip-module .tip-detail-columns {
+    grid-template-columns: 1fr;
+  }
+  .tip-module .tip-panel,
+  .tip-module .membership-card {
+    padding: 18px;
+  }
+  .tip-editor-page .tip-form {
+    padding: 20px 16px;
+  }
+  .tip-module .tip-visibility button {
+    padding: 16px 14px;
+  }
+  .tip-module .tip-form-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .tip-module .tip-form-actions button,
+  .tip-module .tip-form-actions a {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+  .tip-module .tip-checkout-modal,
+  .tip-native-dialog .tip-module.tip-checkout-modal {
+    padding: 24px 18px;
+    width: 100%;
+  }
+  .tip-module .tip-prediction-row {
+    grid-template-columns: 1fr;
+    padding: 16px;
+  }
+}
+
+/* ==========================================================================
+   Tip Detail Page Styles
+   ========================================================================== */
+.tip-module .tip-detail-hero {
+  background: #ffffff;
+  border: 1px solid var(--tip-border);
+  border-radius: 20px;
+  padding: 32px;
+  margin-bottom: 28px;
+  box-shadow: 0 4px 18px rgba(28, 31, 34, 0.04);
+}
+
+.tip-module .tip-detail-hero.tip-detail-premium {
+  border-color: #fde68a;
+  background: linear-gradient(180deg, #ffffff 0%, #fffdf8 100%);
+}
+
+.tip-module .tip-detail-hero h1,
+.tip-module .tip-detail-title {
+  font-size: 28px;
+  font-weight: 800;
+  color: #1c1f22;
+  margin: 12px 0 16px;
+  line-height: 1.3;
+}
+
+.tip-module .tip-detail-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #eae5dc;
+}
+
+.tip-module .tip-metric-card {
+  background: #faf6ef;
+  border: 1px solid #eae5dc;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.tip-module .tip-metric-card small {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--tip-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+}
+
+.tip-module .tip-metric-card strong {
+  display: block;
+  font-size: 20px;
+  font-weight: 800;
+  color: #1c1f22;
+  font-family: var(--font-space-grotesk), "Space Grotesk", sans-serif;
+}
+
+.tip-module .tip-metric-card .tip-detail-odds {
+  color: #b45309;
+}
+
+.tip-module .tip-confidence-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #ecfdf5;
+  color: #16a34a;
+  border: 1px solid #a7f3d0;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 12.5px;
+  white-space: nowrap;
+}
+
+.tip-module .tip-confidence-badge.high,
+.tip-module .tip-confidence-badge[data-confidence="High"] {
+  background: #ecfdf5;
+  color: #15803d;
+  border: 1px solid #86efac;
+}
+
+.tip-module .tip-confidence-badge.medium,
+.tip-module .tip-confidence-badge[data-confidence="Medium"] {
+  background: #fffbeb;
+  color: #b45309;
+  border: 1px solid #fde68a;
+}
+
+.tip-module .tip-confidence-badge.low,
+.tip-module .tip-confidence-badge[data-confidence="Low"] {
+  background: #f3f4f6;
+  color: #4b5563;
+  border: 1px solid #d1d5db;
+}
+
+.tip-module .tip-detail-columns {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 991px) {
+  .tip-module .tip-detail-columns {
+    grid-template-columns: 1fr;
+  }
+}
+
+.tip-module .tip-detail-content {
+  min-width: 0;
+}
+
+.tip-module .tip-detail-author-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.tip-module .tip-public-empty {
+  background: #faf6ef;
+  border: 1px dashed #d8d1c5;
+  border-radius: 16px;
+  padding: 48px 24px;
+  text-align: center;
+  margin: 24px 0;
+}

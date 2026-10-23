@@ -19,11 +19,6 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
   const [primaryColor, setPrimaryColor] = useState("#FFCC00");
 
   useEffect(() => {
-    localStorage.setItem("admin_theme_color", "#FFCC00");
-    setPrimaryColor("#FFCC00");
-  }, []);
-
-  useEffect(() => {
     const hoverColor = "#E6B800";
     const skyBlueColor = "#4A90E2";
     const skyHoverColor = "#357ABD";
@@ -102,7 +97,7 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
         border-color: ${primaryColor} !important;
       }
       .footer-title::after {
-        background-color: ${primaryColor} !important;
+        display: none !important;
       }
       .score-box:hover, .fixture-card:hover, .news-card:hover, .player-card:hover {
         border-color: ${skyBlueColor} !important;

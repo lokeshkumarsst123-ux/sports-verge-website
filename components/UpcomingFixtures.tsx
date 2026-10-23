@@ -79,12 +79,45 @@ export default function UpcomingFixtures() {
       <div className="position-relative">
         {showArrows && <button className="slider-arrow arrow-left d-none d-md-flex align-items-center justify-content-center" onClick={() => scrollRef.current?.scrollBy({ left: -340, behavior: "smooth" })} aria-label="Scroll left"><i className="bi bi-chevron-left"></i></button>}
         <div ref={scrollRef} className="fixtures-scroll-container d-flex gap-3 overflow-auto">
-          {sorted.length ? sorted.map((match, index) => <Link href={getMatchLink(match)} key={`${match.type}-${match.id || "match"}-${index}`} className="fixture-card fixtures-card-custom flex-shrink-0 rounded-3 p-3 text-decoration-none shadow-sm">
-            <div className="d-flex justify-content-between align-items-center mb-3"><span className="small text-truncate fw-semibold fixture-league-custom">{match.league}</span></div>
-            <div className="d-flex justify-content-between align-items-center mb-4 px-2">
-              {[{ name: match.home, logo: match.homeLogo }, { name: match.away, logo: match.awayLogo }].map((team, teamIndex) => <React.Fragment key={`${match.id || index}-team-${teamIndex}-${team.name}`}><div className="text-center" style={{ width: "80px" }}><Image src={team.logo} width={34} height={34} alt={team.name} className="object-fit-contain" /><div className="small fw-bold mt-2 text-truncate fixture-team-name-custom">{team.name}</div></div>{teamIndex === 0 && <div className="small fw-bold fixture-vs-custom">VS</div>}</React.Fragment>)}
+          {sorted.length ? sorted.map((match, index) => <Link
+            href={getMatchLink(match)}
+            key={`${match.type}-${match.id || "match"}-${index}`}
+            className="fixture-card fixtures-card-custom text-decoration-none flex-shrink-0 shadow-sm"
+          >
+            <div className="d-flex justify-content-between align-items-center mb-2">
+              <span className="small text-truncate fw-semibold fixture-league-custom">{match.league}</span>
             </div>
-            <div className="text-center"><div className="small fw-medium fixture-day-custom">{match.day}</div><div className="fw-bold fixture-time-custom">{match.time}</div><div className="fs-11 text-truncate fixture-venue-custom">{match.venue}</div></div>
+
+            <div className="d-flex justify-content-between align-items-center my-auto px-1 py-1">
+              {[
+                { name: match.home, logo: match.homeLogo },
+                { name: match.away, logo: match.awayLogo }
+              ].map((team, teamIndex) => (
+                <React.Fragment key={`${match.id || index}-team-${teamIndex}-${team.name}`}>
+                  <div className="text-center" style={{ width: "76px" }}>
+                    <Image
+                      src={team.logo}
+                      width={32}
+                      height={32}
+                      alt={team.name}
+                      className="object-fit-contain"
+                    />
+                    <div className="small fw-bold mt-1 text-truncate fixture-team-name-custom" title={team.name}>
+                      {team.name}
+                    </div>
+                  </div>
+                  {teamIndex === 0 && (
+                    <div className="small fw-bold fixture-vs-custom mx-2">VS</div>
+                  )}
+                </React.Fragment>
+              ))}
+            </div>
+
+            <div className="text-center mt-2 pt-2 border-top" style={{ borderColor: "#F3EFE6" }}>
+              <div className="small fw-medium fixture-day-custom">{match.day}</div>
+              <div className="fw-bold fixture-time-custom">{match.time}</div>
+              <div className="fs-11 text-truncate fixture-venue-custom">{match.venue}</div>
+            </div>
           </Link>) : <div className="text-center w-100 py-4 small widget-empty-text">{error || "No upcoming fixtures for this category."}</div>}
         </div>
         {showArrows && <button className="slider-arrow arrow-right d-none d-md-flex align-items-center justify-content-center" onClick={() => scrollRef.current?.scrollBy({ left: 340, behavior: "smooth" })} aria-label="Scroll right"><i className="bi bi-chevron-right"></i></button>}

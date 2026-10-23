@@ -142,44 +142,36 @@ function NewsContent({ initialCategory: initialCategoryProp }: NewsPageClientPro
           {/* ─── Featured Article ─── */}
           {featuredArticle && (
             <div className="mb-5">
-              <Link href={`/news/${featuredArticle.id}`} className="text-decoration-none">
+              <Link href={`/news/${featuredArticle.id}`} className="text-decoration-none d-block">
                 <div
-                  className="rounded-4 overflow-hidden position-relative transition-all hover-glow"
-                  style={{ minHeight: "400px", border: "1px solid rgba(255,255,255,0.08)" }}
+                  className="rounded-4 overflow-hidden position-relative news-featured-banner"
+                  style={{ minHeight: "440px", border: "1px solid #EAE5DC", backgroundColor: "#FAF6EF" }}
                 >
                   {/* Background image */}
                   <img
                     src={featuredArticle.image}
                     alt={featuredArticle.title}
-                    className="w-100 h-100 object-fit-cover position-absolute"
+                    className="w-100 h-100 object-fit-cover position-absolute news-featured-img"
                     style={{ inset: 0 }}
                   />
-                  {/* Gradient overlay */}
-                  <div
-                    className="position-absolute w-100 h-100"
-                    style={{
-                      inset: 0,
-                      background: "linear-gradient(to right, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.7) 55%, rgba(0,0,0,0.1) 100%)",
-                    }}
-                  ></div>
 
-                  {/* Content */}
-                  <div className="position-relative d-flex align-items-center h-100 p-4 p-lg-5" style={{ minHeight: "400px" }}>
-                    <div style={{ maxWidth: "520px" }}>
+                  {/* Frosted Glass Content Panel on Cream Theme */}
+                  <div className="position-relative d-flex align-items-center h-100 p-4 p-lg-5" style={{ minHeight: "440px" }}>
+                    <div className="news-featured-card">
                       <div className="d-flex align-items-center gap-2 mb-3">
-                        <span className="badge rounded-pill px-3 py-1 fw-bold" style={{ fontSize: "10px", letterSpacing: "0.08em", backgroundColor: "#FFCC00", color: "#1C1F22" }}>
+                        <span className="badge rounded-pill px-3 py-1 fw-bold" style={{ fontSize: "11px", letterSpacing: "0.08em", backgroundColor: "#FFCC00", color: "#1C1F22", boxShadow: "0 2px 6px rgba(255, 204, 0, 0.25)" }}>
                           ★ FEATURED
                         </span>
-                        <span className="badge rounded-pill px-3 py-1 fw-semibold" style={{ fontSize: "10px", background: "rgba(74, 144, 226, 0.2)", color: "#FFFFFF" }}>
+                        <span className="badge rounded-pill px-3 py-1 fw-bold" style={{ fontSize: "11px", background: "rgba(74, 144, 226, 0.12)", color: "#2B6CB0", border: "1px solid rgba(74, 144, 226, 0.25)" }}>
                           {featuredArticle.category}
                         </span>
                       </div>
 
-                      <h2 className="fw-bold text-white-force mb-3 font-space-grotesk lh-sm" style={{ fontSize: "clamp(1.4rem, 3vw, 2rem)", color: "#FFFFFF" }}>
+                      <h2 className="fw-bold mb-3 font-space-grotesk lh-sm news-featured-title" style={{ fontSize: "clamp(1.3rem, 2.5vw, 1.85rem)", color: "#1C1F22" }}>
                         {featuredArticle.title}
                       </h2>
 
-                      <p className="mb-4 lh-lg text-white-force" style={{ fontSize: "14px", color: "rgba(255, 255, 255, 0.9)" }}>
+                      <p className="mb-3 lh-base news-featured-summary" style={{ fontSize: "13.5px", color: "#4B5563" }}>
                         {featuredArticle.summary}
                       </p>
 
@@ -193,12 +185,12 @@ function NewsContent({ initialCategory: initialCategoryProp }: NewsPageClientPro
                           />
                         )}
                         <span className="fw-semibold" style={{ fontSize: "12px", color: "#4A90E2" }}>{featuredArticle.author}</span>
-                        <span style={{ fontSize: "12px", color: "rgba(255, 255, 255, 0.8)" }}>· {featuredArticle.date} · {featuredArticle.readTime}</span>
+                        <span style={{ fontSize: "12px", color: "#6B7280" }}>· {featuredArticle.date} · {featuredArticle.readTime}</span>
                       </div>
 
                       <span
-                        className="btn fw-bold rounded-pill px-4 py-2 d-inline-flex align-items-center gap-2 shadow-sm"
-                        style={{ fontSize: "13px", backgroundColor: "#FFCC00", color: "#1C1F22", border: "none" }}
+                        className="btn fw-bold rounded-pill px-4 py-2 d-inline-flex align-items-center gap-2 shadow-sm news-featured-btn"
+                        style={{ fontSize: "13.5px", backgroundColor: "#FFCC00", color: "#1C1F22", border: "none" }}
                       >
                         Read Full Article <i className="bi bi-arrow-right"></i>
                       </span>
@@ -290,7 +282,7 @@ function NewsContent({ initialCategory: initialCategoryProp }: NewsPageClientPro
         {/* ─── Sidebar Ad ─── */}
         {newsAd && (
           <div className="col-lg-4">
-            <div className="sticky-lg-top" style={{ top: "90px" }}>
+            <div className="sticky-lg-top" style={{ top: "90px", zIndex: 10 }}>
               <div className="rounded-4 p-4 text-center shadow-sm" style={{ background: "var(--bg-card)", border: "1px solid var(--border-dark)" }}>
                 <p className="text-muted text-uppercase fw-semibold mb-3" style={{ fontSize: "10px", letterSpacing: "0.12em" }}>
                   Sponsor Showcase
@@ -325,7 +317,7 @@ function NewsContent({ initialCategory: initialCategoryProp }: NewsPageClientPro
 
 export default function NewsPage({ initialCategory = "All News" }: NewsPageClientProps) {
   return (
-    <main className="font-outfit text-white">
+    <main className="font-outfit" style={{ color: "#1C1F22" }}>
       <Suspense
         fallback={
           <div className="container custom-container py-4">

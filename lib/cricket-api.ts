@@ -257,7 +257,7 @@ export const cricketItems = (data: EntityRecord | undefined) => entityItems(data
 
 export type CricketRankingGroup = {
   category: string;
-  list: { rank: number; name: string; logo: string; points: string; rating?: string; change: string; trend: "up" | "down" | "flat" }[];
+  list: { rank: number | string; name: string; logo: string; points: string; rating?: string; change: string; trend: "up" | "down" | "flat" }[];
 };
 
 const rankingList = (value: unknown) => {

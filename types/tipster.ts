@@ -31,6 +31,9 @@ export interface TipsterSubscriptionPlan {
 }
 
 export interface TipsterProfile {
+  earnings?: { totals: {currency:string;amount:number;gross:number;refunded:number;disputed:number;net:number;connected:number;legacy:number;purchases:number}[]; unlocksCount:number;activeUnlocksCount:number;platformCommissionPercent:number;defaultCurrency:string };
+  canPublish?: boolean;
+  isSuspended?: boolean;
   id: string;
   userId?: string;
   firstName: string;
@@ -56,17 +59,23 @@ export interface TipsterProfile {
   verificationStatus: "pending" | "verified" | "rejected";
   stats: {
     totalTips: number;
-    winRate: number; // percentage
-    roi: number; // percentage
-    profitUnits: number;
+    publishedTips?: number;
+    settledTips?: number;
+    winRate: number | null; // percentage
+    roi: number | null; // percentage
+    profitUnits: number | null;
     followersCount: number;
     rating: number; // 1 to 5
-    streak?: string;
+    streak?: string | null;
   };
   createdAt: string;
 }
 
 export interface Tip {
+  unlocked?: boolean;
+  isOwnTip?: boolean;
+  currency?: string;
+  isHidden?: boolean;
   id: string;
   tipsterId: string;
   tipster: {
@@ -97,7 +106,7 @@ export interface Tip {
   matchDate: string;
   kickoffTime: string;
   visibility: TipVisibility;
-  premiumPrice?: number; // In USD, e.g., 9.99
+  premiumPrice?: number; // Amount in this tip's currency, e.g., 9.99
   status: TipStatus;
   result?: "won" | "lost" | "void" | "pending";
   likesCount: number;
@@ -117,5 +126,8 @@ export interface PurchasedTip {
   purchasePrice: number;
   purchasedAt: string;
   paymentId: string;
-  status: "active" | "expired";
+  status: "active" | "expired" | "refunded" | "disputed";
+  currency?: string;
+  contentAvailable?: boolean;
+  expiresAt?: string | null;
 }

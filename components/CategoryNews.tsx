@@ -46,7 +46,7 @@ export default function CategoryNews({ category, title }: CategoryNewsProps) {
         </div>
       ) : articles.length ? (
         <div className="d-flex flex-column gap-3">
-          {articles.map((article) => (
+          {articles.map((article, index) => (
             <Link
               key={article.id}
               href={`/news/${article.id}`}
@@ -59,6 +59,7 @@ export default function CategoryNews({ category, title }: CategoryNewsProps) {
                   width={240}
                   height={150}
                   className="w-100 h-100 object-fit-cover news-thumb"
+                  loading={index === 0 ? "eager" : "lazy"}
                   unoptimized
                 />
               </div>
@@ -69,8 +70,9 @@ export default function CategoryNews({ category, title }: CategoryNewsProps) {
                 <p className="small mb-3 lh-base cat-news-summary-custom">
                   {article.summary}
                 </p>
-                <div className="mt-auto fs-11 cat-news-date-custom">
-                  {formatUserDate(article.publishAt || article.createdAt, true)}
+                <div className="mt-auto cat-news-date-custom d-flex align-items-center gap-1">
+                  <i className="bi bi-clock"></i>
+                  <span>{formatUserDate(article.publishAt || article.createdAt, true)}</span>
                 </div>
               </div>
             </Link>

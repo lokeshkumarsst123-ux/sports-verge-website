@@ -210,6 +210,7 @@ export default function RegisterPage() {
                   {errors.password && (
                     <div className="invalid-feedback d-block small mt-1">{errors.password}</div>
                   )}
+                  <small className="password-hint d-block mt-1">Password must be at least 8 characters long and include 1 letter and 1 number.</small>
                 </div>
 
                 <div>
@@ -237,17 +238,19 @@ export default function RegisterPage() {
                   {errors.confirmPassword && (
                     <div className="invalid-feedback d-block small mt-1">{errors.confirmPassword}</div>
                   )}
+                  <small className="password-hint d-block mt-1">Must match your password.</small>
                 </div>
 
-                <div className="form-check mt-1">
+                <div className="d-flex align-items-center gap-2 mt-3 mb-1">
                   <input
                     type="checkbox"
-                    className="form-check-input"
+                    className="form-check-input m-0 flex-shrink-0"
                     id="termsCheck"
                     required
+                    style={{ width: "16px", height: "16px", cursor: "pointer", accentColor: "#FFCC00" }}
                   />
-                  <label className="form-check-label text-muted small" htmlFor="termsCheck">
-                    I agree to the <Link href="/terms-of-use" className="auth-link">Terms of Service</Link> & <Link href="/privacy-policy" className="auth-link">Privacy Policy</Link>
+                  <label className="text-muted small m-0 user-select-none" htmlFor="termsCheck" style={{ cursor: "pointer", fontSize: "13px", lineHeight: 1.3 }}>
+                    I agree to the <Link href="/terms-of-use" className="auth-link fw-semibold" style={{ color: "#4A90E2" }}>Terms of Service</Link> & <Link href="/privacy-policy" className="auth-link fw-semibold" style={{ color: "#4A90E2" }}>Privacy Policy</Link>
                   </label>
                 </div>
 
@@ -274,7 +277,7 @@ export default function RegisterPage() {
               <div className="spinner-border text-success mb-3 spinner-large" role="status">
                 <span className="visually-hidden">Loading...</span>
               </div>
-              <h4 className="text-white fw-semibold">Creating Account...</h4>
+              <h4 className="auth-title fw-semibold">Creating Account...</h4>
               <p className="text-muted small mt-2">
                 We are configuring your profile and preparing secure access.
               </p>

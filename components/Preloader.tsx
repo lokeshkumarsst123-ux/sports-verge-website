@@ -31,27 +31,34 @@ export default function Preloader() {
 
   return (
     <div className={`preloader-wrapper ${fadeOut ? "fade-out" : ""}`}>
-      <div className="preloader-content">
+      <div className="preloader-backdrop-glow"></div>
+      <div className="preloader-card">
         <div className="spinner-container">
-          <div className="custom-spinner"></div>
-          <div className="spinner-glow"></div>
-          <div className="spinner-logo">
+          <div className="custom-spinner-ring"></div>
+          <div className="spinner-inner-circle">
             <Image
               src="/assets/imgs/favicon.svg"
               alt="SportsVerge Logo"
-              width={34}
-              height={34}
+              width={38}
+              height={38}
               priority
+              className="preloader-logo-img"
             />
           </div>
         </div>
+
         <h2 className="preloader-brand">
-          SPORTS<span className="text-success">VERGE</span>
+          SPORTS<span className="brand-highlight">VERGE</span>
         </h2>
+
+        <div className="preloader-status-pill">
+          <span className="preloader-live-dot"></span>
+          <span>LIVE SPORTS & ANALYTICS</span>
+        </div>
+
         <div className="loading-bar">
           <div className="loading-progress"></div>
         </div>
-        <p className="preloader-tagline">Real-time Analytics & Live Scores</p>
       </div>
     </div>
   );

@@ -7,6 +7,10 @@ import { PlayerItem } from "@/types";
 import { cricketApi } from "@/lib/cricket-api";
 import { nflApi, soccerApi } from "@/lib/sports-api";
 
+// Set to true for static/mock data to test UI and design without API dependencies.
+// Set to false to switch back to dynamic API data anytime.
+import { USE_STATIC_MOCK, MOCK_POPULAR_PLAYERS } from "@/lib/mock-data";
+
 const PLAYER_PLACEHOLDER = "/assets/imgs/players/player-placeholder.svg";
 
 const playerImage = (player: any) => {
@@ -19,8 +23,13 @@ const playerImage = (player: any) => {
 };
 
 export default function PopularPlayers() {
-  const [players, setPlayers] = useState<PlayerItem[]>([]);
+  const [players, setPlayers] = useState<PlayerItem[]>(USE_STATIC_MOCK ? MOCK_POPULAR_PLAYERS : []);
+
   useEffect(() => {
+    if (USE_STATIC_MOCK) {
+      return;
+    }
+
     let cancelled = false;
     const load = async () => {
       const responses = await Promise.allSettled([cricketApi.matches("result"), soccerApi.matches("result"), nflApi.matches("result")]);
@@ -43,6 +52,7 @@ export default function PopularPlayers() {
     void load();
     return () => { cancelled = true; };
   }, []);
+
   return (
     <section className="popular-players bg-card rounded-4 p-4 border mt-4">
       <div className="d-flex justify-content-between align-items-center mb-4">
@@ -60,13 +70,13 @@ export default function PopularPlayers() {
             href="/stats"
             className="player-card player-card-custom flex-shrink-0 d-block text-center text-decoration-none rounded-3 overflow-hidden shadow-sm"
           >
-            <div className="player-img-wrapper">
+            <div className="player-img-wrapper" style={{ height: "185px", overflow: "hidden", backgroundColor: "#f8fafc" }}>
               <img
                 src={player.image || PLAYER_PLACEHOLDER}
                 alt={player.name}
                 width={160}
                 height={185}
-                className="w-100 player-thumb"
+                className="w-100 h-100 player-thumb object-fit-cover"
                 onError={(event) => {
                   if (!event.currentTarget.src.endsWith(PLAYER_PLACEHOLDER)) event.currentTarget.src = PLAYER_PLACEHOLDER;
                 }}

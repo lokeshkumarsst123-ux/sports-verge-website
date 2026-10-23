@@ -20,6 +20,7 @@ export type Category = {
 };
 
 export type Article = {
+  editorialLayout?: import('./content-api').EditorialLayout;
   id: string;
   headline: string;
   summary: string;

@@ -1,28 +1,29 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { Suspense, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { apiErrorMessage, apiFieldErrors, authApi, saveAuthSession } from "@/lib/auth-api";
-import { getStoredTipster, saveStoredTipster, INITIAL_TIPSTERS } from "@/lib/tipster-store";
 
 export default function LoginPage() {
+  return <Suspense fallback={<main className="container py-5"><p role="status">Loading sign in...</p></main>}><LoginForm /></Suspense>;
+}
+
+function LoginForm() {
   const router = useRouter();
-  const [loginRole, setLoginRole] = useState<"user" | "tipster">(() => {
-    if (typeof window !== "undefined") {
-      const params = new URLSearchParams(window.location.search);
-      if (params.get("role") === "tipster") {
-        return "tipster";
-      }
-    }
-    return "user";
-  });
+  const searchParams = useSearchParams();
+  const requestedNext = searchParams.get("next");
+  const nextPath = requestedNext && requestedNext.startsWith("/") && !requestedNext.startsWith("//")
+    ? requestedNext
+    : null;
+  const registerHref = nextPath ? `/register?next=${encodeURIComponent(nextPath)}` : "/register";
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
 
+  const [loginRole, setLoginRole] = useState<"user" | "tipster">("user");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [globalError, setGlobalError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -32,10 +33,6 @@ export default function LoginPage() {
     setLoginRole(role);
     setGlobalError(null);
     setErrors({});
-    setFormData({
-      email: "",
-      password: "",
-    });
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -73,62 +70,12 @@ export default function LoginPage() {
     setLoading(true);
     setGlobalError(null);
 
-    // Tipster Studio Sign In Flow
-    if (loginRole === "tipster") {
-      try {
-        // Find existing tipster by email or use matching demo tipster
-        const matched = INITIAL_TIPSTERS.find(
-          (t) => t.email.toLowerCase() === formData.email.trim().toLowerCase()
-        );
-
-        if (matched) {
-          saveStoredTipster(matched);
-        } else {
-          // Check if already in localStorage or create tipster profile
-          const existing = getStoredTipster();
-          if (existing && existing.email.toLowerCase() === formData.email.trim().toLowerCase()) {
-            saveStoredTipster(existing);
-          } else {
-            const newTipster = {
-              ...INITIAL_TIPSTERS[0],
-              id: `tipster-${Date.now()}`,
-              displayName: formData.email.split("@")[0],
-              username: formData.email.split("@")[0].toLowerCase().replace(/[^a-z0-9_]/g, ""),
-              email: formData.email.trim(),
-              subscriptionStatus: "active" as const,
-              createdAt: new Date().toISOString(),
-            };
-            saveStoredTipster(newTipster);
-          }
-        }
-
-        // Redirect to Tipster Dashboard
-        setTimeout(() => {
-          setLoading(false);
-          router.push("/tipster/dashboard");
-        }, 400);
-        return;
-      } catch (err) {
-        setGlobalError("Failed to sign in to Tipster Studio. Please try again.");
-        setLoading(false);
-        return;
-      }
-    }
-
-    // Standard User Sign In Flow
+    // Standard User / Tipster Sign In Flow
     try {
       const response = await authApi.login(formData);
       sessionStorage.removeItem("admin_session");
       saveAuthSession(response.data);
-      const requestedNext =
-        typeof window !== "undefined"
-          ? new URLSearchParams(window.location.search).get("next")
-          : null;
-      const nextPath =
-        requestedNext && requestedNext.startsWith("/") && !requestedNext.startsWith("//")
-          ? requestedNext
-          : "/profile";
-      router.push(nextPath);
+      router.push(nextPath || (loginRole === "tipster" ? "/tipster/dashboard" : "/profile"));
     } catch (error) {
       setGlobalError(apiErrorMessage(error));
       setErrors(apiFieldErrors(error));
@@ -206,7 +153,6 @@ export default function LoginPage() {
               </p>
             </div>
           )}
-
           {/* Global Alert Notification */}
           {globalError && (
             <div
@@ -234,9 +180,7 @@ export default function LoginPage() {
                 className={`form-control auth-input ${
                   errors.email ? "is-invalid" : ""
                 }`}
-                placeholder={
-                  loginRole === "tipster" ? "tipster@sportsverge.com" : "john@example.com"
-                }
+                placeholder="you@example.com"
               />
               {errors.email && <div className="invalid-feedback small mt-1">{errors.email}</div>}
             </div>
@@ -274,6 +218,7 @@ export default function LoginPage() {
               {errors.password && (
                 <div className="invalid-feedback d-block small mt-1">{errors.password}</div>
               )}
+              <small className="password-hint d-block mt-1">Enter your registered password.</small>
             </div>
 
             <button
@@ -289,11 +234,6 @@ export default function LoginPage() {
                     aria-hidden="true"
                   ></span>
                   Signing In...
-                </>
-              ) : loginRole === "tipster" ? (
-                <>
-                  <i className="bi bi-speedometer2"></i>
-                  <span>Sign In to Tipster Studio</span>
                 </>
               ) : (
                 "Sign In"
@@ -317,7 +257,7 @@ export default function LoginPage() {
               <div className="d-flex align-items-center justify-content-between">
                 <span className="text-muted small">New to SportsVerge?</span>
                 <Link
-                  href="/register"
+                  href={registerHref}
                   className="auth-link small"
                 >
                   Create Account

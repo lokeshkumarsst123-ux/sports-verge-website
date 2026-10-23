@@ -9,8 +9,8 @@ export default function SearchSkeleton() {
       <div className="row g-4">
         {[1, 2, 3].map((i) => (
           <div className="col-md-6 col-lg-4" key={i}>
-            <div className="card bg-card border border-dark rounded-3 h-100 overflow-hidden">
-              <div className="card-header border-bottom border-dark bg-dark bg-opacity-30 d-flex justify-content-between align-items-center py-2 px-3">
+            <div className="rounded-4 h-100 overflow-hidden shadow-sm" style={{ background: "#FFFFFF", border: "1px solid #EAE5DC" }}>
+              <div className="card-header border-bottom d-flex justify-content-between align-items-center py-2 px-3" style={{ background: "#FAF6EF", borderColor: "#EAE5DC" }}>
                 <div className="skeleton-line w-80px h-12px"></div>
                 <div className="skeleton-line w-40px h-14px rounded-pill"></div>
               </div>
@@ -31,7 +31,7 @@ export default function SearchSkeleton() {
                     <div className="skeleton-line w-20px h-14px"></div>
                   </div>
                 </div>
-                <div className="d-flex justify-content-between align-items-center pt-3 border-top border-dark mt-auto">
+                <div className="d-flex justify-content-between align-items-center pt-3 border-top mt-auto" style={{ borderColor: "#EAE5DC" }}>
                   <div className="skeleton-line w-60px h-14px"></div>
                   <div className="skeleton-line w-80px h-28px rounded-2"></div>
                 </div>
@@ -45,9 +45,9 @@ export default function SearchSkeleton() {
       <div className="row g-4 mt-4">
         {[1, 2].map((i) => (
           <div className="col-md-6" key={i}>
-            <div className="card bg-card border border-dark rounded-3 h-100 overflow-hidden p-0">
+            <div className="rounded-4 h-100 overflow-hidden p-0 shadow-sm" style={{ background: "#FFFFFF", border: "1px solid #EAE5DC" }}>
               <div className="row g-0 h-100">
-                <div className="col-sm-4 bg-dark">
+                <div className="col-sm-4" style={{ background: "#FAF6EF" }}>
                   <div className="skeleton-square w-100 h-100" style={{ minHeight: "120px" }}></div>
                 </div>
                 <div className="col-sm-8">

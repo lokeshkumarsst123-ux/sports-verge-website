@@ -91,13 +91,22 @@ const loadNflCompetitions = async () => {
   return sportsItems(data);
 };
 
+import { USE_STATIC_MOCK, MOCK_TABLES } from "@/lib/mock-data";
+
 export default function StatsPage() {
   const [sport, setSport] = useState<Sport>("cricket");
-  const [tables, setTables] = useState<LeaderTable[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [tables, setTables] = useState<LeaderTable[]>(USE_STATIC_MOCK ? MOCK_TABLES.cricket : []);
+  const [loading, setLoading] = useState(!USE_STATIC_MOCK);
   const [message, setMessage] = useState("");
 
   useEffect(() => {
+    if (USE_STATIC_MOCK) {
+      setTables(MOCK_TABLES[sport] || []);
+      setLoading(false);
+      setMessage("");
+      return;
+    }
+
     let cancelled = false;
     setLoading(true);
     setTables([]);
@@ -245,7 +254,7 @@ export default function StatsPage() {
         ) : (
           <div className="stats-leaders-state stats-leaders-empty py-5 text-center my-4">
             <i className="bi bi-info-circle text-muted fs-1 mb-3 d-block" aria-hidden="true" />
-            <h3 className="h5 text-white mb-2">Data Not Available</h3>
+            <h3 className="h5 fw-bold mb-2" style={{ color: "#1C1F22" }}>Data Not Available</h3>
             <p className="text-secondary mb-0 small">
               {message || `Player statistics for ${sport === "cricket" ? "Cricket" : sport === "football" ? "Football" : "NFL"} are currently not available.`}
             </p>

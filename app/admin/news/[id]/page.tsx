@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import EditorialEditor from "@/components/admin/EditorialEditor";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { adminApi, type Article } from "@/lib/admin-api";
@@ -87,6 +88,7 @@ export default function AdminNewsDetailPage() {
                     </div>
                   )}
                   <article className="admin-detail-richtext">{article.content}</article>
+                  <EditorialEditor articleId={article.id} initial={article.editorialLayout}/>
                 </div>
               </section>
             </div>

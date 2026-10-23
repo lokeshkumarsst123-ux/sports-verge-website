@@ -32,9 +32,9 @@ const getRequestPath = async () => {
 };
 
 const fallbackFontVariables = {
-  "--font-outfit": "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-  "--font-space-grotesk": "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-  "--font-inter": "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+  "--font-outfit": "'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+  "--font-space-grotesk": "'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+  "--font-inter": "'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
 } as CSSProperties;
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -80,13 +80,13 @@ export default async function RootLayout({
 
         {/* Higher precedence for custom styles to ensure they override Bootstrap */}
         <link
-          rel="stylesheet"
-          href="/assets/css/style.css"
+            rel="stylesheet"
+          href="/assets/css/style.css?v=20260807-4"
           precedence="high"
         />
         <link
           rel="stylesheet"
-          href="/assets/css/custom.css"
+          href="/assets/css/custom.css?v=20260807-4"
           precedence="high"
         />
       </head>

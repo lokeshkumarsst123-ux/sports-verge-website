@@ -6,7 +6,7 @@ import { contentApi, type PublicSiteSettings, type SeoPageRule } from "@/lib/con
 import { absoluteUrl, routeFromSearch } from "@/lib/seo";
 
 const defaults: PublicSiteSettings = {
-  websiteName: "The Sports Verg",
+  websiteName: "The Sports Verge",
   logoUrl: null,
   contactEmail: "admin@sportsverge.com",
   contactNumber: "+1 (800) 555-0199",

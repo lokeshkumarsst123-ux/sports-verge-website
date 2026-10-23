@@ -1,11 +1,16 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { SportType, TipsterProfile } from "@/types/tipster";
-import { saveStoredTipster, INITIAL_TIPSTERS } from "@/lib/tipster-store";
+import { SportType } from "@/types/tipster";
+import {
+  hasAuthSession,
+  apiErrorMessage,
+  apiFieldErrors,
+} from "@/lib/auth-api";
+import { tipsterApi } from "@/lib/tipster-api";
 
 const SPORTS_OPTIONS: { id: SportType; label: string; icon: string; color: string }[] = [
   { id: "Cricket", label: "Cricket", icon: "bi-trophy", color: "#22c55e" },
@@ -40,8 +45,63 @@ const COUNTRIES = [
 
 export default function TipsterRegisterPage() {
   const router = useRouter();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [selectedPlan, setSelectedPlan] = useState<string>(() => {
+  const [checking, setChecking] = useState(true);
+  const [globalError, setGlobalError] = useState<string | null>(null);
+
+  const [photo, setPhoto] = useState<File | null>(null);
+  const [photoPreview, setPhotoPreview] = useState("");
+
+  useEffect(() => {
+    return () => {
+      if (photoPreview && photoPreview.startsWith("blob:")) {
+        URL.revokeObjectURL(photoPreview);
+      }
+    };
+  }, [photoPreview]);
+
+  const selectPhoto = (file?: File) => {
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024 || !["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+      setErrors((prev) => ({ ...prev, photo: "Choose a JPG, PNG or WebP photo up to 2 MB." }));
+      return;
+    }
+    setErrors((prev) => ({ ...prev, photo: "" }));
+    setPhoto(file);
+    setPhotoPreview(URL.createObjectURL(file));
+  };
+
+  useEffect(() => {
+    let active = true;
+    if (!hasAuthSession()) {
+      router.replace("/login?next=" + encodeURIComponent(window.location.pathname + window.location.search));
+      return;
+    }
+    tipsterApi
+      .me()
+      .then(({ profile }) => {
+        if (!active) return;
+        if (profile) {
+          router.replace(
+            profile.subscriptionStatus === "active" ? "/tipster/dashboard" : "/tipster-subscription"
+          );
+        } else {
+          setChecking(false);
+        }
+      })
+      .catch((e) => {
+        if (active) {
+          setGlobalError(apiErrorMessage(e));
+          setChecking(false);
+        }
+      });
+    return () => {
+      active = false;
+    };
+  }, [router]);
+
+  const [selectedPlan] = useState<string>(() => {
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
       const plan = params.get("plan");
@@ -53,15 +113,10 @@ export default function TipsterRegisterPage() {
   });
 
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
     displayName: "",
     username: "",
-    email: "",
     mobileNumber: "",
     country: "United Kingdom",
-    password: "",
-    confirmPassword: "",
     preferredSports: ["Football"] as SportType[],
     yearsOfExperience: 3,
     shortBio: "",
@@ -73,11 +128,8 @@ export default function TipsterRegisterPage() {
     termsAccepted: false,
   });
 
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [globalError, setGlobalError] = useState<string | null>(null);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -111,42 +163,12 @@ export default function TipsterRegisterPage() {
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {};
 
-    if (!formData.firstName.trim()) newErrors.firstName = "First name is required";
-    if (!formData.lastName.trim()) newErrors.lastName = "Last name is required";
     if (!formData.displayName.trim()) newErrors.displayName = "Display name is required";
 
     if (!formData.username.trim()) {
       newErrors.username = "Username is required";
     } else if (!/^[a-zA-Z0-9_]{3,20}$/.test(formData.username)) {
       newErrors.username = "Username must be 3-20 alphanumeric characters (or _)";
-    } else {
-      const isTaken = INITIAL_TIPSTERS.some(
-        (t) => t.username.toLowerCase() === formData.username.toLowerCase()
-      );
-      if (isTaken) newErrors.username = "This username is already taken by another tipster";
-    }
-
-    if (!formData.email.trim()) {
-      newErrors.email = "Email is required";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Please enter a valid email address";
-    } else {
-      const isEmailTaken = INITIAL_TIPSTERS.some(
-        (t) => t.email.toLowerCase() === formData.email.toLowerCase()
-      );
-      if (isEmailTaken) newErrors.email = "An account with this email already exists";
-    }
-
-    if (!formData.password) {
-      newErrors.password = "Password is required";
-    } else if (formData.password.length < 8) {
-      newErrors.password = "Password must be at least 8 characters long";
-    }
-
-    if (!formData.confirmPassword) {
-      newErrors.confirmPassword = "Confirm password is required";
-    } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = "Passwords do not match";
     }
 
     if (formData.preferredSports.length === 0) {
@@ -167,7 +189,7 @@ export default function TipsterRegisterPage() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) {
       window.scrollTo({ top: 200, behavior: "smooth" });
@@ -178,65 +200,72 @@ export default function TipsterRegisterPage() {
     setGlobalError(null);
 
     try {
-      const newTipster: TipsterProfile = {
-        id: `tipster-${Date.now()}`,
-        firstName: formData.firstName.trim(),
-        lastName: formData.lastName.trim(),
-        displayName: formData.displayName.trim(),
-        username: formData.username.trim(),
-        email: formData.email.trim(),
-        mobileNumber: formData.mobileNumber.trim(),
-        country: formData.country,
-        preferredSports: formData.preferredSports,
-        yearsOfExperience: Number(formData.yearsOfExperience) || 1,
-        shortBio: formData.shortBio.trim(),
-        avatarUrl: formData.avatarUrl,
+      const body = {
+        ...formData,
+        acceptTerms: formData.termsAccepted,
         socialLinks: {
           twitter: formData.twitter ? `https://twitter.com/${formData.twitter.replace("@", "")}` : undefined,
           telegram: formData.telegram ? `https://t.me/${formData.telegram.replace("@", "")}` : undefined,
           youtube: formData.youtube || undefined,
           instagram: formData.instagram || undefined,
         },
-        subscriptionStatus: "pending",
-        verificationStatus: "verified",
-        stats: {
-          totalTips: 0,
-          winRate: 0,
-          roi: 0,
-          profitUnits: 0,
-          followersCount: 0,
-          rating: 5.0,
-        },
-        createdAt: new Date().toISOString(),
       };
 
-      saveStoredTipster(newTipster);
-
-      setTimeout(() => {
-        router.push(`/tipster-subscription?plan=${selectedPlan}&tipsterId=${newTipster.id}`);
-      }, 700);
-    } catch {
+      await tipsterApi.createProfile(body, photo);
+      router.push(`/tipster-subscription?plan=${selectedPlan}`);
+    } catch (error) {
+      setErrors(apiFieldErrors(error));
+      setGlobalError(apiErrorMessage(error));
+    } finally {
       setIsSubmitting(false);
-      setGlobalError("Failed to register tipster account. Please try again.");
     }
   };
 
+  if (checking) {
+    return (
+      <main
+        className="font-outfit min-vh-100 d-flex align-items-center justify-content-center py-5"
+        style={{ background: "#FFFDF9", color: "#1C1F22" }}
+      >
+        <div className="text-center p-4">
+          <div className="spinner-border text-warning mb-3" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+          <p className="fw-semibold mb-0" style={{ color: "#4B5563" }}>
+            Checking your Tipster profile status...
+          </p>
+          {globalError && (
+            <div role="alert" className="alert alert-danger mt-3 mb-0">
+              {globalError}
+              <button
+                type="button"
+                className="btn btn-sm btn-outline-danger ms-3"
+                onClick={() => window.location.reload()}
+              >
+                Try again
+              </button>
+            </div>
+          )}
+        </div>
+      </main>
+    );
+  }
+
+  const activeAvatarPreview = photoPreview || formData.avatarUrl || "/assets/imgs/players/Erling-Haaland.jpg";
+
   return (
-    <main className="font-outfit text-white py-5" style={{ background: "var(--bg-dark, #070b12)" }}>
+    <main className="font-outfit py-5" style={{ background: "#FFFDF9", color: "#1C1F22", minHeight: "100vh" }}>
       <div className="container custom-container" style={{ maxWidth: "860px" }}>
         {/* Step Flow Header */}
         <div className="text-center mb-4">
-        
-         
-
           <h1
-            className="fw-black text-white font-space-grotesk text-uppercase mb-2"
-            style={{ fontSize: "clamp(1.8rem, 3.5vw, 2.4rem)" }}
+            className="fw-black font-space-grotesk text-uppercase mb-2"
+            style={{ fontSize: "clamp(1.8rem, 3.5vw, 2.4rem)", color: "#1C1F22" }}
           >
-            Tipster Registration
+            Set Up Your Tipster Profile
           </h1>
-          <p className="text-secondary mx-auto mb-0" style={{ maxWidth: "560px", fontSize: "14px" }}>
-            Create your official sports handicapper profile. Once registered, activate your Stripe subscription to publish live predictions.
+          <p className="mx-auto mb-0" style={{ maxWidth: "560px", fontSize: "14px", color: "#4B5563" }}>
+            Add your sports handicapper expertise to your account. Once registered, activate your Stripe subscription to publish verified predictions.
           </p>
         </div>
 
@@ -252,54 +281,25 @@ export default function TipsterRegisterPage() {
         <div
           className="rounded-4 p-4 p-md-5"
           style={{
-            background: "var(--bg-card, #0e1520)",
-            border: "1px solid var(--border-dark, rgba(255, 255, 255, 0.08))",
-            boxShadow: "0 20px 50px rgba(0, 0, 0, 0.4)",
+            background: "#FFFFFF",
+            border: "1px solid #EAE5DC",
+            boxShadow: "0 10px 40px rgba(28, 31, 34, 0.05)",
+            borderRadius: "24px",
           }}
         >
           <form onSubmit={handleSubmit} className="d-flex flex-column gap-4">
-            {/* SECTION 1: Personal Information */}
+            {/* SECTION 1: Personal & Brand Information */}
             <div>
-              <div className="d-flex align-items-center gap-2 pb-2 mb-3 border-bottom border-secondary border-opacity-20">
-                <i className="bi bi-person-badge-fill text-success" style={{ fontSize: "18px" }}></i>
-                <h5 className="fw-bold text-white font-space-grotesk mb-0" style={{ fontSize: "16px" }}>
-                  1. Personal Information
+              <div className="d-flex align-items-center gap-2 pb-2 mb-3 border-bottom">
+                <i className="bi bi-person-badge-fill text-warning" style={{ fontSize: "18px" }}></i>
+                <h5 className="fw-bold font-space-grotesk mb-0" style={{ fontSize: "16px", color: "#1C1F22" }}>
+                  1. Brand & Personal Information
                 </h5>
               </div>
 
               <div className="row g-3">
                 <div className="col-md-6">
-                  <label className="form-label text-secondary small fw-bold mb-1">FIRST NAME *</label>
-                  <input
-                    type="text"
-                    name="firstName"
-                    value={formData.firstName}
-                    onChange={handleInputChange}
-                    placeholder="e.g. Alex"
-                    className={`form-control tipster-input ${
-                      errors.firstName ? "border-danger" : ""
-                    }`}
-                  />
-                  {errors.firstName && <div className="text-danger small mt-1">{errors.firstName}</div>}
-                </div>
-
-                <div className="col-md-6">
-                  <label className="form-label text-secondary small fw-bold mb-1">LAST NAME *</label>
-                  <input
-                    type="text"
-                    name="lastName"
-                    value={formData.lastName}
-                    onChange={handleInputChange}
-                    placeholder="e.g. Vance"
-                    className={`form-control tipster-input ${
-                      errors.lastName ? "border-danger" : ""
-                    }`}
-                  />
-                  {errors.lastName && <div className="text-danger small mt-1">{errors.lastName}</div>}
-                </div>
-
-                <div className="col-md-6">
-                  <label className="form-label text-secondary small fw-bold mb-1">
+                  <label className="form-label small fw-bold mb-1" style={{ color: "#374151" }}>
                     DISPLAY NAME (PUBLIC BRAND) *
                   </label>
                   <input
@@ -316,20 +316,18 @@ export default function TipsterRegisterPage() {
                 </div>
 
                 <div className="col-md-6">
-                  <label className="form-label text-secondary small fw-bold mb-1">USERNAME (HANDLE) *</label>
+                  <label className="form-label small fw-bold mb-1" style={{ color: "#374151" }}>USERNAME (HANDLE) *</label>
                   <div
                     className="d-flex align-items-center rounded-3 transition-all"
                     style={{
-                      background: "#090e17",
-                      border: errors.username
-                        ? "1px solid #ef4444"
-                        : "1px solid rgba(255, 255, 255, 0.12)",
+                      background: "#fff",
+                      border: errors.username ? "1px solid #ef4444" : "1px solid #EAE5DC",
                       height: "44px",
                     }}
                   >
                     <span
-                      className="ps-3 pe-1 text-success fw-bold font-space-grotesk select-none"
-                      style={{ userSelect: "none", fontSize: "15px" }}
+                      className="ps-3 pe-1 fw-bold font-space-grotesk select-none"
+                      style={{ userSelect: "none", fontSize: "15px", color: "#D97706" }}
                     >
                       @
                     </span>
@@ -339,30 +337,15 @@ export default function TipsterRegisterPage() {
                       value={formData.username}
                       onChange={handleInputChange}
                       placeholder="apex_picks"
-                      className="form-control bg-transparent text-white border-0 shadow-none ps-1 pe-3"
-                      style={{ height: "100%", outline: "none", fontSize: "14px" }}
+                      className="form-control bg-transparent border-0 shadow-none ps-1 pe-3"
+                      style={{ height: "100%", outline: "none", fontSize: "14px", color: "#1C1F22" }}
                     />
                   </div>
                   {errors.username && <div className="text-danger small mt-1">{errors.username}</div>}
                 </div>
 
                 <div className="col-md-6">
-                  <label className="form-label text-secondary small fw-bold mb-1">EMAIL ADDRESS *</label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    placeholder="alex.vance@example.com"
-                    className={`form-control tipster-input ${
-                      errors.email ? "border-danger" : ""
-                    }`}
-                  />
-                  {errors.email && <div className="text-danger small mt-1">{errors.email}</div>}
-                </div>
-
-                <div className="col-md-6">
-                  <label className="form-label text-secondary small fw-bold mb-1">MOBILE NUMBER</label>
+                  <label className="form-label small fw-bold mb-1" style={{ color: "#374151" }}>MOBILE NUMBER</label>
                   <input
                     type="tel"
                     name="mobileNumber"
@@ -371,10 +354,11 @@ export default function TipsterRegisterPage() {
                     placeholder="+44 7123 456789"
                     className="form-control tipster-input"
                   />
+                  {errors.mobileNumber && <div className="text-danger small mt-1">{errors.mobileNumber}</div>}
                 </div>
 
-                <div className="col-md-12">
-                  <label className="form-label text-secondary small fw-bold mb-1">COUNTRY OF RESIDENCE *</label>
+                <div className="col-md-6">
+                  <label className="form-label small fw-bold mb-1" style={{ color: "#374151" }}>COUNTRY OF RESIDENCE *</label>
                   <select
                     name="country"
                     value={formData.country}
@@ -387,84 +371,17 @@ export default function TipsterRegisterPage() {
                       </option>
                     ))}
                   </select>
-                </div>
-
-                <div className="col-md-6">
-                  <label className="form-label text-secondary small fw-bold mb-1">PASSWORD *</label>
-                  <div
-                    className="d-flex align-items-center rounded-3 transition-all"
-                    style={{
-                      background: "#090e17",
-                      border: errors.password
-                        ? "1px solid #ef4444"
-                        : "1px solid rgba(255, 255, 255, 0.12)",
-                      height: "44px",
-                    }}
-                  >
-                    <input
-                      type={showPassword ? "text" : "password"}
-                      name="password"
-                      value={formData.password}
-                      onChange={handleInputChange}
-                      placeholder="••••••••"
-                      className="form-control bg-transparent text-white border-0 shadow-none px-3"
-                      style={{ height: "100%", outline: "none", fontSize: "14px" }}
-                    />
-                    <button
-                      type="button"
-                      className="btn bg-transparent border-0 text-secondary pe-3 ps-2 d-flex align-items-center h-100"
-                      onClick={() => setShowPassword(!showPassword)}
-                      style={{ color: "#94a3b8" }}
-                    >
-                      <i className={`bi ${showPassword ? "bi-eye-slash" : "bi-eye"}`} style={{ fontSize: "16px" }}></i>
-                    </button>
-                  </div>
-                  {errors.password && <div className="text-danger small mt-1">{errors.password}</div>}
-                </div>
-
-                <div className="col-md-6">
-                  <label className="form-label text-secondary small fw-bold mb-1">CONFIRM PASSWORD *</label>
-                  <div
-                    className="d-flex align-items-center rounded-3 transition-all"
-                    style={{
-                      background: "#090e17",
-                      border: errors.confirmPassword
-                        ? "1px solid #ef4444"
-                        : "1px solid rgba(255, 255, 255, 0.12)",
-                      height: "44px",
-                    }}
-                  >
-                    <input
-                      type={showConfirmPassword ? "text" : "password"}
-                      name="confirmPassword"
-                      value={formData.confirmPassword}
-                      onChange={handleInputChange}
-                      placeholder="••••••••"
-                      className="form-control bg-transparent text-white border-0 shadow-none px-3"
-                      style={{ height: "100%", outline: "none", fontSize: "14px" }}
-                    />
-                    <button
-                      type="button"
-                      className="btn bg-transparent border-0 text-secondary pe-3 ps-2 d-flex align-items-center h-100"
-                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      style={{ color: "#94a3b8" }}
-                    >
-                      <i className={`bi ${showConfirmPassword ? "bi-eye-slash" : "bi-eye"}`} style={{ fontSize: "16px" }}></i>
-                    </button>
-                  </div>
-                  {errors.confirmPassword && (
-                    <div className="text-danger small mt-1">{errors.confirmPassword}</div>
-                  )}
+                  {errors.country && <div className="text-danger small mt-1">{errors.country}</div>}
                 </div>
               </div>
             </div>
 
             {/* SECTION 2: Professional Information */}
             <div>
-              <div className="d-flex align-items-center gap-2 pb-2 mb-3 border-bottom border-secondary border-opacity-20">
-                <i className="bi bi-award-fill text-success" style={{ fontSize: "18px" }}></i>
-                <h5 className="fw-bold text-white font-space-grotesk mb-0" style={{ fontSize: "16px" }}>
-                  2. Professional Sports Expertise
+              <div className="d-flex align-items-center gap-2 pb-2 mb-3 border-bottom">
+                <i className="bi bi-award-fill text-warning" style={{ fontSize: "18px" }}></i>
+                <h5 className="fw-bold font-space-grotesk mb-0" style={{ fontSize: "16px", color: "#1C1F22" }}>
+                  2. Professional Sports Expertise & Avatar
                 </h5>
               </div>
 
@@ -481,30 +398,31 @@ export default function TipsterRegisterPage() {
                         <button
                           type="button"
                           onClick={() => handleSportToggle(sport.id)}
-                          className="btn w-100 text-start d-flex align-items-center justify-content-between p-3 rounded-3 transition-all"
+                          className="btn w-100 text-start d-flex align-items-center justify-content-between p-2 p-sm-3 rounded-3 transition-all"
                           style={{
-                            background: isSelected ? "rgba(34, 197, 94, 0.16)" : "rgba(255, 255, 255, 0.03)",
-                            border: isSelected ? "2px solid #22c55e" : "1px solid rgba(255, 255, 255, 0.1)",
-                            color: isSelected ? "#ffffff" : "#94a3b8",
-                            boxShadow: isSelected ? "0 4px 14px rgba(34, 197, 94, 0.2)" : "none",
+                            background: isSelected ? "rgba(255, 204, 0, 0.15)" : "#fff",
+                            border: isSelected ? "2px solid #FFCC00" : "1px solid #EAE5DC",
+                            color: isSelected ? "#1C1F22" : "#374151",
+                            boxShadow: isSelected ? "0 4px 14px rgba(255, 204, 0, 0.2)" : "none",
+                            minHeight: "56px",
                           }}
                         >
-                          <span className="fw-semibold" style={{ fontSize: "13px" }}>
+                          <span className="fw-semibold" style={{ fontSize: "12px", lineHeight: "1.3" }}>
                             {sport.label}
                           </span>
                           <span
-                            className="d-flex align-items-center justify-content-center rounded-circle flex-shrink-0"
+                            className="d-flex align-items-center justify-content-center rounded-circle flex-shrink-0 ms-1"
                             style={{
-                              width: "24px",
-                              height: "24px",
-                              background: isSelected ? "#22c55e" : "transparent",
-                              border: isSelected ? "none" : "2px solid rgba(255, 255, 255, 0.3)",
-                              color: "#ffffff",
+                              width: "22px",
+                              height: "22px",
+                              background: isSelected ? "#FFCC00" : "transparent",
+                              border: isSelected ? "none" : "2px solid #D1D5DB",
+                              color: "#1C1F22",
                               transition: "all 0.2s ease",
                             }}
                           >
                             {isSelected && (
-                              <i className="bi bi-check-lg" style={{ fontSize: "14px", fontWeight: "900" }}></i>
+                              <i className="bi bi-check-lg" style={{ fontSize: "13px", fontWeight: "900" }}></i>
                             )}
                           </span>
                         </button>
@@ -517,10 +435,10 @@ export default function TipsterRegisterPage() {
                 )}
               </div>
 
-              {/* Experience & Avatar */}
+              {/* Experience & Avatar Upload */}
               <div className="row g-3 mb-3">
                 <div className="col-md-5">
-                  <label className="form-label text-secondary small fw-bold mb-1">
+                  <label className="form-label small fw-bold mb-1" style={{ color: "#374151" }}>
                     YEARS OF ANALYTICAL EXPERIENCE *
                   </label>
                   <select
@@ -539,58 +457,91 @@ export default function TipsterRegisterPage() {
                 </div>
 
                 <div className="col-md-7">
-                  <label className="form-label text-secondary small fw-bold mb-1">
-                    SELECT PROFILE AVATAR (DUMMY PROFILES)
+                  <label className="form-label small fw-bold mb-1" style={{ color: "#374151" }}>
+                    PROFILE PHOTO / AVATAR
                   </label>
-                  <div className="d-flex align-items-center gap-2 flex-wrap pt-1">
-                    {PRESET_AVATARS.map((av) => {
-                      const isAvSelected = formData.avatarUrl === av.url;
-                      return (
-                        <button
-                          key={av.id}
-                          type="button"
-                          title={av.label}
-                          onClick={() => setFormData((prev) => ({ ...prev, avatarUrl: av.url }))}
-                          className="btn p-0 rounded-circle position-relative transition-all"
-                          style={{
-                            border: isAvSelected ? "3px solid #22c55e" : "2px solid rgba(255,255,255,0.15)",
-                            boxShadow: isAvSelected ? "0 0 16px rgba(34, 197, 94, 0.45)" : "none",
-                            transform: isAvSelected ? "scale(1.08)" : "scale(1)",
-                          }}
-                        >
-                          <img
-                            src={av.url}
-                            alt={av.label}
-                            style={{
-                              width: "48px",
-                              height: "48px",
-                              objectFit: "cover",
-                              borderRadius: "50%",
-                              display: "block",
+                  <div className="d-flex align-items-center gap-3 flex-wrap pt-1">
+                    {/* Live Preview Avatar */}
+                    <div className="position-relative">
+                      <img
+                        src={activeAvatarPreview}
+                        alt="Avatar preview"
+                        style={{
+                          width: "54px",
+                          height: "54px",
+                          objectFit: "cover",
+                          borderRadius: "50%",
+                          border: "3px solid #FFCC00",
+                          boxShadow: "0 4px 12px rgba(255, 204, 0, 0.3)",
+                        }}
+                      />
+                    </div>
+
+                    {/* Upload Custom Photo Button */}
+                    <div>
+                      <input
+                        type="file"
+                        ref={fileInputRef}
+                        accept="image/jpeg,image/png,image/webp"
+                        className="d-none"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) selectPhoto(file);
+                        }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        className="btn btn-sm btn-outline-dark rounded-pill px-3 py-1 fw-semibold d-inline-flex align-items-center gap-2"
+                        style={{ fontSize: "13px" }}
+                      >
+                        <i className="bi bi-cloud-arrow-up"></i>
+                        <span>Upload Photo</span>
+                      </button>
+                      <div className="text-muted small fs-11 mt-1">JPG, PNG or WebP up to 2MB</div>
+                    </div>
+
+                    {/* Presets */}
+                    <div className="d-flex align-items-center gap-2 flex-wrap ms-md-auto">
+                      {PRESET_AVATARS.map((av) => {
+                        const isAvSelected = !photo && formData.avatarUrl === av.url;
+                        return (
+                          <button
+                            key={av.id}
+                            type="button"
+                            title={av.label}
+                            onClick={() => {
+                              setPhoto(null);
+                              setPhotoPreview("");
+                              setFormData((prev) => ({ ...prev, avatarUrl: av.url }));
                             }}
-                          />
-                          {isAvSelected && (
-                            <span
-                              className="position-absolute bottom-0 end-0 rounded-circle d-flex align-items-center justify-content-center bg-success text-white"
+                            className="btn p-0 rounded-circle position-relative transition-all"
+                            style={{
+                              border: isAvSelected ? "2.5px solid #FFCC00" : "1.5px solid #EAE5DC",
+                              transform: isAvSelected ? "scale(1.08)" : "scale(1)",
+                            }}
+                          >
+                            <img
+                              src={av.url}
+                              alt={av.label}
                               style={{
-                                width: "18px",
-                                height: "18px",
-                                transform: "translate(20%, 20%)",
-                                border: "2px solid #070b12",
-                                fontSize: "11px",
+                                width: "36px",
+                                height: "36px",
+                                objectFit: "cover",
+                                borderRadius: "50%",
+                                display: "block",
                               }}
-                            >
-                              <i className="bi bi-check"></i>
-                            </span>
-                          )}
-                        </button>
-                      );
-                    })}
+                            />
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
+                  {errors.photo && <div className="text-danger small mt-1">{errors.photo}</div>}
                 </div>
 
                 <div className="col-12">
-                  <label className="form-label text-secondary small fw-bold mb-1">
+                  <label className="form-label small fw-bold mb-1" style={{ color: "#374151" }}>
                     SHORT BIO & SPECIALTY (PUBLIC) *
                   </label>
                   <textarea
@@ -619,8 +570,8 @@ export default function TipsterRegisterPage() {
                   <div
                     className="d-flex align-items-center rounded-3 transition-all"
                     style={{
-                      background: "#090e17",
-                      border: "1px solid rgba(255, 255, 255, 0.12)",
+                      background: "#fff",
+                      border: "1px solid #EAE5DC",
                       height: "44px",
                     }}
                   >
@@ -633,8 +584,8 @@ export default function TipsterRegisterPage() {
                       value={formData.twitter}
                       onChange={handleInputChange}
                       placeholder="Twitter / X username"
-                      className="form-control bg-transparent text-white border-0 shadow-none ps-2 pe-3"
-                      style={{ height: "100%", outline: "none", fontSize: "14px" }}
+                      className="form-control bg-transparent border-0 shadow-none ps-2 pe-3"
+                      style={{ height: "100%", outline: "none", fontSize: "14px", color: "#1C1F22" }}
                     />
                   </div>
                 </div>
@@ -643,8 +594,8 @@ export default function TipsterRegisterPage() {
                   <div
                     className="d-flex align-items-center rounded-3 transition-all"
                     style={{
-                      background: "#090e17",
-                      border: "1px solid rgba(255, 255, 255, 0.12)",
+                      background: "#fff",
+                      border: "1px solid #EAE5DC",
                       height: "44px",
                     }}
                   >
@@ -657,8 +608,8 @@ export default function TipsterRegisterPage() {
                       value={formData.telegram}
                       onChange={handleInputChange}
                       placeholder="Telegram username / channel"
-                      className="form-control bg-transparent text-white border-0 shadow-none ps-2 pe-3"
-                      style={{ height: "100%", outline: "none", fontSize: "14px" }}
+                      className="form-control bg-transparent border-0 shadow-none ps-2 pe-3"
+                      style={{ height: "100%", outline: "none", fontSize: "14px", color: "#1C1F22" }}
                     />
                   </div>
                 </div>
@@ -666,29 +617,43 @@ export default function TipsterRegisterPage() {
             </div>
 
             {/* Terms & Submit */}
-            <div className="pt-2 border-top border-secondary border-opacity-20">
-              <div className="form-check mb-3">
-                <input
-                  type="checkbox"
-                  name="termsAccepted"
-                  checked={formData.termsAccepted}
-                  onChange={handleInputChange}
-                  id="termsCheck"
-                  className="form-check-input"
-                />
-                <label className="form-check-label text-secondary small" htmlFor="termsCheck">
-                  I confirm that all provided information is accurate and I accept the SportsVerge{" "}
-                  <Link href="/terms-of-use" className="text-success text-decoration-none">
-                    Tipster Terms of Service
-                  </Link>{" "}
-                  and{" "}
-                  <Link href="/privacy-policy" className="text-success text-decoration-none">
-                    Privacy Policy
-                  </Link>
-                  .
-                </label>
+            <div className="pt-3 border-top border-secondary border-opacity-20">
+              <div className="mb-3">
+                <div className="d-flex align-items-center gap-2">
+                  <input
+                    type="checkbox"
+                    name="termsAccepted"
+                    checked={formData.termsAccepted}
+                    onChange={handleInputChange}
+                    id="termsCheck"
+                    className="form-check-input m-0 flex-shrink-0"
+                    style={{
+                      width: "18px",
+                      height: "18px",
+                      cursor: "pointer",
+                      accentColor: "#FFCC00",
+                      float: "none",
+                      marginLeft: 0,
+                    }}
+                  />
+                  <label
+                    className="text-secondary small m-0 user-select-none"
+                    htmlFor="termsCheck"
+                    style={{ cursor: "pointer", lineHeight: 1.4, fontSize: "13px" }}
+                  >
+                    I confirm that all provided information is accurate and I accept the SportsVerge{" "}
+                    <Link href="/terms-of-use" className="text-decoration-none fw-semibold" style={{ color: "#0284c7" }}>
+                      Tipster Terms of Service
+                    </Link>{" "}
+                    and{" "}
+                    <Link href="/privacy-policy" className="text-decoration-none fw-semibold" style={{ color: "#0284c7" }}>
+                      Privacy Policy
+                    </Link>
+                    .
+                  </label>
+                </div>
                 {errors.termsAccepted && (
-                  <div className="text-danger small mt-1">{errors.termsAccepted}</div>
+                  <div className="text-danger small mt-1 ms-4 ps-1">{errors.termsAccepted}</div>
                 )}
               </div>
 
@@ -715,7 +680,7 @@ export default function TipsterRegisterPage() {
               </button>
 
               <div className="text-center mt-3">
-                <span className="text-secondary small">Already registered as a Tipster? </span>
+                <span className="small" style={{ color: "#6B7280" }}>Already registered as a Tipster? </span>
                 <Link href="/tipster/dashboard" className="text-success text-decoration-none small fw-semibold">
                   Open Tipster Dashboard
                 </Link>

@@ -54,32 +54,32 @@ export default function ArticleModal({ article, onClose }: ArticleModalProps) {
   };
 
   return (
-    <div className="modal show d-block" tabIndex={-1} style={{ backgroundColor: "rgba(0, 0, 0, 0.8)", backdropFilter: "blur(4px)", zIndex: 1050 }}>
+    <div className="modal show d-block" tabIndex={-1} style={{ backgroundColor: "rgba(28, 31, 34, 0.65)", backdropFilter: "blur(4px)", zIndex: 1100 }}>
       <div className="modal-dialog modal-dialog-centered modal-lg">
-        <div className="modal-content bg-card border border-dark rounded-4 shadow-lg overflow-hidden">
+        <div className="modal-content rounded-4 shadow-lg overflow-hidden" style={{ background: "#FFFFFF", border: "1px solid #EAE5DC" }}>
           {/* Header */}
-          <div className="modal-header border-bottom border-white-05 px-4 py-3 d-flex justify-content-between align-items-center">
+          <div className="modal-header px-4 py-3 d-flex justify-content-between align-items-center" style={{ borderBottom: "1px solid #EAE5DC" }}>
             <div className="d-flex align-items-center gap-2">
-              <span className="badge bg-success rounded-pill px-2.5 py-1 fs-10 text-uppercase fw-semibold">
+              <span className="badge rounded-pill px-3 py-1 fs-10 text-uppercase fw-bold" style={{ background: "#FFCC00", color: "#1C1F22" }}>
                 {category}
               </span>
               <span className="text-muted fs-11">• {readTime}</span>
             </div>
             <button 
               type="button" 
-              className="btn-close btn-close-white" 
+              className="btn-close" 
               onClick={onClose}
               aria-label="Close"
             ></button>
           </div>
 
           {/* Body */}
-          <div className="modal-body p-4 bg-dark overflow-auto text-start" style={{ maxHeight: "70vh" }}>
-            <div className="position-relative rounded-3 overflow-hidden mb-3 border border-dark" style={{ height: "300px" }}>
+          <div className="modal-body p-4 overflow-auto text-start" style={{ maxHeight: "70vh", background: "#FFFFFF" }}>
+            <div className="position-relative rounded-3 overflow-hidden mb-3" style={{ height: "300px", border: "1px solid #EAE5DC" }}>
               <img src={article.image} alt={article.title} className="w-100 h-100 object-fit-cover" />
             </div>
             
-            <div className="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3 pb-3 border-bottom border-white-05">
+            <div className="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3 pb-3 border-bottom" style={{ borderColor: "#EAE5DC" }}>
               <div className="text-muted fs-12">
                 <strong>By {author}</strong> <span className="mx-1">•</span> {article.date}
               </div>
@@ -88,7 +88,8 @@ export default function ArticleModal({ article, onClose }: ArticleModalProps) {
               <div className="d-flex align-items-center gap-2">
                 <button
                   onClick={handleCopyLink}
-                  className="btn btn-dark btn-sm rounded-pill px-3 py-1 fs-11 fw-semibold text-white border border-secondary border-opacity-25 d-flex align-items-center gap-1 transition-all"
+                  className="btn btn-sm rounded-pill px-3 py-1 fs-11 fw-semibold d-flex align-items-center gap-1 transition-all shadow-sm"
+                  style={{ background: "#FAF6EF", border: "1px solid #EAE5DC", color: "#1C1F22" }}
                 >
                   <i className={`bi ${copied ? "bi-check-lg text-success" : "bi-link-45deg"}`}></i>
                   {copied ? "Copied!" : "Copy Link"}
@@ -97,7 +98,8 @@ export default function ArticleModal({ article, onClose }: ArticleModalProps) {
                   <Link
                     href={`/news/${fullArticle.id}`}
                     onClick={onClose}
-                    className="btn btn-success btn-sm rounded-pill px-3 py-1 fs-11 fw-semibold text-white d-flex align-items-center gap-1"
+                    className="btn btn-sm rounded-pill px-3 py-1 fs-11 fw-bold d-flex align-items-center gap-1 shadow-sm"
+                    style={{ background: "#FFCC00", color: "#1C1F22", border: "none" }}
                   >
                     View Page <i className="bi bi-box-arrow-up-right"></i>
                   </Link>
@@ -105,11 +107,11 @@ export default function ArticleModal({ article, onClose }: ArticleModalProps) {
               </div>
             </div>
 
-            <h3 className="text-white fw-bold mb-3 font-space-grotesk">{article.title}</h3>
+            <h3 className="fw-bold mb-3 font-space-grotesk" style={{ color: "#1C1F22" }}>{article.title}</h3>
             
-            <div className="text-light fs-14 lh-lg mb-4">
+            <div className="fs-14 lh-lg mb-4" style={{ color: "#5C646D" }}>
               {paragraphs.map((p, idx) => (
-                <p key={idx} className={idx === 0 ? "fw-semibold text-success-subtle mb-3" : "mb-3"}>
+                <p key={idx} className={idx === 0 ? "fw-semibold mb-3" : "mb-3"} style={{ color: idx === 0 ? "#1C1F22" : "#5C646D" }}>
                   {p}
                 </p>
               ))}
@@ -128,8 +130,8 @@ export default function ArticleModal({ article, onClose }: ArticleModalProps) {
             )}
           </div>
 
-          <div className="modal-footer border-top border-white-05 px-4 py-3 bg-dark-subtle">
-            <button type="button" className="btn btn-success fw-semibold px-4 rounded-1" onClick={onClose}>
+          <div className="modal-footer px-4 py-3" style={{ background: "#FAF6EF", borderTop: "1px solid #EAE5DC" }}>
+            <button type="button" className="btn fw-bold px-4 py-2 rounded-pill shadow-sm" style={{ background: "#FFCC00", color: "#1C1F22", border: "none" }} onClick={onClose}>
               Done Reading
             </button>
           </div>

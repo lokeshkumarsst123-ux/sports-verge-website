@@ -294,7 +294,7 @@ export type ProviderStandingRow = {
   teamLogo: string;
   played: string;
   wins: string;
-  draws: string;
+  draws?: string;
   losses: string;
   points: string;
   goalDifference: string;

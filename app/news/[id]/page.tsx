@@ -6,6 +6,7 @@ import { useParams } from "next/navigation";
 import { contentApi, type PublicNewsArticle } from "@/lib/content-api";
 import { useAds, type Ad } from "@/components/AdContext";
 import { hasAuthSession } from "@/lib/auth-api";
+import EditorialBlocks from '@/components/EditorialBlocks';
 
 export default function NewsDetailsPage() {
   const { id } = useParams();
@@ -103,7 +104,7 @@ export default function NewsDetailsPage() {
 
   if (!authChecked || loading) {
     return (
-      <main className="font-outfit text-white">
+      <main className="font-outfit" style={{ background: "#FFFDF9", minHeight: "100vh" }}>
         <div className="container custom-container py-5">
           <div className="skeleton-line w-75 h-32px mb-4"></div>
           <div className="skeleton-line w-100 h-420px rounded-4"></div>
@@ -114,17 +115,24 @@ export default function NewsDetailsPage() {
 
   if (!isAuthenticated) {
     return (
-      <main className="font-outfit text-white">
+      <main className="font-outfit" style={{ background: "#FFFDF9", minHeight: "100vh" }}>
         <div className="container custom-container py-5">
-          <div className="mx-auto text-center p-4 p-md-5 bg-card border border-dark rounded-4 shadow-lg" style={{ maxWidth: "520px" }}>
-            <div className="d-flex align-items-center justify-content-center mx-auto mb-4 rounded-circle" style={{ width: "68px", height: "68px", color: "#86efac", background: "rgba(34,197,94,.12)", border: "1px solid rgba(34,197,94,.28)", fontSize: "1.6rem" }}>
+          <div className="mx-auto text-center p-4 p-md-5 rounded-4 shadow-sm" style={{ maxWidth: "520px", background: "#FFFFFF", border: "1px solid #EAE5DC" }}>
+            <div
+              className="d-flex align-items-center justify-content-center mx-auto mb-4 rounded-circle"
+              style={{ width: "68px", height: "68px", color: "#1C1F22", background: "#FFCC00", fontSize: "1.6rem" }}
+            >
               <i className="bi bi-lock-fill" />
             </div>
-            <h2 className="fw-bold mb-2 text-white">Login required</h2>
-            <p className="text-muted mb-4">Please log in or create an account to read the full news article.</p>
+            <h2 className="fw-bold mb-2 font-space-grotesk" style={{ color: "#1C1F22" }}>Login required</h2>
+            <p className="small mb-4" style={{ color: "#5C646D" }}>Please log in or create an account to read the full news article.</p>
             <div className="d-flex flex-wrap justify-content-center gap-2">
-              <Link href="/login" className="btn btn-success fw-bold px-4 py-2 rounded-pill">Log in to continue</Link>
-              <Link href="/register" className="btn btn-outline-success fw-semibold px-4 py-2 rounded-pill">Create account</Link>
+              <Link href="/login" className="btn fw-bold px-4 py-2 rounded-pill shadow-sm text-decoration-none" style={{ background: "#FFCC00", color: "#1C1F22", border: "none" }}>
+                Log in to continue
+              </Link>
+              <Link href="/signup" className="btn fw-semibold px-4 py-2 rounded-pill text-decoration-none" style={{ background: "#FAF6EF", border: "1px solid #EAE5DC", color: "#1C1F22" }}>
+                Create account
+              </Link>
             </div>
           </div>
         </div>
@@ -281,6 +289,7 @@ export default function NewsDetailsPage() {
                     {p}
                   </p>
                 ))}
+                {article.editorialLayout && <EditorialBlocks articleId={article.id} layout={article.editorialLayout}/>}
               </div>
 
               {/* Sponsor Ad */}
@@ -303,7 +312,7 @@ export default function NewsDetailsPage() {
                       SPONSOR
                     </span>
                   </div>
-                  <h6 className="text-white fw-bold mb-1">{articleAd.title}</h6>
+                  <h6 className="fw-bold mb-1" style={{ color: "#1C1F22" }}>{articleAd.title}</h6>
                   <p className="text-muted mb-0" style={{ fontSize: "11px" }}>
                     Sponsored content supports high-quality sports journalism on SportsVerge.
                   </p>
@@ -311,11 +320,23 @@ export default function NewsDetailsPage() {
               )}
 
               {/* Tags row */}
-              <div className="d-flex align-items-center gap-2 flex-wrap border-top pt-4 mt-2" style={{ borderColor: "rgba(255,255,255,0.08) !important" }}>
-                <span className="text-muted fw-semibold" style={{ fontSize: "12px" }}>TAGS:</span>
+              <div className="d-flex align-items-center gap-2 flex-wrap border-top pt-4 mt-2" style={{ borderColor: "#EAE5DC" }}>
+                <span className="fw-bold text-uppercase" style={{ fontSize: "11px", letterSpacing: "0.06em", color: "#64748B" }}>
+                  TAGS:
+                </span>
                 {(article.tags?.length ? article.tags : [article.category, "Sports", "SportsVerge"]).map((tag) => (
-                  <span key={tag} className="badge rounded-pill px-3 py-1" style={{ background: "rgba(34,197,94,0.12)", color: "#86efac", fontSize: "11px", border: "1px solid rgba(34,197,94,0.2)" }}>
-                    {tag}
+                  <span
+                    key={tag}
+                    className="badge rounded-pill px-3 py-1.5 fw-semibold transition-all"
+                    style={{
+                      background: "#FFFFFF",
+                      color: "#1C1F22",
+                      fontSize: "12px",
+                      border: "1px solid #E2DCD2",
+                      boxShadow: "0 1px 4px rgba(28, 31, 34, 0.04)",
+                    }}
+                  >
+                    #{tag}
                   </span>
                 ))}
               </div>
@@ -324,7 +345,7 @@ export default function NewsDetailsPage() {
 
           {/* ─── Sidebar ─── */}
           <div className="col-lg-4">
-            <div className="sticky-lg-top" style={{ top: "90px" }}>
+            <div className="sticky-lg-top" style={{ top: "90px", zIndex: 10 }}>
 
               {/* Related Stories */}
               <div className="rounded-4 p-4 mb-4 shadow-sm" style={{ background: "var(--bg-card)", border: "1px solid var(--border-dark)" }}>
@@ -366,8 +387,8 @@ export default function NewsDetailsPage() {
               </div>
 
               {/* Categories */}
-              <div className="rounded-4 p-4 shadow-sm" style={{ background: "var(--bg-card)", border: "1px solid var(--border-dark)" }}>
-                <h5 className="fw-bold mb-3 font-space-grotesk d-flex align-items-center gap-2" style={{ fontSize: "15px", color: "#1C1F22" }}>
+              <div className="rounded-4 p-4 shadow-sm" style={{ background: "#FFFFFF", border: "1px solid #EAE5DC" }}>
+                <h5 className="fw-bold mb-3 d-flex align-items-center gap-2" style={{ fontSize: "15px", color: "#1C1F22" }}>
                   <span className="d-inline-block" style={{ width: "3px", height: "18px", background: "#FFCC00", borderRadius: "2px" }}></span>
                   Browse Categories
                 </h5>
@@ -380,23 +401,60 @@ export default function NewsDetailsPage() {
                         href={`/news?category=${cat.name}`}
                         className="text-decoration-none d-flex align-items-center justify-content-between rounded-3 px-3 py-2 transition-all"
                         style={{
-                          background: isActive ? "#FFCC00" : "#FAF6EF",
-                          border: isActive ? "1px solid #FFCC00" : "1px solid #EAE5DC",
+                          background: isActive ? "#FFFDF5" : "#FFFFFF",
+                          border: isActive ? "1.5px solid #FFCC00" : "1px solid #EAE5DC",
+                          borderLeft: isActive ? "4px solid #FFCC00" : "1px solid #EAE5DC",
                           color: "#1C1F22",
+                          boxShadow: isActive ? "0 2px 8px rgba(255, 204, 0, 0.15)" : "0 1px 3px rgba(28, 31, 34, 0.02)",
                         }}
                       >
                         <div className="d-flex align-items-center gap-2">
                           <div
                             className="d-flex align-items-center justify-content-center rounded-2 flex-shrink-0"
-                            style={{ width: "28px", height: "28px", background: `${cat.color}18` }}
+                            style={{
+                              width: "32px",
+                              height: "32px",
+                              background: `${cat.color}18`,
+                              border: `1px solid ${cat.color}30`,
+                            }}
                           >
-                            <i className={`bi ${cat.icon}`} style={{ fontSize: "12px", color: cat.color }}></i>
+                            <i
+                              className={`bi ${cat.icon}`}
+                              style={{
+                                fontSize: "13px",
+                                color: cat.color,
+                              }}
+                            ></i>
                           </div>
-                          <span className="fw-semibold" style={{ fontSize: "13px", color: "#1C1F22" }}>
+                          <span
+                            className={isActive ? "fw-bold" : "fw-semibold"}
+                            style={{ fontSize: "13.5px", color: "#1C1F22" }}
+                          >
                             {cat.name}
                           </span>
                         </div>
-                        <i className="bi bi-chevron-right" style={{ fontSize: "11px", color: "#1C1F22" }}></i>
+                        <div className="d-flex align-items-center gap-1">
+                          {isActive && (
+                            <span
+                              className="badge rounded-pill fw-bold"
+                              style={{
+                                fontSize: "10px",
+                                background: "#FFCC00",
+                                color: "#1C1F22",
+                                padding: "3px 8px",
+                              }}
+                            >
+                              Current
+                            </span>
+                          )}
+                          <i
+                            className="bi bi-chevron-right"
+                            style={{
+                              fontSize: "12px",
+                              color: isActive ? "#1C1F22" : "#94A3B8",
+                            }}
+                          ></i>
+                        </div>
                       </Link>
                     );
                   })}

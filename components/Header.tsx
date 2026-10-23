@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import NavigationMenu from "./NavigationMenu";
-import { logoutUser } from "@/lib/auth-api";
+import { getStoredUser, hasAuthSession, logoutUser } from "@/lib/auth-api";
 import { useSiteSettings } from "@/components/SiteSettingsContext";
 
 export default function Header() {
@@ -39,25 +39,31 @@ export default function Header() {
   }, [isSearchOpen]);
 
   useEffect(() => {
-    setIsMenuOpen(false);
-    setIsSearchOpen(false);
-    setIsProfileDropdownOpen(false);
+    let active = true;
+    Promise.resolve().then(() => {
+      if (!active) return;
+      setIsMenuOpen(false);
+      setIsSearchOpen(false);
+      setIsProfileDropdownOpen(false);
+      setUser(hasAuthSession() ? getStoredUser() : null);
+    });
     if (typeof window !== "undefined") {
       window.scrollTo(0, 0);
       document.documentElement.scrollTo(0, 0);
       document.body.scrollTo(0, 0);
     }
-    const session = sessionStorage.getItem("user_session");
-    if (session) {
-      try {
-        setUser(JSON.parse(session));
-      } catch (e) {
-        // Handle invalid JSON
-      }
-    } else {
-      setUser(null);
-    }
+    return () => { active = false; };
   }, [pathname]);
+
+  useEffect(() => {
+    const syncSession = () => setUser(hasAuthSession() ? getStoredUser() : null);
+    window.addEventListener("auth-session-changed", syncSession);
+    window.addEventListener("storage", syncSession);
+    return () => {
+      window.removeEventListener("auth-session-changed", syncSession);
+      window.removeEventListener("storage", syncSession);
+    };
+  }, []);
 
   useEffect(() => {
     const handleOutsideClick = (e: MouseEvent) => {
@@ -92,20 +98,21 @@ export default function Header() {
         <div className="container custom-container">
           {/* Logo */}
 
-          <Link href="/" className="navbar-brand me-auto">
-            {siteSettings.logoUrl ? <img src={siteSettings.logoUrl} alt={siteSettings.websiteName} width={180} height={45} className="brand-logo" /> : <Image
+          <Link href="/" className="navbar-brand me-2 me-xxl-3 flex-shrink-0">
+            {siteSettings.logoUrl ? <img src={siteSettings.logoUrl} alt={siteSettings.websiteName} width={160} height={40} className="brand-logo" /> : <Image
               src="/assets/imgs/logo.svg"
               alt={siteSettings.websiteName}
-              width={180}
-              height={45}
+              width={160}
+              height={40}
               className="brand-logo"
               priority
+              loading="eager"
             />}
           </Link>
 
           {/* Right Controls */}
 
-          <div className="nav-controls d-flex align-items-center me-3 me-xl-0 order-xl-last">
+          <div className="nav-controls d-flex align-items-center ms-auto ms-xl-0 me-1 me-xl-0 order-xl-last flex-shrink-0">
             <div className="search-wrapper d-inline-block" ref={searchWrapperRef}>
               <Link
                 href="#"
@@ -143,99 +150,142 @@ export default function Header() {
               </div>
             </div>
 
-            {/* Notifications temporarily disabled. Restore this block when notification access is needed. */}
+            {/* Mobile-only avatar / login button in header */}
+            <div className="d-flex d-xl-none align-items-center ms-2 flex-shrink-0">
+              {user ? (
+                <Link
+                  href="/profile"
+                  className="rounded-circle d-flex align-items-center justify-content-center text-white text-decoration-none shadow-sm"
+                  style={{
+                    width: "32px",
+                    height: "32px",
+                    background: "#16A34A",
+                    fontSize: "12px",
+                    fontWeight: "bold",
+                    border: "2px solid #FFFFFF",
+                  }}
+                  title={`${user.firstName} ${user.lastName}`}
+                >
+                  {user.firstName.charAt(0)}{user.lastName.charAt(0)}
+                </Link>
+              ) : (
+                <Link
+                  href="/login"
+                  className="btn btn-sm text-decoration-none fw-bold px-2.5 py-1 rounded-pill"
+                  style={{
+                    fontSize: "12px",
+                    background: "#FFCC00",
+                    color: "#1C1F22",
+                    border: "1px solid #FFCC00",
+                  }}
+                >
+                  Login
+                </Link>
+              )}
+            </div>
 
-            <div className="d-none d-xl-flex align-items-center position-relative" ref={profileDropdownRef}>
+            <div className="d-none d-xl-flex align-items-center position-relative flex-shrink-0" ref={profileDropdownRef}>
               <Link
-                href="/join-tipster"
-                className="d-inline-flex align-items-center gap-2 text-nowrap fw-bold text-decoration-none transition-all ms-3"
+                href="/tipster-register"
+                className="d-inline-flex align-items-center gap-1 text-nowrap fw-bold text-decoration-none transition-all ms-2 ms-xxl-3"
                 style={{
-                  fontSize: "13.5px",
-                  padding: "7px 16px",
+                  fontSize: "12.5px",
+                  padding: "6px 13px",
                   borderRadius: "6px",
                   color: "#1C1F22",
                   background: "#FFCC00",
                   border: "1px solid #FFCC00",
                   lineHeight: "1.4",
+                  whiteSpace: "nowrap"
                 }}
               >
-                <i className="bi bi-stars" style={{ fontSize: "13px", color: "#1C1F22" }}></i>
+                <i className="bi bi-stars" style={{ fontSize: "12px", color: "#1C1F22" }}></i>
                 <span>Join as a Tipster</span>
               </Link>
               {user ? (
                 <>
                   <button
                     onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
-                    className="d-flex align-items-center text-decoration-none ms-4 bg-transparent border-0 p-0 text-start"
+                    className="d-flex align-items-center text-decoration-none ms-2 ms-xxl-3 bg-transparent border-0 p-0 text-start flex-shrink-0"
                     style={{ outline: "none" }}
                   >
-                    <div className="d-flex flex-column text-end me-3" style={{ maxWidth: "150px" }}>
-                      <span className="fw-semibold small lh-1-2 transition-all text-truncate d-block" style={{ color: "#1C1F22" }}>
+                    <div className="d-flex flex-column text-end me-2" style={{ maxWidth: "125px" }}>
+                      <span className="fw-semibold small lh-1-2 transition-all text-truncate d-block" style={{ color: "#1C1F22", fontSize: "13px" }}>
                         {user.firstName} {user.lastName}
                       </span>
-                      <span className="fs-11 text-truncate d-block" style={{ color: "#4A90E2" }}>{user.email}</span>
+                      <span className="fs-11 text-truncate d-block" style={{ color: "#76808D", fontSize: "11px" }}>{user.email}</span>
                     </div>
                     <div
                       className="rounded-circle d-flex align-items-center justify-content-center text-white shadow-sm header-user-avatar hover-glow"
+                      style={{ width: "36px", height: "36px", fontSize: "13px" }}
                     >
                       {user.firstName.charAt(0)}{user.lastName.charAt(0)}
                     </div>
                   </button>
                   {isProfileDropdownOpen && (
                     <div
-                      className="position-absolute end-0 mt-2 rounded-3 p-2 shadow-lg dropdown-menu-premium"
+                      className="position-absolute end-0 mt-2 shadow-lg dropdown-menu-premium d-flex flex-column gap-1"
                       style={{
                         top: "100%",
-                        width: "180px",
+                        minWidth: "220px",
                         background: "#FFFFFF",
-                        border: "1px solid var(--border-dark)",
+                        border: "1px solid #EAE5DC",
                         boxShadow: "0 10px 30px rgba(28, 31, 34, 0.12)",
-                        zIndex: 1000
+                        borderRadius: "12px",
+                        padding: "8px",
+                        zIndex: 1050
                       }}
                     >
+                      <div className="px-3 py-2 mb-1 border-bottom" style={{ borderColor: "#EAE5DC" }}>
+                        <div className="fw-bold text-truncate" style={{ color: "#1C1F22", fontSize: "13px" }}>
+                          {user.firstName} {user.lastName}
+                        </div>
+                        <div className="text-truncate small" style={{ color: "#76808D", fontSize: "11px" }}>
+                          {user.email}
+                        </div>
+                      </div>
+
                       <Link
                         href="/profile"
-                        className="dropdown-item-premium d-flex align-items-center gap-2 px-3 py-2 text-decoration-none rounded mb-1 fs-14"
-                        style={{ color: "#1C1F22" }}
+                        className="dropdown-item-premium w-100"
                         onClick={() => setIsProfileDropdownOpen(false)}
                       >
-                        <i className="bi bi-person-fill text-success"></i>
+                        <i className="bi bi-person-circle"></i>
                         <span>Profile</span>
                       </Link>
                       <Link
                         href="/tipster/dashboard"
-                        className="dropdown-item-premium d-flex align-items-center gap-2 px-3 py-2 text-decoration-none rounded mb-1 fs-14"
-                        style={{ color: "#1C1F22" }}
+                        className="dropdown-item-premium w-100"
                         onClick={() => setIsProfileDropdownOpen(false)}
                       >
-                        <i className="bi bi-speedometer2 text-success"></i>
+                        <i className="bi bi-speedometer2" ></i>
                         <span>Tipster Studio</span>
                       </Link>
                       <Link
                         href="/my-purchased-tips"
-                        className="dropdown-item-premium d-flex align-items-center gap-2 px-3 py-2 text-decoration-none rounded mb-1 fs-14"
-                        style={{ color: "#1C1F22" }}
+                        className="dropdown-item-premium w-100"
                         onClick={() => setIsProfileDropdownOpen(false)}
                       >
-                        <i className="bi bi-unlock-fill text-success"></i>
+                        <i className="bi bi-unlock-fill" ></i>
                         <span>My Purchased Tips</span>
                       </Link>
+                      <div className="my-1 border-top" style={{ borderColor: "#EAE5DC" }}></div>
                       <button
                         onClick={async () => {
                           setIsProfileDropdownOpen(false);
                           await logoutUser();
                           window.location.href = "/";
                         }}
-                        className="dropdown-item-premium w-100 border-0 bg-transparent d-flex align-items-center gap-2 px-3 py-2 text-start text-danger rounded fs-14"
+                        className="dropdown-item-premium text-danger w-100 border-0 bg-transparent text-start"
                       >
-                        <i className="bi bi-box-arrow-right"></i>
+                        <i className="bi bi-box-arrow-right" style={{ color: "#DC2626", fontSize: "16px" }}></i>
                         <span>Logout</span>
                       </button>
                     </div>
                   )}
                 </>
               ) : (
-                <Link href="/login" className="btn btn-signup ms-4">
+                <Link href="/login" className="btn btn-signup ms-3">
                   Login
                 </Link>
               )}
@@ -277,7 +327,7 @@ export default function Header() {
                   {/* Action buttons row */}
                   <div className="row g-2">
                     <div className="col-6">
-                      <Link href="/profile" className="btn gap-1 btn-sm btn-outline-success w-100 py-2 rounded-pill font-space-grotesk fw-bold fs-12 d-flex align-items-center justify-content-center gap-1.5">
+                      <Link href="/profile" className="btn btn-sm btn-outline-success w-100 py-2 rounded-pill font-space-grotesk fw-bold fs-12 d-flex align-items-center justify-content-center gap-1">
                         <i className="bi bi-person-fill"></i>
                         <span>Profile</span>
                       </Link>
@@ -288,7 +338,7 @@ export default function Header() {
                           await logoutUser();
                           window.location.href = "/";
                         }}
-                        className="btn btn-sm btn-outline-danger gap-1 w-100 py-2 rounded-pill font-space-grotesk fw-bold fs-12 d-flex align-items-center justify-content-center gap-1.5"
+                        className="btn btn-sm btn-outline-danger w-100 py-2 rounded-pill font-space-grotesk fw-bold fs-12 d-flex align-items-center justify-content-center gap-1"
                       >
                         <i className="bi bi-box-arrow-right"></i>
                         <span>Logout</span>
@@ -297,13 +347,33 @@ export default function Header() {
                   </div>
                 </div>
               ) : (
-                <Link href="/login" className="btn btn-signup w-100 py-2">
-                  Login
-                </Link>
+                <div className="d-flex flex-column gap-2 w-100">
+                  <Link
+                    href="/tipster-register"
+                    className="btn w-100 py-2 d-flex align-items-center justify-content-center gap-2 font-space-grotesk fw-bold"
+                    style={{
+                      borderRadius: "8px",
+                      fontSize: "14px",
+                      border: "1px solid #EAE5DC",
+                      background: "#FFFFFF",
+                      color: "#1C1F22",
+                    }}
+                  >
+                    <i className="bi bi-stars text-warning" aria-hidden="true"></i>
+                    <span>Join as a Tipster</span>
+                  </Link>
+                  <Link
+                    href="/login"
+                    className="btn btn-success w-100 py-2 d-flex align-items-center justify-content-center font-space-grotesk fw-bold"
+                    style={{ borderRadius: "8px", fontSize: "14px" }}
+                  >
+                    Login
+                  </Link>
+                </div>
               )}
-              <div className="mt-2">
+              {user && <div className="mt-2">
                 <Link
-                  href="/join-tipster"
+                  href="/tipster-register"
                   className="w-100 d-flex align-items-center justify-content-center gap-2 text-decoration-none fw-bold rounded-2 py-2"
                   style={{
                     fontSize: "13.5px",
@@ -315,7 +385,7 @@ export default function Header() {
                   <i className="bi bi-stars" style={{ fontSize: "13px", color: "#1C1F22" }}></i>
                   <span>Join as a Tipster</span>
                 </Link>
-              </div>
+              </div>}
             </div>
 
             <NavigationMenu />

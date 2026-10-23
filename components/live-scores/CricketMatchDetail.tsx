@@ -124,10 +124,22 @@ function MatchSponsorBanner() {
   const ad = getAdByType("Match Page Advertisement");
   if (!ad?.image) return null;
   return (
-    <a href={ad.redirectUrl || "#"} target="_blank" rel="noreferrer" className="match-sponsor-banner d-block mb-4" aria-label={ad.title || "Match sponsor"}>
+    <a
+      href={ad.redirectUrl || "#"}
+      target="_blank"
+      rel="noreferrer"
+      className="position-relative overflow-hidden rounded-4 d-block mb-4 shadow-sm"
+      style={{ height: "200px", border: "1px solid #eae5dc", background: "#f8f6f0" }}
+      aria-label={ad.title || "Match sponsor"}
+    >
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={ad.image} alt={ad.title || "Match sponsor"} className="w-100 h-100 object-fit-contain" />
-      <span className="match-sponsor-label">SPONSOR</span>
+      <img src={ad.image} alt={ad.title || "Match sponsor"} className="w-100 h-100 object-fit-cover" />
+      <span
+        className="badge rounded-pill fw-bold position-absolute top-0 end-0 m-3 px-2.5 py-1"
+        style={{ background: "#ffcc00", color: "#1c1f22", fontSize: "10px", letterSpacing: "0.04em" }}
+      >
+        SPONSOR
+      </span>
     </a>
   );
 }
@@ -143,12 +155,29 @@ function CricketTabs({ activeTab, onTabChange }: Pick<CricketMatchDetailProps, "
   ];
 
   return (
-    <div className="cricket-detail-tabs d-flex flex-wrap gap-2 mb-4 border-bottom border-secondary border-opacity-25">
-      {tabs.map((tab) => (
-        <button key={tab.id} type="button" className={`btn cricket-detail-tab ${activeTab === tab.id ? "active" : ""}`} onClick={() => onTabChange(tab.id)}>
-          <i className={`bi ${tab.icon} me-2`} />{tab.label}
-        </button>
-      ))}
+    <div className="d-flex flex-wrap gap-2 mb-4 pb-3 border-bottom" style={{ borderColor: "#eae5dc" }}>
+      {tabs.map((tab) => {
+        const isActive = activeTab === tab.id;
+        return (
+          <button
+            key={tab.id}
+            type="button"
+            className="btn rounded-pill px-3.5 py-2 fw-bold text-uppercase d-inline-flex align-items-center gap-2 transition-all shadow-none"
+            style={{
+              fontSize: "12px",
+              letterSpacing: "0.03em",
+              backgroundColor: isActive ? "#FFCC00" : "#ffffff",
+              color: "#1C1F22",
+              border: isActive ? "1px solid #FFCC00" : "1px solid #eae5dc",
+              fontWeight: isActive ? 700 : 600,
+            }}
+            onClick={() => onTabChange(tab.id)}
+          >
+            <i className={`bi ${tab.icon}`} style={{ fontSize: "12px", color: isActive ? "#1C1F22" : "#64748b" }} />
+            <span>{tab.label}</span>
+          </button>
+        );
+      })}
     </div>
   );
 }
@@ -165,27 +194,27 @@ function ScorecardTable({ inning, info }: { inning: ProviderRecord; info: Provid
   const partnerships = array(inning.partnerships || inning.partnership);
 
   return (
-    <section className="card bg-card border border-dark rounded-4 p-3 p-md-4">
-      <div className="d-flex flex-wrap align-items-center justify-content-between gap-3 pb-3 mb-3 border-bottom border-secondary border-opacity-25">
+    <section className="card rounded-4 p-3 p-md-4 shadow-sm" style={{ background: "#FFFFFF", border: "1px solid #EAE5DC" }}>
+      <div className="d-flex flex-wrap align-items-center justify-content-between gap-3 pb-3 mb-3 border-bottom" style={{ borderColor: "#EAE5DC" }}>
         <div>
-          <div className="text-success small text-uppercase fw-semibold">{text(inning.name, "Current innings")}</div>
-          <h2 className="h5 text-white fw-bold mb-0">{text(inning.scores_full, text(inning.scores))}</h2>
+          <div className="small text-uppercase fw-bold" style={{ color: "#4A90E2", letterSpacing: "0.08em" }}>{text(inning.name, "Current innings")}</div>
+          <h2 className="h5 fw-bold mb-0 font-space-grotesk" style={{ color: "#1C1F22" }}>{text(inning.scores_full, text(inning.scores))}</h2>
         </div>
         <div className="d-flex gap-2 flex-wrap justify-content-end">
-          <span className="badge text-bg-dark border border-secondary">RRR: {text(inning.equations?.runrate, "—")}</span>
-          <span className="badge text-bg-dark border border-secondary">{text(inning.equations?.overs, text(inning.overs, "—"))} overs</span>
+          <span className="badge rounded-pill fw-semibold" style={{ background: "#FAF6EF", border: "1px solid #EAE5DC", color: "#1C1F22" }}>RRR: {text(inning.equations?.runrate, "—")}</span>
+          <span className="badge rounded-pill fw-semibold" style={{ background: "#FAF6EF", border: "1px solid #EAE5DC", color: "#1C1F22" }}>{text(inning.equations?.overs, text(inning.overs, "—"))} overs</span>
         </div>
       </div>
 
       <div className="row g-4">
         <div className="col-lg-7">
-          <h3 className="h6 text-white fw-bold mb-3">Batter</h3>
+          <h3 className="h6 fw-bold mb-3 font-space-grotesk" style={{ color: "#1C1F22" }}>Batter</h3>
           <div className="table-responsive">
-            <table className="table table-dark table-borderless align-middle mb-4 cricket-score-table">
-              <thead><tr><th>BATTER</th><th>R</th><th>B</th><th>4S</th><th>6S</th><th>SR</th></tr></thead>
+            <table className="table table-borderless align-middle mb-4 cricket-score-table" style={{ color: "#1C1F22" }}>
+              <thead style={{ borderBottom: "1px solid #EAE5DC", color: "#5C646D", fontSize: "11px" }}><tr><th>BATTER</th><th>R</th><th>B</th><th>4S</th><th>6S</th><th>SR</th></tr></thead>
               <tbody>
-                {batsmen.map((batsman, index) => <tr key={`${batsman.batsman_id || batsman.name || "batsman"}-${index}`}>
-                  <td className="fw-semibold text-white">{text(batsman.name)}{String(batsman.batting).toLowerCase() === "true" && <span className="text-success ms-1">*</span>}</td>
+                {batsmen.map((batsman, index) => <tr key={`${batsman.batsman_id || batsman.name || "batsman"}-${index}`} style={{ borderBottom: "1px solid #F1ECE4" }}>
+                  <td className="fw-semibold" style={{ color: "#1C1F22" }}>{text(batsman.name)}{String(batsman.batting).toLowerCase() === "true" && <span className="ms-1" style={{ color: "#FFCC00" }}>*</span>}</td>
                   <td>{text(batsman.runs, "0")}</td><td>{text(batsman.balls_faced, "0")}</td><td>{text(batsman.fours, "0")}</td><td>{text(batsman.sixes, "0")}</td><td>{text(batsman.strike_rate, "0.00")}</td>
                 </tr>)}
                 {!batsmen.length && <tr><td colSpan={6} className="text-muted">No batting rows supplied by provider.</td></tr>}
@@ -193,14 +222,14 @@ function ScorecardTable({ inning, info }: { inning: ProviderRecord; info: Provid
             </table>
           </div>
 
-          <h3 className="h6 text-white fw-bold mb-3">Bowler</h3>
+          <h3 className="h6 fw-bold mb-3 font-space-grotesk" style={{ color: "#1C1F22" }}>Bowler</h3>
           <div className="table-responsive">
-            <table className="table table-dark table-borderless align-middle mb-0 cricket-score-table">
-              <thead><tr><th>BOWLER</th><th>O</th><th>M</th><th>R</th><th>W</th><th>ECO</th></tr></thead>
+            <table className="table table-borderless align-middle mb-0 cricket-score-table" style={{ color: "#1C1F22" }}>
+              <thead style={{ borderBottom: "1px solid #EAE5DC", color: "#5C646D", fontSize: "11px" }}><tr><th>BOWLER</th><th>O</th><th>M</th><th>R</th><th>W</th><th>ECO</th></tr></thead>
               <tbody>
-                {bowlers.map((bowler, index) => <tr key={`${bowler.bowler_id || bowler.name || "bowler"}-${index}`}>
-                  <td className="fw-semibold text-white">{text(bowler.name)}{String(bowler.bowling).toLowerCase() === "true" && <span className="text-success ms-1">*</span>}</td>
-                  <td>{text(bowler.overs, "0")}</td><td>{text(bowler.maidens, "0")}</td><td>{text(bowler.runs_conceded, "0")}</td><td className="text-success">{text(bowler.wickets, "0")}</td><td>{text(bowler.econ, "0.00")}</td>
+                {bowlers.map((bowler, index) => <tr key={`${bowler.bowler_id || bowler.name || "bowler"}-${index}`} style={{ borderBottom: "1px solid #F1ECE4" }}>
+                  <td className="fw-semibold" style={{ color: "#1C1F22" }}>{text(bowler.name)}{String(bowler.bowling).toLowerCase() === "true" && <span className="ms-1" style={{ color: "#FFCC00" }}>*</span>}</td>
+                  <td>{text(bowler.overs, "0")}</td><td>{text(bowler.maidens, "0")}</td><td>{text(bowler.runs_conceded, "0")}</td><td className="fw-bold" style={{ color: "#4A90E2" }}>{text(bowler.wickets, "0")}</td><td>{text(bowler.econ, "0.00")}</td>
                 </tr>)}
                 {!bowlers.length && <tr><td colSpan={6} className="text-muted">No bowling rows supplied by provider.</td></tr>}
               </tbody>
@@ -209,13 +238,13 @@ function ScorecardTable({ inning, info }: { inning: ProviderRecord; info: Provid
         </div>
 
         <div className="col-lg-5">
-          <div className="card bg-dark bg-opacity-25 border border-secondary border-opacity-25 rounded-3 p-3 h-100">
-            <h3 className="h6 text-white fw-bold border-start border-success border-3 ps-2 mb-3">Key Stats</h3>
-            <div className="cricket-key-stat"><span>Partnership</span><strong>{text(partnership.runs, "0")} ({text(partnership.balls, "0")})</strong></div>
-            <div className="cricket-key-stat"><span>Last wicket</span><strong>{lastWicket.name ? `${text(lastWicket.name)} · ${text(lastWicket.runs, "0")} (${text(lastWicket.balls, "0")})` : "—"}</strong></div>
-            <div className="cricket-key-stat"><span>Extras</span><strong>{text(extras.total, "0")}</strong></div>
-            <div className="cricket-key-stat"><span>Toss</span><strong>{text(record(info.toss).text)}</strong></div>
-            <div className="cricket-key-stat"><span>Batting team</span><strong>{teamNameForId(info, inning.batting_team_id)}</strong></div>
+          <div className="card rounded-3 p-3 h-100 shadow-sm" style={{ background: "#FAF6EF", border: "1px solid #EAE5DC" }}>
+            <h3 className="h6 fw-bold border-start border-3 ps-2 mb-3 font-space-grotesk" style={{ borderColor: "#FFCC00", color: "#1C1F22" }}>Key Stats</h3>
+            <div className="cricket-key-stat"><span>Partnership</span><strong style={{ color: "#1C1F22" }}>{text(partnership.runs, "0")} ({text(partnership.balls, "0")})</strong></div>
+            <div className="cricket-key-stat"><span>Last wicket</span><strong style={{ color: "#1C1F22" }}>{lastWicket.name ? `${text(lastWicket.name)} · ${text(lastWicket.runs, "0")} (${text(lastWicket.balls, "0")})` : "—"}</strong></div>
+            <div className="cricket-key-stat"><span>Extras</span><strong style={{ color: "#1C1F22" }}>{text(extras.total, "0")}</strong></div>
+            <div className="cricket-key-stat"><span>Toss</span><strong style={{ color: "#1C1F22" }}>{text(record(info.toss).text)}</strong></div>
+            <div className="cricket-key-stat"><span>Batting team</span><strong style={{ color: "#1C1F22" }}>{teamNameForId(info, inning.batting_team_id)}</strong></div>
           </div>
         </div>
       </div>
@@ -343,17 +372,160 @@ function CompactOverviewScorecard({ inning, info, providerData, statistics }: { 
     .map(recentBallTokens)
     .find((tokens) => tokens.length > 0)?.slice(-18) || [];
 
-  return <section className="card bg-card border border-dark rounded-4 p-3 p-md-4 compact-overview-scorecard">
-    <div className="d-flex flex-wrap align-items-center justify-content-between gap-3 pb-3 mb-3 border-bottom border-secondary border-opacity-25"><div><h2 className="h5 text-white fw-bold font-monospace mb-0">{teamNameForId(info, inning.batting_team_id)} {text(inning.scores, text(inning.scores_full))} <span className="text-muted small">({text(equation.overs, "—")} Ov)</span></h2></div><div className="d-flex flex-wrap gap-2"><span className="badge text-bg-dark border border-secondary">CRR: {text(equation.runrate, "—")}</span>{requiredRuns > 0 && requiredBalls > 0 && <span className="badge text-bg-dark border border-danger text-danger">{text(info.short_name, teamNameForId(info, inning.batting_team_id))} need {requiredRuns} runs from {requiredBalls} balls</span>}</div></div>
-    <div className="row g-4">
-      <div className="col-lg-7"><h3 className="compact-section-title">Batter</h3><div className="table-responsive"><table className="table table-dark table-borderless align-middle mb-4 cricket-score-table compact-score-table"><thead><tr><th>BATTER</th><th>R</th><th>B</th><th>4S</th><th>6S</th><th>SR</th></tr></thead><tbody>{visibleBatsmen.map((item, index) => <tr key={`${item.batsman_id || item.name}-${index}`}><td className="fw-semibold text-white">{text(item.name)}{String(item.batting).toLowerCase() === "true" && <span className="text-success ms-1">*</span>}</td><td>{text(item.runs, "0")}</td><td>{text(item.balls_faced, "0")}</td><td>{text(item.fours, "0")}</td><td>{text(item.sixes, "0")}</td><td>{text(item.strike_rate, "0.00")}</td></tr>)}</tbody></table></div><h3 className="compact-section-title">Bowler</h3><div className="table-responsive"><table className="table table-dark table-borderless align-middle mb-0 cricket-score-table compact-score-table"><thead><tr><th>BOWLER</th><th>O</th><th>M</th><th>R</th><th>W</th><th>ECO</th></tr></thead><tbody>{visibleBowlers.map((item, index) => <tr key={`${item.bowler_id || item.name}-${index}`}><td className="fw-semibold text-white">{text(item.name)}{String(item.bowling).toLowerCase() === "true" && <span className="text-success ms-1">*</span>}</td><td>{text(item.overs, "0")}</td><td>{text(item.maidens, "0")}</td><td>{text(item.runs_conceded, "0")}</td><td className="text-success">{text(item.wickets, "0")}</td><td>{text(item.econ, "0.00")}</td></tr>)}</tbody></table></div></div>
-      <div className="col-lg-5"><div className="card bg-dark bg-opacity-25 border border-secondary border-opacity-25 rounded-3 p-3 compact-key-stats"><h3 className="h6 text-white fw-bold border-start border-success border-3 ps-2 mb-3">Key Stats</h3><div className="cricket-key-stat"><span>Partnership</span><strong>{text(partnership.runs, "0")} ({text(partnership.balls, "0")})</strong></div><div className="cricket-key-stat"><span>Last Wicket</span><strong>{lastWicket.name ? `${text(lastWicket.name)} · ${text(lastWicket.runs, "0")} (${text(lastWicket.balls, "0")})` : "—"}</strong></div><div className="cricket-key-stat"><span>Last 10 Overs</span><strong>{recentRuns || recentWickets ? `${recentRuns} runs, ${recentWickets} wkts` : "—"}</strong></div><div className="cricket-key-stat"><span>Toss</span><strong>{text(record(info.toss).text)}</strong></div></div></div>
-    </div>
-    {(teamAWin > 0 || teamBWin > 0 || recentForm.length > 0) && <div className="compact-bottom-row">
-      {(teamAWin > 0 || teamBWin > 0) && <div className="compact-win-probability"><div><strong>{text(getTeam(info, "teama").name)}</strong><span>{teamAWin}%</span></div><div className="compact-win-bar"><span style={{ width: `${teamAWin}%` }} /></div><div><span>{teamBWin}%</span><strong>{text(getTeam(info, "teamb").name)}</strong></div></div>}
-      {recentForm.length > 0 && <div className="compact-recent-form"><strong>Recent:</strong>{recentForm.map((item, index) => item === "|" ? <span key={`separator-${index}`} className="recent-form-separator">|</span> : <span key={index} className={`recent-form-pill ${String(item).toLowerCase() === "w" ? "win" : String(item).toLowerCase() === "l" ? "loss" : ""}`}>{text(item)}</span>)}</div>}
-    </div>}
-  </section>;
+  return (
+    <section className="card rounded-4 p-4 shadow-sm mb-4 compact-overview-scorecard" style={{ background: "#ffffff", border: "1px solid #eae5dc" }}>
+      <div className="d-flex flex-wrap align-items-center justify-content-between gap-3 pb-3 mb-3 border-bottom" style={{ borderColor: "#f1ece4" }}>
+        <div>
+          <h2 className="h5 fw-bold font-monospace mb-0" style={{ color: "#1c1f22" }}>
+            {teamNameForId(info, inning.batting_team_id)} {text(inning.scores, text(inning.scores_full))}{" "}
+            <span className="text-muted small">({text(equation.overs, "—")} Ov)</span>
+          </h2>
+        </div>
+        <div className="d-flex flex-wrap gap-2">
+          <span className="badge rounded-pill fw-bold" style={{ background: "#faf8f5", border: "1px solid #eae5dc", color: "#1c1f22", fontSize: "11px" }}>
+            CRR: {text(equation.runrate, "—")}
+          </span>
+          {requiredRuns > 0 && requiredBalls > 0 && (
+            <span className="badge rounded-pill fw-bold" style={{ background: "rgba(220, 38, 38, 0.08)", border: "1px solid rgba(220, 38, 38, 0.25)", color: "#dc2626", fontSize: "11px" }}>
+              {text(info.short_name, teamNameForId(info, inning.batting_team_id))} need {requiredRuns} runs from {requiredBalls} balls
+            </span>
+          )}
+        </div>
+      </div>
+
+      <div className="row g-4">
+        <div className="col-lg-7">
+          <h3 className="compact-section-title">Batter</h3>
+          <div className="table-responsive">
+            <table className="table table-hover table-borderless align-middle mb-4 cricket-score-table compact-score-table">
+              <thead>
+                <tr>
+                  <th>BATTER</th>
+                  <th>R</th>
+                  <th>B</th>
+                  <th>4S</th>
+                  <th>6S</th>
+                  <th>SR</th>
+                </tr>
+              </thead>
+              <tbody>
+                {visibleBatsmen.map((item, index) => (
+                  <tr key={`${item.batsman_id || item.name}-${index}`}>
+                    <td className="fw-semibold" style={{ color: "#1c1f22" }}>
+                      {text(item.name)}
+                      {String(item.batting).toLowerCase() === "true" && <span className="text-success ms-1 fw-bold">*</span>}
+                    </td>
+                    <td>{text(item.runs, "0")}</td>
+                    <td>{text(item.balls_faced, "0")}</td>
+                    <td>{text(item.fours, "0")}</td>
+                    <td>{text(item.sixes, "0")}</td>
+                    <td className="fw-semibold">{text(item.strike_rate, "0.00")}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <h3 className="compact-section-title">Bowler</h3>
+          <div className="table-responsive">
+            <table className="table table-hover table-borderless align-middle mb-0 cricket-score-table compact-score-table">
+              <thead>
+                <tr>
+                  <th>BOWLER</th>
+                  <th>O</th>
+                  <th>M</th>
+                  <th>R</th>
+                  <th>W</th>
+                  <th>ECO</th>
+                </tr>
+              </thead>
+              <tbody>
+                {visibleBowlers.map((item, index) => (
+                  <tr key={`${item.bowler_id || item.name}-${index}`}>
+                    <td className="fw-semibold" style={{ color: "#1c1f22" }}>
+                      {text(item.name)}
+                      {String(item.bowling).toLowerCase() === "true" && <span className="text-success ms-1 fw-bold">*</span>}
+                    </td>
+                    <td>{text(item.overs, "0")}</td>
+                    <td>{text(item.maidens, "0")}</td>
+                    <td>{text(item.runs_conceded, "0")}</td>
+                    <td className="fw-bold" style={{ color: "#15803d" }}>{text(item.wickets, "0")}</td>
+                    <td>{text(item.econ, "0.00")}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div className="col-lg-5">
+          <div className="card rounded-3 p-3 compact-key-stats" style={{ background: "#faf8f5", border: "1px solid #eae5dc" }}>
+            <h4 className="fw-bold mb-3 d-flex align-items-center gap-2" style={{ color: "#1c1f22", fontSize: "15px" }}>
+              <span className="d-inline-block rounded-pill" style={{ width: "3px", height: "14px", backgroundColor: "#ffcc00" }} />
+              Key Stats
+            </h4>
+            <div className="cricket-key-stat">
+              <span>Partnership</span>
+              <strong style={{ color: "#1c1f22" }}>{text(partnership.runs, "0")} ({text(partnership.balls, "0")})</strong>
+            </div>
+            <div className="cricket-key-stat">
+              <span>Last Wicket</span>
+              <strong style={{ color: "#1c1f22" }}>
+                {lastWicket.name ? `${text(lastWicket.name)} · ${text(lastWicket.runs, "0")} (${text(lastWicket.balls, "0")})` : "—"}
+              </strong>
+            </div>
+            <div className="cricket-key-stat">
+              <span>Last 10 Overs</span>
+              <strong style={{ color: "#1c1f22" }}>
+                {recentRuns || recentWickets ? `${recentRuns} runs, ${recentWickets} wkts` : "—"}
+              </strong>
+            </div>
+            <div className="cricket-key-stat">
+              <span>Toss</span>
+              <strong style={{ color: "#1c1f22" }}>{text(record(info.toss).text)}</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {(teamAWin > 0 || teamBWin > 0 || recentForm.length > 0) && (
+        <div className="compact-bottom-row pt-3 mt-3 border-top" style={{ borderColor: "#eae5dc" }}>
+          {(teamAWin > 0 || teamBWin > 0) && (
+            <div className="compact-win-probability">
+              <div>
+                <strong style={{ color: "#1c1f22" }}>{text(getTeam(info, "teama").name)}</strong>
+                <span className="fw-bold" style={{ color: "#1c1f22" }}>{teamAWin}%</span>
+              </div>
+              <div className="compact-win-bar">
+                <span style={{ width: `${teamAWin}%` }} />
+              </div>
+              <div>
+                <span className="fw-bold" style={{ color: "#1c1f22" }}>{teamBWin}%</span>
+                <strong style={{ color: "#1c1f22" }}>{text(getTeam(info, "teamb").name)}</strong>
+              </div>
+            </div>
+          )}
+          {recentForm.length > 0 && (
+            <div className="compact-recent-form">
+              <strong style={{ color: "#1c1f22" }}>Recent:</strong>
+              {recentForm.map((item, index) =>
+                item === "|" ? (
+                  <span key={`separator-${index}`} className="recent-form-separator">|</span>
+                ) : (
+                  <span
+                    key={index}
+                    className={`recent-form-pill ${String(item).toLowerCase() === "w" ? "win" : String(item).toLowerCase() === "l" ? "loss" : ""}`}
+                  >
+                    {text(item)}
+                  </span>
+                )
+              )}
+            </div>
+          )}
+        </div>
+      )}
+    </section>
+  );
 }
 
 function StatisticsPanel({ innings, statistics, info }: { innings: ProviderRecord[]; statistics: ProviderRecord | null; info: ProviderRecord }) {
@@ -367,13 +539,112 @@ function StatisticsPanel({ innings, statistics, info }: { innings: ProviderRecor
     { label: "Run rate", value: (inning: ProviderRecord) => text(record(inning.equations).runrate, "0.00"), numeric: (inning: ProviderRecord) => number(record(inning.equations).runrate) },
     { label: "Extras", value: (inning: ProviderRecord) => text(record(inning.extra_runs).total, "0"), numeric: (inning: ProviderRecord) => number(record(inning.extra_runs).total) },
   ];
-  const players: ProviderRecord[] = [first, second].flatMap((inning) => array(inning.batsmen).sort((a, b) => number(b.runs) - number(a.runs)).slice(0, 3).map((player) => ({ ...player, team: teamNameForId(info, inning.batting_team_id) })));
+  const players: ProviderRecord[] = [first, second].flatMap((inning) =>
+    array(inning.batsmen)
+      .sort((a, b) => number(b.runs) - number(a.runs))
+      .slice(0, 3)
+      .map((player) => ({ ...player, team: teamNameForId(info, inning.batting_team_id) }))
+  );
 
-  return <section className="d-flex flex-column gap-4">
-    <div className="card bg-card border border-dark rounded-4 p-3 p-md-4"><div className="d-flex justify-content-between align-items-center mb-3"><h2 className="h6 text-white fw-bold mb-0">Team Statistics Comparison</h2><span className="text-muted small">Provider data</span></div>{rows.map((row) => { const max = Math.max(row.numeric(first), row.numeric(second), 1); return <div className="comparison-row" key={row.label}><span className="comparison-label">{row.label}</span><strong>{row.value(first)}</strong><div className="comparison-bar"><span style={{ width: `${Math.min(100, row.numeric(first) / max * 100)}%` }} /></div><div className="comparison-bar comparison-bar-away"><span style={{ width: `${Math.min(100, row.numeric(second) / max * 100)}%` }} /></div><strong>{row.value(second)}</strong></div>; })}</div>
-    <div className="card bg-card border border-dark rounded-4 p-3 p-md-4"><h2 className="h6 text-white fw-bold mb-3">Key Player Performance</h2><div className="row g-3">{players.length ? players.map((player, index) => <div className="col-md-6" key={`${player.batsman_id || player.name}-${index}`}><div className="player-performance-card"><span className="player-performance-icon"><i className="bi bi-person-fill" /></span><div className="flex-grow-1"><strong>{text(player.name)}</strong><small>{text(player.team)} · {text(player.runs, "0")} runs ({text(player.balls_faced, "0")} balls)</small></div><span className="text-success small">{text(player.strike_rate, "0.00")} SR</span></div></div>) : <p className="text-muted mb-0">No player statistics supplied by provider.</p>}</div></div>
-    <div className="card bg-card border border-dark rounded-4 p-3 p-md-4"><h2 className="h6 text-white fw-bold mb-3">Recent Over Progression</h2>{statsInnings.length ? <div className="d-flex flex-wrap gap-2">{statsInnings.flatMap((item) => array(record(item.statistics).manhattan).slice(-5).map((over, index) => <span className="badge rounded-pill text-bg-dark border border-secondary" key={`${item.number}-${over.over || index}`}>O{text(over.over)}: {text(over.runs, "0")}</span>))}</div> : <p className="text-muted mb-0">No over progression supplied by provider.</p>}</div>
-  </section>;
+  return (
+    <section className="d-flex flex-column gap-4">
+      {/* Team Statistics Comparison */}
+      <div className="card rounded-4 p-4 shadow-sm" style={{ background: "#ffffff", border: "1px solid #eae5dc" }}>
+        <div className="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom" style={{ borderColor: "#f1ece4" }}>
+          <h5 className="fw-bold mb-0 font-space-grotesk d-flex align-items-center gap-2" style={{ color: "#1c1f22" }}>
+            <span className="d-inline-block rounded-pill" style={{ width: "4px", height: "16px", backgroundColor: "#ffcc00" }} />
+            Team Statistics Comparison
+          </h5>
+          <span className="badge rounded-pill fw-semibold" style={{ background: "#faf8f5", border: "1px solid #eae5dc", color: "#64748b", fontSize: "11px" }}>
+            Provider Data
+          </span>
+        </div>
+        <div className="d-flex flex-column gap-3">
+          {rows.map((row) => {
+            const max = Math.max(row.numeric(first), row.numeric(second), 1);
+            const val1 = row.numeric(first);
+            const val2 = row.numeric(second);
+            const pct1 = Math.min(100, (val1 / max) * 100);
+            const pct2 = Math.min(100, (val2 / max) * 100);
+            return (
+              <div key={row.label} className="p-3 rounded-3" style={{ background: "#faf8f5", border: "1px solid #eae5dc" }}>
+                <div className="d-flex justify-content-between align-items-center mb-2">
+                  <strong style={{ color: "#1c1f22", fontSize: "15px" }}>{row.value(first)}</strong>
+                  <span className="fw-bold small text-muted text-uppercase" style={{ fontSize: "11px", letterSpacing: "0.04em" }}>{row.label}</span>
+                  <strong style={{ color: "#1c1f22", fontSize: "15px" }}>{row.value(second)}</strong>
+                </div>
+                <div className="d-flex gap-2" style={{ height: "6px" }}>
+                  <div className="w-50 rounded-pill overflow-hidden d-flex justify-content-end" style={{ background: "#eae5dc" }}>
+                    <div className="h-100 rounded-pill" style={{ width: `${pct1}%`, background: "#ffcc00" }} />
+                  </div>
+                  <div className="w-50 rounded-pill overflow-hidden" style={{ background: "#eae5dc" }}>
+                    <div className="h-100 rounded-pill" style={{ width: `${pct2}%`, background: "#4a90e2" }} />
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Key Player Performance */}
+      <div className="card rounded-4 p-4 shadow-sm" style={{ background: "#ffffff", border: "1px solid #eae5dc" }}>
+        <h5 className="fw-bold mb-4 font-space-grotesk d-flex align-items-center gap-2" style={{ color: "#1c1f22" }}>
+          <span className="d-inline-block rounded-pill" style={{ width: "4px", height: "16px", backgroundColor: "#ffcc00" }} />
+          Key Player Performance
+        </h5>
+        <div className="row g-3">
+          {players.length ? (
+            players.map((player, index) => (
+              <div className="col-md-6" key={`${player.batsman_id || player.name}-${index}`}>
+                <div className="d-flex align-items-center justify-content-between p-3 rounded-3" style={{ background: "#faf8f5", border: "1px solid #eae5dc" }}>
+                  <div className="d-flex align-items-center gap-3 min-w-0">
+                    <div className="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style={{ width: "38px", height: "38px", background: "#ffffff", border: "1px solid #eae5dc" }}>
+                      <i className="bi bi-person-fill" style={{ color: "#64748b", fontSize: "16px" }} />
+                    </div>
+                    <div className="min-w-0">
+                      <strong className="d-block text-truncate" style={{ color: "#1c1f22", fontSize: "14px" }}>{text(player.name)}</strong>
+                      <small className="text-muted">{text(player.team)} · {text(player.runs, "0")} runs ({text(player.balls_faced, "0")} balls)</small>
+                    </div>
+                  </div>
+                  <span className="badge rounded-pill fw-bold" style={{ background: "rgba(22, 163, 74, 0.08)", color: "#15803d", border: "1px solid rgba(22, 163, 74, 0.2)", fontSize: "11px" }}>
+                    {text(player.strike_rate, "0.00")} SR
+                  </span>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p className="text-muted mb-0 p-2">No player statistics supplied by provider.</p>
+          )}
+        </div>
+      </div>
+
+      {/* Recent Over Progression */}
+      <div className="card rounded-4 p-4 shadow-sm" style={{ background: "#ffffff", border: "1px solid #eae5dc" }}>
+        <h5 className="fw-bold mb-3 font-space-grotesk d-flex align-items-center gap-2" style={{ color: "#1c1f22" }}>
+          <span className="d-inline-block rounded-pill" style={{ width: "4px", height: "16px", backgroundColor: "#ffcc00" }} />
+          Recent Over Progression
+        </h5>
+        {statsInnings.length ? (
+          <div className="d-flex flex-wrap gap-2">
+            {statsInnings.flatMap((item) =>
+              array(record(item.statistics).manhattan).slice(-5).map((over, index) => (
+                <span
+                  className="badge rounded-pill fw-semibold px-3 py-2"
+                  style={{ background: "#faf8f5", border: "1px solid #eae5dc", color: "#1c1f22", fontSize: "12px" }}
+                  key={`${item.number}-${over.over || index}`}
+                >
+                  Over {text(over.over)}: <strong style={{ color: "#d97706" }}>{text(over.runs, "0")} runs</strong>
+                </span>
+              ))
+            )}
+          </div>
+        ) : (
+          <p className="text-muted mb-0">No over progression supplied by provider.</p>
+        )}
+      </div>
+    </section>
+  );
 }
 
 function LineupsPanel({ providerData, info }: { providerData: ProviderRecord; info: ProviderRecord }) {
@@ -390,28 +661,83 @@ function LineupsPanel({ providerData, info }: { providerData: ProviderRecord; in
     { key: "teama" as const, team: getTeam(info, "teama"), name: text(getTeam(info, "teama").name), players: getPlaying11(providerData, "teama") },
     { key: "teamb" as const, team: getTeam(info, "teamb"), name: text(getTeam(info, "teamb").name), players: getPlaying11(providerData, "teamb") },
   ];
-  return <section className="lineups-reference-card">
-    <h2>Starting Formations &amp; Squads</h2>
-    <div className="lineups-reference-grid">
-      {groups.map((group) => <div className="lineups-reference-team" key={group.key}>
-        <div className="lineups-reference-team-head">
-          <Image src={text(group.team.logo_url || group.team.thumb_url, "/assets/imgs/teams/team-placeholder.svg")} alt={group.name} width={28} height={28} className="lineups-reference-team-logo" />
-          <strong>{group.name}</strong>
-        </div>
-        {group.players.length ? <div className="lineups-reference-players">{group.players.map((player, index) => { const role = roleLabel(player); return <div className="lineups-reference-player" key={`${player.player_id || player.pid || player.name}-${index}`}>
-          <span className="lineups-reference-player-number">{index + 1}</span>
-          <span className="lineups-reference-player-name">{text(player.name)}</span>
-          {role && <span className={`lineups-reference-role ${role === "WICKETKEEPER" ? "keeper" : role === "CAPT" ? "captain" : ""}`}>{role}</span>}
-        </div>; })}</div> : <p className="text-muted mb-0">Playing XI was not supplied by provider.</p>}
-      </div>)}
-    </div>
-  </section>;
+  return (
+    <section className="lineups-reference-card">
+      <h2>Starting Formations &amp; Squads</h2>
+      <div className="lineups-reference-grid">
+        {groups.map((group) => (
+          <div className="lineups-reference-team" key={group.key}>
+            <div className="lineups-reference-team-head">
+              <Image src={text(group.team.logo_url || group.team.thumb_url, "/assets/imgs/teams/team-placeholder.svg")} alt={group.name} width={28} height={28} className="lineups-reference-team-logo" />
+              <strong>{group.name}</strong>
+            </div>
+            {group.players.length ? (
+              <div className="lineups-reference-players">
+                {group.players.map((player, index) => {
+                  const role = roleLabel(player);
+                  return (
+                    <div className="lineups-reference-player" key={`${player.player_id || player.pid || player.name}-${index}`}>
+                      <span className="lineups-reference-player-number">{index + 1}</span>
+                      <span className="lineups-reference-player-name">{text(player.name)}</span>
+                      {role && <span className={`lineups-reference-role ${role === "WICKETKEEPER" ? "keeper" : role === "CAPT" ? "captain" : ""}`}>{role}</span>}
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <p className="text-muted mb-0 p-2">Playing XI was not supplied by provider.</p>
+            )}
+          </div>
+        ))}
+      </div>
+    </section>
+  );
 }
 
 function CommentaryPanel({ commentary, title }: { commentary: ProviderRecord | null; title: string }) {
   const rows = getCommentaryRows(commentary);
-  const latest = rows.slice(-12).reverse();
-  return <section className="card bg-card border border-dark rounded-4 p-3 p-md-4"><div className="d-flex justify-content-between align-items-center mb-3"><h2 className="h6 text-white fw-bold mb-0">{title}</h2><span className="badge text-bg-success">LIVE</span></div>{latest.length ? <div className="commentary-list">{latest.map((item, index) => <div className="commentary-item" key={item.id || item.commentary_id || item.event_id || index}><span className="commentary-over">{text(item.over || item.over_no, "—")} . {text(item.ball, "—")}</span><div className="flex-grow-1"><p className="text-light mb-1">{text(item.commentary || item.sentence || item.text || item.commentary_text, "Provider update")}</p><small className="text-muted">{number(item.run) > 0 ? `${text(item.run)} run${number(item.run) > 1 ? "s" : ""}` : "Dot ball"}</small></div></div>)}</div> : <p className="text-muted mb-0">No commentary available</p>}</section>;
+  const latest = rows.slice(-15).reverse();
+  return (
+    <section className="card rounded-4 p-4 shadow-sm" style={{ background: "#ffffff", border: "1px solid #eae5dc" }}>
+      <div className="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom" style={{ borderColor: "#f1ece4" }}>
+        <h5 className="fw-bold mb-0 font-space-grotesk d-flex align-items-center gap-2" style={{ color: "#1c1f22" }}>
+          <span className="d-inline-block rounded-pill" style={{ width: "4px", height: "16px", backgroundColor: "#ffcc00" }} />
+          {title}
+        </h5>
+        <span className="badge rounded-pill fw-bold px-2.5 py-1" style={{ background: "rgba(22, 163, 74, 0.1)", color: "#15803d", border: "1px solid rgba(22, 163, 74, 0.25)", fontSize: "11px" }}>
+          LIVE
+        </span>
+      </div>
+      {latest.length ? (
+        <div className="d-flex flex-column">
+          {latest.map((item, index) => (
+            <div
+              key={item.id || item.commentary_id || item.event_id || index}
+              className="d-flex gap-3 py-3"
+              style={{ borderBottom: index < latest.length - 1 ? "1px solid #f1ece4" : "none" }}
+            >
+              <div
+                className="badge rounded-pill fw-bold font-monospace flex-shrink-0 align-self-start"
+                style={{ background: "#faf8f5", border: "1px solid #eae5dc", color: "#1c1f22", fontSize: "11px", padding: "4px 8px" }}
+              >
+                {text(item.over || item.over_no, "—")}.{text(item.ball, "—")}
+              </div>
+              <div className="flex-grow-1">
+                <p className="mb-1 fw-medium" style={{ color: "#1c1f22", fontSize: "13.5px", lineHeight: 1.5 }}>
+                  {text(item.commentary || item.sentence || item.text || item.commentary_text, "Provider update")}
+                </p>
+                <small className="text-muted fw-semibold">
+                  {number(item.run) > 0 ? `${text(item.run)} run${number(item.run) > 1 ? "s" : ""}` : "Dot ball"}
+                </small>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="text-muted mb-0 p-2">No commentary available.</p>
+      )}
+    </section>
+  );
 }
 
 function TimelinePanel({ providerData, commentary }: { providerData: ProviderRecord; commentary: ProviderRecord | null }) {
@@ -422,7 +748,48 @@ function TimelinePanel({ providerData, commentary }: { providerData: ProviderRec
     ...fallOfWickets.map((item) => ({ time: text(item.overs_at_dismissal, "—"), title: `${text(item.name)} dismissed`, detail: `${text(item.how_out || item.dismissal, "Wicket")}`, kind: "wicket" })),
     ...commentaries.map((item) => ({ time: `${text(item.over, "—")}.${text(item.ball, "—")}`, title: "Ball update", detail: text(item.commentary || item.text), kind: number(item.run) > 0 ? "run" : "dot" })),
   ].slice(-10);
-  return <section className="card bg-card border border-dark rounded-4 p-3 p-md-4"><h2 className="h6 text-white fw-bold mb-4">Match Events Timeline</h2>{events.length ? <div className="match-timeline">{events.map((event, index) => <div className={`timeline-event ${event.kind}`} key={`${event.time}-${index}`}><span className="timeline-node" /><div className="timeline-content"><div className="d-flex justify-content-between gap-3"><span className="badge text-bg-dark border border-secondary">{event.time}</span><span className="text-success small text-uppercase">{event.kind}</span></div><strong>{event.title}</strong><p>{event.detail}</p></div></div>)}</div> : <p className="text-muted mb-0">No timeline events available</p>}</section>;
+
+  return (
+    <section className="card rounded-4 p-4 shadow-sm" style={{ background: "#ffffff", border: "1px solid #eae5dc" }}>
+      <h5 className="fw-bold mb-4 font-space-grotesk d-flex align-items-center gap-2" style={{ color: "#1c1f22" }}>
+        <span className="d-inline-block rounded-pill" style={{ width: "4px", height: "16px", backgroundColor: "#ffcc00" }} />
+        Match Events Timeline
+      </h5>
+      {events.length ? (
+        <div className="d-flex flex-column gap-3">
+          {events.map((event, index) => (
+            <div key={`${event.time}-${index}`} className="d-flex gap-3 align-items-start p-3 rounded-3" style={{ background: "#faf8f5", border: "1px solid #eae5dc" }}>
+              <span
+                className="badge rounded-pill fw-bold font-monospace flex-shrink-0"
+                style={{ background: "#ffffff", border: "1px solid #eae5dc", color: "#1c1f22", fontSize: "11px", padding: "4px 8px" }}
+              >
+                {event.time} ov
+              </span>
+              <div className="flex-grow-1 min-w-0">
+                <div className="d-flex align-items-center justify-content-between gap-2 mb-1">
+                  <strong style={{ color: "#1c1f22", fontSize: "14px" }}>{event.title}</strong>
+                  <span
+                    className="badge rounded-pill fw-bold text-uppercase"
+                    style={{
+                      fontSize: "9.5px",
+                      background: event.kind === "wicket" ? "rgba(220, 38, 38, 0.1)" : "rgba(22, 163, 74, 0.1)",
+                      color: event.kind === "wicket" ? "#dc2626" : "#15803d",
+                      border: event.kind === "wicket" ? "1px solid rgba(220, 38, 38, 0.25)" : "1px solid rgba(22, 163, 74, 0.25)",
+                    }}
+                  >
+                    {event.kind}
+                  </span>
+                </div>
+                <p className="text-muted small mb-0">{event.detail}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="text-muted mb-0 p-2">No timeline events available.</p>
+      )}
+    </section>
+  );
 }
 
 function OverviewPanel({ match, providerData, info, latestInning, statistics }: { match: LiveScoreMatchDetail; providerData: ProviderRecord; info: ProviderRecord; latestInning: ProviderRecord; statistics: ProviderRecord | null }) {
@@ -436,11 +803,45 @@ function OverviewPanel({ match, providerData, info, latestInning, statistics }: 
     info.historical_results,
     info.history,
   );
-  return <section className="d-flex flex-column gap-4">
-    <CompactOverviewScorecard inning={latestInning} info={info} providerData={providerData} statistics={statistics} />
-    <div className="card bg-card border border-dark rounded-4 p-3 p-md-4"><h2 className="h5 text-white fw-bold border-start border-success border-3 ps-2 mb-4">Match Overview</h2><div className="row g-3">{[["Competition", match.competitionName], ["Venue", match.venue], ["Last Updated", match.lastUpdated], ["Sport Type", "CRICKET"]].map(([label, value]) => <div className="col-6 col-lg-3" key={String(label)}><div className="cricket-overview-card"><span>{label}</span><strong>{text(value)}</strong></div></div>)}</div></div>
-    <div className="card bg-card border border-dark rounded-4 p-3 p-md-4"><h2 className="h5 text-white fw-bold border-start border-success border-3 ps-2 mb-3">Historical Results (H2H)</h2>{history.length ? <div className="d-flex flex-column gap-2">{history.map((item, index) => <div className="cricket-history-row" key={item.id || index}><span>{text(item.date)}</span><strong>{text(item.result || item.summary || item.text)}</strong></div>)}</div> : <p className="text-muted mb-0">No historical H2H results available.</p>}</div>
-  </section>;
+  return (
+    <section className="d-flex flex-column gap-4">
+      <CompactOverviewScorecard inning={latestInning} info={info} providerData={providerData} statistics={statistics} />
+      <div className="card rounded-4 p-4 shadow-sm" style={{ background: "#ffffff", border: "1px solid #eae5dc" }}>
+        <h5 className="fw-bold mb-4 font-space-grotesk d-flex align-items-center gap-2" style={{ color: "#1c1f22" }}>
+          <span className="d-inline-block rounded-pill" style={{ width: "4px", height: "18px", backgroundColor: "#ffcc00" }} />
+          Match Overview
+        </h5>
+        <div className="row g-3">
+          {[["Competition", match.competitionName], ["Venue", match.venue], ["Last Updated", match.lastUpdated], ["Sport Type", "CRICKET"]].map(([label, value]) => (
+            <div className="col-6 col-lg-3" key={String(label)}>
+              <div className="p-3 rounded-3" style={{ background: "#faf8f5", border: "1px solid #eae5dc" }}>
+                <span className="text-muted fw-bold text-uppercase d-block mb-1" style={{ fontSize: "11px", letterSpacing: "0.04em" }}>{label}</span>
+                <strong style={{ color: "#1c1f22", fontSize: "14px" }}>{text(value)}</strong>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="card rounded-4 p-4 shadow-sm" style={{ background: "#ffffff", border: "1px solid #eae5dc" }}>
+        <h5 className="fw-bold mb-3 font-space-grotesk d-flex align-items-center gap-2" style={{ color: "#1c1f22" }}>
+          <span className="d-inline-block rounded-pill" style={{ width: "4px", height: "18px", backgroundColor: "#ffcc00" }} />
+          Historical Results (H2H)
+        </h5>
+        {history.length ? (
+          <div className="d-flex flex-column gap-2">
+            {history.map((item, index) => (
+              <div key={item.id || index} className="d-flex align-items-center justify-content-between p-3 rounded-3" style={{ background: "#faf8f5", border: "1px solid #eae5dc" }}>
+                <span className="text-muted small">{text(item.date)}</span>
+                <strong style={{ color: "#1c1f22", fontSize: "13.5px" }}>{text(item.result || item.summary || item.text)}</strong>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-muted mb-0 p-2">No historical H2H results available.</p>
+        )}
+      </div>
+    </section>
+  );
 }
 
 export default function CricketMatchDetail({ match, providerData, statistics, commentary, activeTab, onTabChange }: CricketMatchDetailProps) {
@@ -457,26 +858,129 @@ export default function CricketMatchDetail({ match, providerData, statistics, co
   const [selectedInningId, setSelectedInningId] = React.useState(String(latestInning.iid || latestInning.number || ""));
   const selectedInning = innings.find((inning) => String(inning.iid || inning.number || "") === selectedInningId) || latestInning;
 
-  return <div className="cricket-match-detail">
-    <section className="card bg-card border border-dark rounded-4 p-3 p-md-4 mb-4 cricket-match-hero">
-      <div className="d-flex flex-wrap justify-content-between align-items-center gap-3 pb-3 mb-4 border-bottom border-secondary border-opacity-25">
-        <div><div className="cricket-hero-kicker">{text(info.competition?.season, "LIVE")} · {text(info.competition?.title, match.competitionName)} · {text(info.subtitle, match.matchName)}</div><div className="text-muted small">{match.venue} · {formatDate(info.date_start_ist || info.date_start)}</div></div>
-        <div className="d-flex align-items-center gap-2"><StatusBadge status={match.matchStatus} /><span className="text-muted small"><i className="bi bi-clock me-1" />{text(latestInning.equations?.overs, text(match.team2Overs, "—"))} Overs</span></div>
-      </div>
-      <div className="cricket-hero-scoreboard">
-        <div className="cricket-hero-team"><TeamLogo src={match.team1Logo} name={match.team1Name} size={58} /><strong>{text(teamA.name, match.team1Name)}</strong><span>{oversA && `${oversA} ov`}</span></div>
-        <div className="cricket-hero-score"><div><strong>{scoreA}</strong><span>VS</span><strong>{scoreB}</strong></div><small>CRR: <b>{text(equation.runrate, "—")}</b> <i>·</i> RRR: <b>{text(info.required_run_rate || latestInning.required_run_rate, "—")}</b></small><span className="cricket-hero-venue" title={text(match.venue, "Venue unavailable")}><i className="bi bi-geo-alt-fill" />{text(match.venue, "Venue unavailable")}</span></div>
-        <div className="cricket-hero-team"><TeamLogo src={match.team2Logo} name={match.team2Name} size={58} /><strong>{text(teamB.name, match.team2Name)}</strong><span>{oversB && `${oversB} ov`}</span></div>
-      </div>
-      {match.note && <div className="mt-4 rounded-3 p-2 text-success bg-success bg-opacity-10 border border-success border-opacity-25 text-center small"><i className="bi bi-info-circle me-2" />{match.note}</div>}
-    </section>
-    <MatchSponsorBanner />
-    <CricketTabs activeTab={activeTab} onTabChange={onTabChange} />
-    {activeTab === "overview" && <OverviewPanel match={match} providerData={providerData} info={info} latestInning={latestInning} statistics={statistics} />}
-    {activeTab === "scorecard" && <div className="d-flex flex-column gap-4">{innings.length > 1 && <div className="scorecard-innings-switcher">{innings.map((inning, index) => { const inningId = String(inning.iid || inning.number || index); return <button type="button" className={String(selectedInning.iid || selectedInning.number || "") === inningId ? "active" : ""} key={inningId} onClick={() => setSelectedInningId(inningId)}>{text(inning.name, `Innings ${index + 1}`)}</button>; })}</div>}<DetailedScorecard inning={selectedInning} info={info} match={match} /></div>}
-    {activeTab === "statistics" && <StatisticsPanel innings={innings} statistics={statistics} info={info} />}
-    {activeTab === "lineups" && <LineupsPanel providerData={providerData} info={info} />}
-    {activeTab === "timeline" && <TimelinePanel providerData={providerData} commentary={commentary} />}
-    {activeTab === "commentary" && <CommentaryPanel commentary={commentary} title="Commentary" />}
-  </div>;
+  return (
+    <div className="cricket-match-detail">
+      {/* ── Cricket Hero Scoreboard ── */}
+      <section className="card rounded-4 p-4 mb-4 shadow-sm" style={{ background: "#ffffff", border: "1px solid #eae5dc" }}>
+        <div className="d-flex flex-wrap justify-content-between align-items-center gap-3 pb-3 mb-4 border-bottom" style={{ borderColor: "#eae5dc" }}>
+          <div>
+            <div className="fw-bold small text-uppercase" style={{ color: "#d97706", letterSpacing: "0.04em" }}>
+              {text(info.competition?.season, "LIVE")} · {text(info.competition?.title, match.competitionName)} · {text(info.subtitle, match.matchName)}
+            </div>
+            <div className="text-muted small mt-1">
+              <i className="bi bi-geo-alt me-1" />{match.venue} · {formatDate(info.date_start_ist || info.date_start)}
+            </div>
+          </div>
+          <div className="d-flex align-items-center gap-2">
+            <StatusBadge status={match.matchStatus} />
+            <span
+              className="badge rounded-pill px-2.5 py-1 font-monospace fw-bold"
+              style={{ background: "#faf8f5", border: "1px solid #eae5dc", color: "#4b5563", fontSize: "11px" }}
+            >
+              <i className="bi bi-clock me-1" />{text(latestInning.equations?.overs, text(match.team2Overs, "—"))} Overs
+            </span>
+          </div>
+        </div>
+
+        <div className="row align-items-center g-3 my-2">
+          {/* Team 1 */}
+          <div className="col-4 text-center">
+            <div className="d-flex flex-column align-items-center gap-2">
+              <div
+                className="rounded-circle d-flex align-items-center justify-content-center p-2"
+                style={{ width: "64px", height: "64px", background: "#f8f6f0", border: "1px solid #eae5dc" }}
+              >
+                <TeamLogo src={match.team1Logo} name={match.team1Name} size={48} />
+              </div>
+              <strong className="fw-bold" style={{ color: "#1c1f22", fontSize: "16px" }}>
+                {text(teamA.name, match.team1Name)}
+              </strong>
+              <span className="text-muted small font-monospace">
+                {oversA && `${oversA} ov`}
+              </span>
+            </div>
+          </div>
+
+          {/* Center Score */}
+          <div className="col-4 text-center">
+            <div className="d-flex align-items-baseline justify-content-center gap-2">
+              <span className="font-monospace fw-bold" style={{ fontSize: "28px", color: "#1c1f22", letterSpacing: "-0.02em" }}>
+                {scoreA}
+              </span>
+              <span className="badge rounded-pill px-2 py-0.5" style={{ background: "#f8f6f0", color: "#64748b", fontSize: "10px", border: "1px solid #eae5dc" }}>
+                VS
+              </span>
+              <span className="font-monospace fw-bold" style={{ fontSize: "28px", color: "#1c1f22", letterSpacing: "-0.02em" }}>
+                {scoreB}
+              </span>
+            </div>
+            <div className="d-flex align-items-center justify-content-center gap-3 mt-2 text-muted small">
+              <span>CRR: <strong style={{ color: "#1c1f22" }}>{text(equation.runrate, "—")}</strong></span>
+              <span>·</span>
+              <span>RRR: <strong style={{ color: "#1c1f22" }}>{text(info.required_run_rate || latestInning.required_run_rate, "—")}</strong></span>
+            </div>
+          </div>
+
+          {/* Team 2 */}
+          <div className="col-4 text-center">
+            <div className="d-flex flex-column align-items-center gap-2">
+              <div
+                className="rounded-circle d-flex align-items-center justify-content-center p-2"
+                style={{ width: "64px", height: "64px", background: "#f8f6f0", border: "1px solid #eae5dc" }}
+              >
+                <TeamLogo src={match.team2Logo} name={match.team2Name} size={48} />
+              </div>
+              <strong className="fw-bold" style={{ color: "#1c1f22", fontSize: "16px" }}>
+                {text(teamB.name, match.team2Name)}
+              </strong>
+              <span className="text-muted small font-monospace">
+                {oversB && `${oversB} ov`}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {match.note && (
+          <div
+            className="d-flex align-items-center justify-content-center gap-2 p-2.5 mt-4 rounded-3 text-center"
+            style={{ background: "#fffdf0", border: "1px solid #fde68a", borderLeft: "4px solid #ffcc00" }}
+          >
+            <i className="bi bi-info-circle-fill flex-shrink-0" style={{ fontSize: "13px", color: "#d97706" }} />
+            <span className="small fw-semibold" style={{ color: "#78350f" }}>{match.note}</span>
+          </div>
+        )}
+      </section>
+
+      <MatchSponsorBanner />
+      <CricketTabs activeTab={activeTab} onTabChange={onTabChange} />
+
+      {activeTab === "overview" && <OverviewPanel match={match} providerData={providerData} info={info} latestInning={latestInning} statistics={statistics} />}
+      {activeTab === "scorecard" && (
+        <div className="d-flex flex-column gap-4">
+          {innings.length > 1 && (
+            <div className="scorecard-innings-switcher">
+              {innings.map((inning, index) => {
+                const inningId = String(inning.iid || inning.number || index);
+                return (
+                  <button
+                    type="button"
+                    className={String(selectedInning.iid || selectedInning.number || "") === inningId ? "active" : ""}
+                    key={inningId}
+                    onClick={() => setSelectedInningId(inningId)}
+                  >
+                    {text(inning.name, `Innings ${index + 1}`)}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+          <DetailedScorecard inning={selectedInning} info={info} match={match} />
+        </div>
+      )}
+      {activeTab === "statistics" && <StatisticsPanel innings={innings} statistics={statistics} info={info} />}
+      {activeTab === "lineups" && <LineupsPanel providerData={providerData} info={info} />}
+      {activeTab === "timeline" && <TimelinePanel providerData={providerData} commentary={commentary} />}
+      {activeTab === "commentary" && <CommentaryPanel commentary={commentary} title="Commentary" />}
+    </div>
+  );
 }

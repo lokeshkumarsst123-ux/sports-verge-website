@@ -4,6 +4,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import PageHeader from "@/components/PageHeader";
 import { contentApi, type PublicNewsArticle } from "@/lib/content-api";
+import { USE_STATIC_MOCK, MOCK_TRANSFER_RUMORS } from "@/lib/mock-data";
 
 type TransferArticle = PublicNewsArticle & {
   probability: string;
@@ -45,13 +46,19 @@ const mapArticle = (article: PublicNewsArticle): TransferArticle => {
 export default function TransferRumorsPage() {
   const [filterProb, setFilterProb] = useState("All");
   const [page, setPage] = useState(1);
-  const [articles, setArticles] = useState<TransferArticle[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [articles, setArticles] = useState<TransferArticle[]>(USE_STATIC_MOCK ? (MOCK_TRANSFER_RUMORS as unknown as TransferArticle[]) : []);
+  const [loading, setLoading] = useState(!USE_STATIC_MOCK);
   const [error, setError] = useState("");
 
   useEffect(() => {
     let cancelled = false;
     const load = async () => {
+      if (USE_STATIC_MOCK) {
+        setArticles(MOCK_TRANSFER_RUMORS as unknown as TransferArticle[]);
+        setLoading(false);
+        setError("");
+        return;
+      }
       try {
         const response = await contentApi.articles({ limit: 50 });
         const transferArticles = response.data.items.filter(isTransferArticle).map(mapArticle);
@@ -77,32 +84,32 @@ export default function TransferRumorsPage() {
   return <main className="font-outfit">
     <PageHeader title="Transfer Rumors" subtitle="Football transfer rumours supplied by the connected content provider." className="mb-5" />
     <div className="container custom-container mb-4">
-      <div className="d-flex gap-2 border-bottom border-secondary border-opacity-10 pb-3">
-        {filters.map((probability) => <button key={probability} onClick={() => { setFilterProb(probability); setPage(1); }} className="btn text-capitalize fw-bold rounded-pill px-4 py-2 transition-all" style={{ fontSize: "13px", background: filterProb === probability ? "var(--accent-green)" : "transparent", color: filterProb === probability ? "#fff" : "var(--text-muted)", border: filterProb === probability ? "1px solid var(--accent-green)" : "1px solid transparent" }}>{probability === "All" ? "All Rumors" : probability + " Probability"}</button>)}
+      <div className="d-flex gap-2 border-bottom pb-3" style={{ borderColor: "#EAE5DC" }}>
+        {filters.map((probability) => <button key={probability} onClick={() => { setFilterProb(probability); setPage(1); }} className="btn text-capitalize fw-bold rounded-pill px-4 py-2 transition-all shadow-none" style={{ fontSize: "13px", background: filterProb === probability ? "#FFCC00" : "#FAF6EF", color: "#1C1F22", border: filterProb === probability ? "1px solid #FFCC00" : "1px solid #EAE5DC" }}>{probability === "All" ? "All Rumors" : probability + " Probability"}</button>)}
       </div>
     </div>
     <div className="container custom-container">
       {loading ? <div className="premium-table-container p-5 text-center text-muted">Loading transfer rumours…</div> : error ? <div className="premium-table-container p-5 text-center text-warning">{error}</div> : filteredRumors.length ? <div className="row g-4">
         {visibleRumors.map((rumor) => {
-          const probColor = rumor.probability === "Very High" || rumor.probability === "High" ? "#22c55e" : rumor.probability === "Medium" ? "#eab308" : "#ef4444";
-          const probBg = rumor.probability === "Very High" || rumor.probability === "High" ? "rgba(34, 197, 94, 0.15)" : rumor.probability === "Medium" ? "rgba(234, 179, 8, 0.15)" : "rgba(239, 68, 68, 0.15)";
+          const probColor = rumor.probability === "Very High" || rumor.probability === "High" ? "#16a34a" : rumor.probability === "Medium" ? "#d97706" : "#dc2626";
+          const probBg = rumor.probability === "Very High" || rumor.probability === "High" ? "rgba(34, 197, 94, 0.12)" : rumor.probability === "Medium" ? "rgba(234, 179, 8, 0.12)" : "rgba(239, 68, 68, 0.12)";
           const probBorder = rumor.probability === "Very High" || rumor.probability === "High" ? "rgba(34, 197, 94, 0.3)" : rumor.probability === "Medium" ? "rgba(234, 179, 8, 0.3)" : "rgba(239, 68, 68, 0.3)";
           return <div key={rumor.id} className="col-12 col-lg-6">
             <Link href={"/news/" + (rumor.slug || rumor.id)} className="text-decoration-none">
-              <div className="premium-table-container p-4 h-100 d-flex flex-column justify-content-between hover-glow transition-all">
+              <div className="premium-table-container p-4 h-100 d-flex flex-column justify-content-between hover-glow transition-all" style={{ background: "#FFFFFF", border: "1px solid #EAE5DC" }}>
                 <div>
                   <div className="d-flex justify-content-between align-items-start mb-3">
-                    <div><h4 className="fw-bold text-white mb-1 font-space-grotesk">{rumor.title}</h4><span className="text-muted small fw-semibold text-uppercase font-space-grotesk" style={{ letterSpacing: "0.08em" }}>{rumor.position}</span></div>
+                    <div><h4 className="fw-bold mb-1 font-space-grotesk" style={{ color: "#1C1F22" }}>{rumor.title}</h4><span className="text-muted small fw-semibold text-uppercase font-space-grotesk" style={{ letterSpacing: "0.08em" }}>{rumor.position}</span></div>
                     <span className="rounded-pill px-3 py-1 font-space-grotesk fw-bold" style={{ fontSize: "10px", background: probBg, color: probColor, border: "1px solid " + probBorder, letterSpacing: "0.05em" }}>{rumor.probability.toUpperCase()} PROBABILITY</span>
                   </div>
-                  <div className="row align-items-center my-4 p-3 rounded-3" style={{ background: "rgba(255, 255, 255, 0.02)", border: "1px solid rgba(255, 255, 255, 0.05)" }}>
-                    <div className="col-5 text-center"><span className="text-muted d-block small mb-1">FROM</span><span className="fw-bold text-white font-space-grotesk">{rumor.fromClub}</span></div>
-                    <div className="col-2 text-center text-success"><i className="bi bi-arrow-right-circle-fill" style={{ fontSize: "24px" }} /></div>
-                    <div className="col-5 text-center"><span className="text-muted d-block small mb-1">TO</span><span className="fw-bold text-white font-space-grotesk">{rumor.toClub}</span></div>
+                  <div className="row align-items-center my-4 p-3 rounded-3" style={{ background: "#FAF6EF", border: "1px solid #EAE5DC" }}>
+                    <div className="col-5 text-center"><span className="text-muted d-block small mb-1">FROM</span><span className="fw-bold font-space-grotesk" style={{ color: "#1C1F22" }}>{rumor.fromClub}</span></div>
+                    <div className="col-2 text-center" style={{ color: "#4A90E2" }}><i className="bi bi-arrow-right-circle-fill" style={{ fontSize: "24px" }} /></div>
+                    <div className="col-5 text-center"><span className="text-muted d-block small mb-1">TO</span><span className="fw-bold font-space-grotesk" style={{ color: "#1C1F22" }}>{rumor.toClub}</span></div>
                   </div>
                   <p className="text-muted mb-4" style={{ fontSize: "14px", lineHeight: "1.6" }}>{rumor.summary}</p>
                 </div>
-                <div><hr className="border-secondary opacity-10 my-3" /><div className="d-flex justify-content-between align-items-center text-muted" style={{ fontSize: "12px" }}><span><i className="bi bi-tag-fill text-success me-2" />Est. Fee: <strong className="text-white font-monospace">{rumor.fee}</strong></span><span><i className="bi bi-newspaper me-2" />Source: <strong className="text-white">{rumor.author || "SportsVerge"}</strong></span></div></div>
+                <div><hr className="my-3" style={{ borderColor: "#EAE5DC" }} /><div className="d-flex justify-content-between align-items-center text-muted" style={{ fontSize: "12px" }}><span><i className="bi bi-tag-fill me-2" style={{ color: "#4A90E2" }} />Est. Fee: <strong className="font-monospace" style={{ color: "#1C1F22" }}>{rumor.fee}</strong></span><span><i className="bi bi-newspaper me-2" />Source: <strong style={{ color: "#1C1F22" }}>{rumor.author || "SportsVerge"}</strong></span></div></div>
               </div>
             </Link>
           </div>;

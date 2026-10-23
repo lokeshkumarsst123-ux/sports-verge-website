@@ -13,16 +13,30 @@ const placeholderLogo = "/assets/imgs/teams/team-placeholder.svg";
 
 const imageUrl = (value: string) => value || placeholderLogo;
 
+// Set to true for static/mock data to test UI and design.
+// Set to false to switch back to dynamic API data anytime.
+import { USE_STATIC_MOCK, MOCK_COMPETITIONS, MOCK_ROWS } from "@/lib/mock-data";
+
 export default function Standings() {
   const [sport, setSport] = useState<Sport>("football");
-  const [competitions, setCompetitions] = useState<Record<Sport, Competition[]>>({ cricket: [], football: [], NFL: [], AFL: [] });
-  const [selected, setSelected] = useState("");
-  const [rows, setRows] = useState<ProviderStandingRow[]>([]);
+  const [competitions, setCompetitions] = useState<Record<Sport, Competition[]>>(
+    USE_STATIC_MOCK ? MOCK_COMPETITIONS : { cricket: [], football: [], NFL: [], AFL: [] }
+  );
+  const [selected, setSelected] = useState(
+    USE_STATIC_MOCK ? MOCK_COMPETITIONS.football[0].id : ""
+  );
+  const [rows, setRows] = useState<ProviderStandingRow[]>(
+    USE_STATIC_MOCK ? MOCK_ROWS.football : []
+  );
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const competitionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (USE_STATIC_MOCK) {
+      return;
+    }
+
     let cancelled = false;
     const loadCompetitions = async () => {
       const responses = await Promise.allSettled([cricketApi.competitions(), soccerApi.competitions(), nflApi.competitions()]);
@@ -44,13 +58,22 @@ export default function Standings() {
     return () => { cancelled = true; };
   }, []);
 
-  const available = competitions[sport];
+  const available = competitions[sport] || [];
 
   useEffect(() => {
-    setSelected(available[0]?.id || "");
-  }, [available]);
+    if (available.length > 0) {
+      setSelected(available[0]?.id || "");
+    }
+  }, [available, sport]);
 
   useEffect(() => {
+    if (USE_STATIC_MOCK) {
+      setRows(MOCK_ROWS[sport] || []);
+      setMessage(null);
+      setLoading(false);
+      return;
+    }
+
     let cancelled = false;
     if (!selected) {
       setRows([]);
@@ -132,7 +155,21 @@ export default function Standings() {
             {loading ? <tr><td colSpan={5} className="text-center py-4 widget-empty-text">Loading…</td></tr> : rows.length ? rows.slice(0, 6).map((row, index) => (
               <tr key={`${row.rank}-${row.team}-${index}`} className="standings-row-custom">
                 <td className="standings-rank-custom">{row.rank}</td>
-                <td><div className="d-flex align-items-center gap-2 fw-bold standings-team-name-custom"><img src={imageUrl(row.teamLogo)} alt="" width={22} height={22} className="standings-team-logo" onError={(event) => { if (!event.currentTarget.src.endsWith(placeholderLogo)) event.currentTarget.src = placeholderLogo; }} /><span className="text-truncate">{row.team}</span></div></td>
+                <td>
+                  <div className="d-flex align-items-center gap-2 fw-bold standings-team-name-custom">
+                    <img
+                      src={imageUrl(row.teamLogo)}
+                      alt=""
+                      width={22}
+                      height={22}
+                      className="standings-team-logo"
+                      onError={(event) => {
+                        if (!event.currentTarget.src.endsWith(placeholderLogo)) event.currentTarget.src = placeholderLogo;
+                      }}
+                    />
+                    <span className="text-truncate">{row.team}</span>
+                  </div>
+                </td>
                 <td className="standings-stat-custom">{row.played}</td>
                 <td className="standings-stat-custom">{row.goalDifference}</td>
                 <td className="standings-points-custom">{row.points}</td>

@@ -16,7 +16,7 @@ export interface FixtureItem {
   date?: string;
   time: string;
   venue: string;
-  type: "football" | "cricket" | "NFL" | "AFL";
+  type: "football" | "cricket" | "NFL";
   sport?: string;
   status?: "upcoming" | "live" | "completed";
 }
@@ -33,7 +33,7 @@ export interface ResultItem {
   awayScore?: string;
   result: string;
   date: string;
-  type: "football" | "cricket" | "NFL" | "AFL";
+  type: "football" | "cricket" | "NFL";
 }
 
 export interface NewsItem {
@@ -47,7 +47,7 @@ export interface PlayerItem {
   image: string;
   name: string;
   team: string;
-  sport: "cricket" | "football" | "NFL" | "AFL";
+  sport: "cricket" | "football" | "NFL";
 }
 
 export interface LiveScoreMatch {
@@ -65,7 +65,7 @@ export interface LiveScoreMatch {
   awayOvers?: string;
   note?: string;
   venue?: string;
-  sport: "cricket" | "football" | "NFL" | "AFL";
+  sport: "cricket" | "football" | "NFL";
 }
 
 export interface StandingFootballRow {
@@ -181,7 +181,9 @@ export type NFLMatchStatus =
   | "Overtime"
   | "Final"
   | "Postponed"
-  | "Cancelled";
+  | "Cancelled"
+  | "IN_PROGRESS"
+  | "LIVE";
 
 export interface NFLQuarterScore {
   q1: number;
@@ -193,23 +195,30 @@ export interface NFLQuarterScore {
 }
 
 export interface NFLTeamStats {
-  firstDowns: number;
-  totalYards: number;
-  passingYards: number;
-  rushingYards: number;
-  turnovers: number;
-  thirdDownEff: string;    // e.g. "5/12"
-  fourthDownEff: string;   // e.g. "1/2"
-  redZoneEff: string;      // e.g. "2/3"
-  timeOfPossession: string;// e.g. "32:14"
-  penalties: number;
-  penaltyYards: number;
-  sacks: number;
-  interceptions: number;
+  firstDowns?: number;
+  totalYards?: number;
+  passingYards?: number;
+  rushingYards?: number;
+  turnovers?: number;
+  thirdDownEff?: string;    // e.g. "5/12"
+  thirdDownEfficiency?: string;
+  fourthDownEff?: string;   // e.g. "1/2"
+  fourthDownEfficiency?: string;
+  redZoneEff?: string;      // e.g. "2/3"
+  redZoneScoring?: string;
+  timeOfPossession?: string;// e.g. "32:14"
+  penalties?: number | string;
+  penaltyYards?: number;
+  sacks?: number;
+  sacksAllowed?: number;
+  interceptions?: number;
+  interceptionsThrown?: number;
+  fumblesLost?: number;
 }
 
 export interface NFLPassingLeader {
-  name: string;
+  name?: string;
+  player?: string;
   completions: number;
   attempts: number;
   yards: number;
@@ -219,21 +228,27 @@ export interface NFLPassingLeader {
 }
 
 export interface NFLRushingLeader {
-  name: string;
+  name?: string;
+  player?: string;
   carries: number;
   yards: number;
-  avg: number;
+  avg?: number;
+  average?: number;
   touchdowns: number;
-  long: number;
+  long?: number;
+  longest?: number;
 }
 
 export interface NFLReceivingLeader {
-  name: string;
+  name?: string;
+  player?: string;
   receptions: number;
   yards: number;
-  long: number;
+  long?: number;
+  longest?: number;
   touchdowns: number;
-  avg: number;
+  avg?: number;
+  average?: number;
 }
 
 export interface NFLScoringPlay {
@@ -248,12 +263,13 @@ export interface NFLScoringPlay {
 
 export interface NFLDrive {
   team: 1 | 2;
+  quarter?: number;
   startTime: string;
   startYardLine: string;
   plays: number;
   yards: number;
   duration: string;
-  result: "TD" | "FG" | "Punt" | "Turnover" | "Turnover on Downs" | "End of Half" | "End of Game" | "Safety";
+  result: "TD" | "FG" | "Punt" | "Turnover" | "Turnover on Downs" | "End of Half" | "End of Game" | "Safety" | "Touchdown" | "Field Goal";
 }
 
 export interface NFLPlay {
@@ -321,105 +337,11 @@ export interface NFLMatchData {
   team2Roster: NFLTeamRoster;
 }
 
-// ─── AFL-Specific Types ────────────────────────────────────────────────────────
-
-export interface AFLQuarterScores {
-  q1: string;
-  q2: string;
-  q3: string;
-  q4: string;
-  final: string;
-}
-
-export interface AFLTeamStats {
-  goals: number;
-  behinds: number;
-  disposals: number;
-  kicks: number;
-  handballs: number;
-  marks: number;
-  tackles: number;
-  inside50s: number;
-  clearances: number;
-  hitOuts: number;
-  contestedPossessions: number;
-  uncontestedPossessions: number;
-  turnovers: number;
-  interchangeCount: number;
-}
-
-export interface AFLLeaderItem {
-  name: string;
-  value: number;
-}
-
-export interface AFLLeaders {
-  mostGoals: AFLLeaderItem;
-  mostDisposals: AFLLeaderItem;
-  mostMarks: AFLLeaderItem;
-  mostTackles: AFLLeaderItem;
-  mostClearances: AFLLeaderItem;
-  mostHitOuts: AFLLeaderItem;
-  [key: string]: AFLLeaderItem;
-}
-
-export interface AFLScoringTimelineItem {
-  quarter: string;
-  time: string;
-  player: string;
-  type: string;
-  team: number;
-}
-
-export interface AFLEventItem {
-  quarter: string;
-  time: string;
-  type: string;
-  detail: string;
-  team: number;
-}
-
-export interface AFLTeamRoster {
-  starting18: string[];
-  interchange: string[];
-  coach: string;
-}
-
-export interface AFLMatchData {
-  league: string;
-  season: string;
-  round: string;
-  matchDate: string;
-  matchTime: string;
-  stadium: string;
-  city: string;
-  umpires: string;
-  quarter?: string;
-  gameClock?: string;
-  matchStatus: string;
-  team1Score?: { goals: number; behinds: number; total: number };
-  team2Score?: { goals: number; behinds: number; total: number };
-  quarterScores: {
-    team1: AFLQuarterScores;
-    team2: AFLQuarterScores;
-  };
-  team1Stats: AFLTeamStats;
-  team2Stats: AFLTeamStats;
-  leadersTeam1: AFLLeaders;
-  leadersTeam2: AFLLeaders;
-  scoringTimeline: AFLScoringTimelineItem[];
-  events: AFLEventItem[];
-  team1Roster: AFLTeamRoster;
-  team2Roster: AFLTeamRoster;
-  attendance?: string;
-  weather?: string;
-}
-
 // ─── Core Match Detail ────────────────────────────────────────────────────────
 
 export interface LiveScoreMatchDetail {
   id: string;
-  sport: "cricket" | "football" | "NFL" | "AFL";
+  sport: "cricket" | "football" | "NFL";
   competitionName: string;
   matchName: string;
   team1Logo: string;
@@ -451,6 +373,4 @@ export interface LiveScoreMatchDetail {
   // NFL-specific optional fields
   nflData?: NFLMatchData;
 
-  // AFL-specific optional fields
-  aflData?: AFLMatchData;
 }

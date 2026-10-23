@@ -186,6 +186,7 @@ export default function ContactPage() {
                       value={formData.fullName}
                       onChange={handleInputChange}
                       className={`form-control fw-normal border custom-input px-3 py-2.5 ${formErrors.fullName ? "is-invalid" : ""}`}
+                      style={{ backgroundColor: "#FFFFFF", borderColor: "#EAE5DC", color: "#1C1F22" }}
                       placeholder="e.g. John Doe"
                     />
                     {formErrors.fullName && <div className="invalid-feedback d-block small mt-1">{formErrors.fullName}</div>}
@@ -199,6 +200,7 @@ export default function ContactPage() {
                       value={formData.email}
                       onChange={handleInputChange}
                       className={`form-control fw-normal border custom-input px-3 py-2.5 ${formErrors.email ? "is-invalid" : ""}`}
+                      style={{ backgroundColor: "#FFFFFF", borderColor: "#EAE5DC", color: "#1C1F22" }}
                       placeholder="e.g. john@example.com"
                     />
                     {formErrors.email && <div className="invalid-feedback d-block small mt-1">{formErrors.email}</div>}
@@ -212,6 +214,7 @@ export default function ContactPage() {
                       value={formData.subject}
                       onChange={handleInputChange}
                       className={`form-control fw-normal border custom-input px-3 py-2.5 ${formErrors.subject ? "is-invalid" : ""}`}
+                      style={{ backgroundColor: "#FFFFFF", borderColor: "#EAE5DC", color: "#1C1F22" }}
                       placeholder="What is this inquiry regarding?"
                     />
                     {formErrors.subject && <div className="invalid-feedback d-block small mt-1">{formErrors.subject}</div>}
@@ -225,6 +228,7 @@ export default function ContactPage() {
                       value={formData.message}
                       onChange={handleInputChange}
                       className={`form-control fw-normal border custom-input px-3 py-2.5 ${formErrors.message ? "is-invalid" : ""}`}
+                      style={{ backgroundColor: "#FFFFFF", borderColor: "#EAE5DC", color: "#1C1F22" }}
                       placeholder="Describe your issue or feedback in detail..."
                     ></textarea>
                     {formErrors.message && <div className="invalid-feedback d-block small mt-1">{formErrors.message}</div>}
