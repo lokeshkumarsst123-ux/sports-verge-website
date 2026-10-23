@@ -12,6 +12,8 @@ const navGroups = [
   { label: "Overview", items: [{ href: "/admin", label: "Dashboard", icon: "bi-grid-1x2-fill" }] },
   { label: "Operations", items: [
     { href: "/admin/users", label: "Users", icon: "bi-people-fill" },
+    { href: "/admin/tipsters", label: "Tipsters & memberships", icon: "bi-stars" },
+    { href: "/admin/subscription-plans", label: "Subscription plans", icon: "bi-credit-card" },
     { href: "/admin/news", label: "News", icon: "bi-newspaper" },
     { href: "/admin/categories", label: "Categories", icon: "bi-collection-fill" },
     { href: "/admin/advertisements", label: "Advertisements", icon: "bi-megaphone-fill" },
@@ -117,7 +119,7 @@ export default function AdminShell({ children }: { children: ReactNode }) {
     <div className={`admin-page ${mobileNavOpen ? "admin-mobile-nav-open" : ""}`}>
       <div className="admin-shell">
         <aside id="admin-navigation" className={`admin-sidebar ${mobileNavOpen ? "is-open" : ""}`}>
-          <div className="admin-sidebar-head"><Link href="/admin" className="admin-brand" aria-label={`${siteSettings?.websiteName || "Sports Verg"} admin dashboard`} onClick={() => setMobileNavOpen(false)}>{siteSettings?.logoUrl ? <img src={siteSettings.logoUrl} alt={siteSettings.websiteName} className="admin-brand-logo" /> : <Image src="/assets/imgs/logo-white.svg" alt={siteSettings?.websiteName || "Sports Verg"} width={725} height={170} className="admin-brand-logo" priority />}</Link><button type="button" className="admin-mobile-sidebar-close" aria-label="Close navigation" onClick={() => setMobileNavOpen(false)}><i className="bi bi-x-lg" /></button></div>
+          <div className="admin-sidebar-head"><Link href="/admin" className="admin-brand" aria-label={`${siteSettings?.websiteName || "Sports Verge"} admin dashboard`} onClick={() => setMobileNavOpen(false)}>{siteSettings?.logoUrl ? <img src={siteSettings.logoUrl} alt={siteSettings.websiteName} className="admin-brand-logo" /> : <Image src="/assets/imgs/logo-white.svg" alt={siteSettings?.websiteName || "Sports Verge"} width={725} height={170} className="admin-brand-logo" priority />}</Link><button type="button" className="admin-mobile-sidebar-close" aria-label="Close navigation" onClick={() => setMobileNavOpen(false)}><i className="bi bi-x-lg" /></button></div>
           <nav>
             {navGroups.map((group) => (
               <div key={group.label}>

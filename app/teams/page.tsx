@@ -71,11 +71,13 @@ const fixtureSportForGroup = (groupSport: string) => {
   return sport.startsWith("nfl") ? "nfl" : sport.startsWith("football") ? "football" : "cricket";
 };
 
+import { USE_STATIC_MOCK, MOCK_GROUPS } from "@/lib/mock-data";
+
 export default function TeamsPage() {
-  const [groups, setGroups] = useState<Group[]>([]);
+  const [groups, setGroups] = useState<Group[]>(USE_STATIC_MOCK ? MOCK_GROUPS : []);
   const [selectedSport, setSelectedSport] = useState("all");
   const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!USE_STATIC_MOCK);
   const [message, setMessage] = useState<string | null>(null);
   const { isFavoriteTeam, addFavoriteTeam, removeFavoriteTeam } = useFavorites();
 
@@ -87,6 +89,13 @@ export default function TeamsPage() {
   }, []);
 
   useEffect(() => {
+    if (USE_STATIC_MOCK) {
+      setGroups(MOCK_GROUPS);
+      setLoading(false);
+      setMessage(null);
+      return;
+    }
+
     let cancelled = false;
     const load = async () => {
       const responses = await Promise.allSettled([cricketApi.competitions(), soccerApi.competitions(), nflApi.competitions()]);
@@ -152,18 +161,34 @@ export default function TeamsPage() {
       <PageHeader title="Popular Teams" subtitle="Teams supplied by the connected Cricket, Football and NFL providers." className="mb-5" />
       <div className="container custom-container">
         <div className="d-flex flex-wrap gap-2 border-bottom border-secondary border-opacity-10 pb-3 mb-4">
-          {sportTabs.map((tab) => (
-            <button key={tab.id} type="button" onClick={() => { setSelectedSport(tab.id); setPage(1); }} className="btn fw-bold rounded-pill px-4 py-2 transition-all" style={{ fontSize: "13px", background: selectedSport === tab.id ? "var(--accent-green)" : "transparent", color: selectedSport === tab.id ? "#fff" : "var(--text-muted)", border: selectedSport === tab.id ? "1px solid var(--accent-green)" : "1px solid transparent" }}>
-              {tab.label}
-            </button>
-          ))}
+          {sportTabs.map((tab) => {
+            const isActive = selectedSport === tab.id;
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => { setSelectedSport(tab.id); setPage(1); }}
+                className="btn fw-bold rounded-pill px-4 py-2 transition-all shadow-none"
+                style={{
+                  fontSize: "13px",
+                  backgroundColor: isActive ? "#FFCC00" : "#FAF6EF",
+                  color: isActive ? "#1C1F22" : "#4B5563",
+                  borderColor: isActive ? "#FFCC00" : "#EAE5DC",
+                  borderWidth: "1px",
+                  borderStyle: "solid"
+                }}
+              >
+                {tab.label}
+              </button>
+            );
+          })}
         </div>
 
         <div className="d-flex flex-column gap-5">
           {loading ? <div className="text-center text-muted py-5">Loading teams…</div> : paginatedGroups.length ? paginatedGroups.map((group) => (
             <div key={group.sport}>
               <div className="d-flex justify-content-between align-items-center gap-3 mb-4">
-                <h5 className="fw-bold text-white mb-0 border-start border-success border-3 ps-2 font-space-grotesk" style={{ fontSize: "16px" }}>{group.sport}</h5>
+                <h5 className="fw-bold mb-0 border-start border-3 ps-2 font-space-grotesk" style={{ fontSize: "16px", color: "#1C1F22", borderColor: "#FFCC00" }}>{group.sport}</h5>
                 <span className="text-muted small">{group.teams.length} teams</span>
               </div>
               <div className="row g-3">
@@ -173,15 +198,15 @@ export default function TeamsPage() {
                   return (
                     <div key={`${group.sport}-${team.name}-${teamIndex}`} className="col-12 col-sm-6 col-md-3">
                       <Link href={`/fixtures?sport=${fixtureSport}&search=${encodeURIComponent(team.name)}`} className="text-decoration-none">
-                        <div className="rounded-4 p-4 text-center h-100 position-relative" style={{ background: "var(--bg-card)", border: "1px solid var(--border-dark)" }}>
+                        <div className="rounded-4 p-4 text-center h-100 position-relative" style={{ background: "#FFFFFF", border: "1px solid #EAE5DC" }}>
                           <button className="btn btn-link p-0 position-absolute" style={{ top: "14px", right: "14px", zIndex: 5 }} onClick={(event) => { event.preventDefault(); event.stopPropagation(); favorite ? removeFavoriteTeam(team.name) : addFavoriteTeam(team.name); }} aria-label="Bookmark team">
                             <i className={`bi ${favorite ? "bi-star-fill text-warning" : "bi-star text-muted"}`}></i>
                           </button>
-                          <div className="d-flex align-items-center justify-content-center mx-auto mb-3 overflow-hidden rounded-3" style={{ width: "64px", height: "64px", background: "rgba(255,255,255,0.03)" }}>
+                          <div className="d-flex align-items-center justify-content-center mx-auto mb-3 overflow-hidden rounded-3" style={{ width: "64px", height: "64px", background: "#FAF6EF" }}>
                             <img src={team.logo} alt={team.name} className="w-75 h-75 object-fit-contain" onError={(event) => { event.currentTarget.onerror = null; event.currentTarget.src = "/assets/imgs/teams/team-placeholder.svg"; }} />
                           </div>
-                          <h6 className="fw-bold text-white mb-1" style={{ fontSize: "14px" }}>{team.name}</h6>
-                          <span className="badge rounded-pill fw-semibold font-monospace" style={{ fontSize: "10px", background: "rgba(26,140,61,0.12)", color: "#86efac" }}>{team.code}</span>
+                          <h6 className="fw-bold mb-1" style={{ fontSize: "14px", color: "#1C1F22" }}>{team.name}</h6>
+                          <span className="badge rounded-pill fw-semibold font-monospace" style={{ fontSize: "10px", background: "rgba(22,163,74,0.12)", color: "#15803d" }}>{team.code}</span>
                         </div>
                       </Link>
                     </div>

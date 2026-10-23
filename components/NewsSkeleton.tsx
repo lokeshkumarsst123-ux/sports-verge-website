@@ -8,8 +8,8 @@ export default function NewsSkeleton() {
       {/* Featured Article Skeleton */}
       <div className="mb-5">
         <div 
-          className="rounded-4 overflow-hidden position-relative bg-card border border-dark d-flex align-items-center"
-          style={{ minHeight: "400px" }}
+          className="rounded-4 overflow-hidden position-relative d-flex align-items-center shadow-sm"
+          style={{ background: "#FFFFFF", border: "1px solid #EAE5DC", minHeight: "400px" }}
         >
           <div className="p-4 p-lg-5 w-100">
             <div style={{ maxWidth: "520px" }}>
@@ -36,8 +36,8 @@ export default function NewsSkeleton() {
         {[1, 2, 4, 5].map((i) => (
           <div className="col-md-6" key={i}>
             <div 
-              className="rounded-3 overflow-hidden d-flex flex-column h-100 bg-card border border-dark"
-              style={{ minHeight: "380px" }}
+              className="rounded-4 overflow-hidden d-flex flex-column h-100 shadow-sm"
+              style={{ background: "#FFFFFF", border: "1px solid #EAE5DC", minHeight: "380px" }}
             >
               {/* Thumbnail */}
               <div className="skeleton-square w-100" style={{ height: "200px" }}></div>
@@ -52,7 +52,7 @@ export default function NewsSkeleton() {
                 <div className="skeleton-line w-90 h-16px mb-3"></div>
                 <div className="skeleton-line w-100 h-12px mb-2"></div>
                 <div className="skeleton-line w-100 h-12px mb-4"></div>
-                <div className="d-flex justify-content-between align-items-center pt-3 border-top border-dark mt-auto">
+                <div className="d-flex justify-content-between align-items-center pt-3 border-top mt-auto" style={{ borderColor: "#EAE5DC" }}>
                   <div className="skeleton-line w-80px h-14px"></div>
                   <div className="skeleton-line w-60px h-14px"></div>
                 </div>

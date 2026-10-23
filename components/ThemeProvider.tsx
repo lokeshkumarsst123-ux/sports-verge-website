@@ -8,51 +8,34 @@ type ThemeContextType = {
 };
 
 const ThemeContext = createContext<ThemeContextType>({
-  primaryColor: "#1a8c3d",
+  primaryColor: "#FFCC00",
   setPrimaryColor: () => {},
 });
 
 export const useTheme = () => useContext(ThemeContext);
 
 export default function ThemeProvider({ children }: { children: React.ReactNode }) {
-  // Default color is the current green (#1a8c3d)
-  const [primaryColor, setPrimaryColor] = useState("#1a8c3d");
+  // Client palette: Gold (#FFCC00) interactive anchor, Charcoal (#1C1F22) typography, Sky Blue (#4A90E2) highlights
+  const [primaryColor, setPrimaryColor] = useState("#FFCC00");
 
   useEffect(() => {
-    // Reset to default green theme color
-    localStorage.setItem("admin_theme_color", "#1a8c3d");
-    setPrimaryColor("#1a8c3d");
-  }, []);
-
-  useEffect(() => {
-    // Function to calculate a darker color for hover states
-    const darkenHex = (hex: string, percent: number) => {
-      hex = hex.replace(/^\s*#|\s*$/g, '');
-      if (hex.length === 3) {
-        hex = hex.replace(/(.)/g, '$1$1');
-      }
-      const r = parseInt(hex.substr(0, 2), 16);
-      const g = parseInt(hex.substr(2, 2), 16);
-      const b = parseInt(hex.substr(4, 2), 16);
-      
-      const newR = Math.max(0, Math.floor(r * (1 - percent)));
-      const newG = Math.max(0, Math.floor(g * (1 - percent)));
-      const newB = Math.max(0, Math.floor(b * (1 - percent)));
-      
-      return '#' + [newR, newG, newB].map(x => x.toString(16).padStart(2, '0')).join('');
-    };
-
-    const hoverColor = darkenHex(primaryColor, 0.15);
-    const transparentColor = primaryColor + '15'; // ~8% opacity
+    const hoverColor = "#E6B800";
+    const skyBlueColor = "#4A90E2";
+    const skyHoverColor = "#357ABD";
+    const transparentGold = "rgba(255, 204, 0, 0.2)";
 
     // Update CSS variables
     const root = document.documentElement;
+    root.style.setProperty('--accent-gold', primaryColor);
+    root.style.setProperty('--accent-gold-hover', hoverColor);
+    root.style.setProperty('--accent-sky', skyBlueColor);
+    root.style.setProperty('--accent-sky-hover', skyHoverColor);
+    root.style.setProperty('--custom-primary', primaryColor);
     root.style.setProperty('--accent-green', primaryColor);
     root.style.setProperty('--accent-green-hover', hoverColor);
-    root.style.setProperty('--custom-primary', primaryColor);
     root.style.setProperty('--bs-success', primaryColor);
 
-    // Create a dynamic style tag to force override bootstrap and custom classes
+    // Dynamic style tag to enforce client palette
     let styleEl = document.getElementById('dynamic-theme-styles');
     if (!styleEl) {
       styleEl = document.createElement('style');
@@ -61,38 +44,49 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
     }
     
     styleEl.innerHTML = `
-      .text-success { color: ${primaryColor} !important; }
-      .bg-success { background-color: ${primaryColor} !important; }
-      .bg-success.bg-opacity-10 { background-color: ${transparentColor} !important; }
+      .text-success { color: ${skyBlueColor} !important; }
+      .bg-success { background-color: ${primaryColor} !important; color: #1C1F22 !important; }
+      .bg-success.bg-opacity-10 { background-color: ${transparentGold} !important; }
       .btn-success, .btn-signup { 
         background-color: ${primaryColor} !important; 
         border-color: ${primaryColor} !important; 
+        color: #1C1F22 !important;
+        font-weight: 700 !important;
       }
       .btn-success:hover, .btn-signup:hover {
         background-color: ${hoverColor} !important;
         border-color: ${hoverColor} !important;
+        color: #1C1F22 !important;
       }
       .btn-success:disabled, .btn-signup:disabled {
         background-color: ${primaryColor} !important;
         border-color: ${primaryColor} !important;
+        color: #1C1F22 !important;
+        opacity: 0.65;
       }
       .btn-outline-success {
-        color: ${primaryColor} !important;
-        border-color: ${primaryColor} !important;
+        color: #1C1F22 !important;
+        border-color: #1C1F22 !important;
+        background-color: transparent !important;
+        font-weight: 600 !important;
       }
       .btn-outline-success:hover {
         background-color: ${primaryColor} !important;
-        color: #fff !important;
+        border-color: ${primaryColor} !important;
+        color: #1C1F22 !important;
       }
       .border-success {
         border-color: ${primaryColor} !important;
       }
       .notification-badge {
         background-color: ${primaryColor} !important;
+        color: #1C1F22 !important;
       }
       .custom-tabs .nav-link.active {
         background-color: ${primaryColor} !important;
         border-color: ${primaryColor} !important;
+        color: #1C1F22 !important;
+        font-weight: 700 !important;
       }
       .form-check-input:checked {
         background-color: ${primaryColor} !important;
@@ -103,24 +97,34 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
         border-color: ${primaryColor} !important;
       }
       .footer-title::after {
-        background-color: ${primaryColor} !important;
+        display: none !important;
       }
       .score-box:hover, .fixture-card:hover, .news-card:hover, .player-card:hover {
-        border-color: ${primaryColor} !important;
+        border-color: ${skyBlueColor} !important;
       }
       .search-input:focus {
         border-color: ${primaryColor} !important;
-        box-shadow: 0 0 0 .25rem ${transparentColor} !important;
+        box-shadow: 0 0 0 .25rem ${transparentGold} !important;
       }
       .btn-search {
         background-color: ${primaryColor} !important;
+        color: #1C1F22 !important;
+        font-weight: 700 !important;
       }
       .btn-search:hover {
         background-color: ${hoverColor} !important;
+        color: #1C1F22 !important;
+      }
+      .carousel-caption h1, .carousel-caption h2, .carousel-caption h3,
+      .custom-caption h1, .custom-caption h2, .custom-caption h3,
+      .text-white-force {
+        color: #FFFFFF !important;
+      }
+      .carousel-caption p, .custom-caption p {
+        color: rgba(255, 255, 255, 0.95) !important;
       }
     `;
 
-    // Save to localStorage
     localStorage.setItem("admin_theme_color", primaryColor);
   }, [primaryColor]);
 

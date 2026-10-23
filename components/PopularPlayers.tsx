@@ -7,6 +7,10 @@ import { PlayerItem } from "@/types";
 import { cricketApi } from "@/lib/cricket-api";
 import { nflApi, soccerApi } from "@/lib/sports-api";
 
+// Set to true for static/mock data to test UI and design without API dependencies.
+// Set to false to switch back to dynamic API data anytime.
+import { USE_STATIC_MOCK, MOCK_POPULAR_PLAYERS } from "@/lib/mock-data";
+
 const PLAYER_PLACEHOLDER = "/assets/imgs/players/player-placeholder.svg";
 
 const playerImage = (player: any) => {
@@ -19,8 +23,14 @@ const playerImage = (player: any) => {
 };
 
 export default function PopularPlayers() {
-  const [players, setPlayers] = useState<PlayerItem[]>([]);
+  const [players, setPlayers] = useState<PlayerItem[]>(USE_STATIC_MOCK ? MOCK_POPULAR_PLAYERS : []);
+
   useEffect(() => {
+    if (USE_STATIC_MOCK) {
+      setPlayers(MOCK_POPULAR_PLAYERS);
+      return;
+    }
+
     let cancelled = false;
     const load = async () => {
       const responses = await Promise.allSettled([cricketApi.matches("result"), soccerApi.matches("result"), nflApi.matches("result")]);
@@ -43,5 +53,45 @@ export default function PopularPlayers() {
     void load();
     return () => { cancelled = true; };
   }, []);
-  return <section className="popular-players bg-card rounded-3 p-4 border border-dark mt-4"><div className="d-flex justify-content-between align-items-center mb-4"><h2 className="h5 m-0 fw-semibold border-start border-success border-3 ps-2">Popular Players</h2><Link href="/stats" className="text-success text-decoration-none small fw-medium">View All</Link></div><div className="fixtures-scroll-container d-flex gap-3 overflow-auto">{players.length ? players.map((player, index) => <Link key={`${player.name}-${index}`} href="/stats" className="player-card flex-shrink-0 d-block text-center text-decoration-none rounded-3 border border-dark overflow-hidden"><div className="player-img-wrapper"><img src={player.image || PLAYER_PLACEHOLDER} alt={player.name} width={160} height={185} className="w-100 player-thumb" onError={(event) => { if (!event.currentTarget.src.endsWith(PLAYER_PLACEHOLDER)) event.currentTarget.src = PLAYER_PLACEHOLDER; }} /></div><div className="player-info p-2"><div className="fw-semibold text-light text-truncate fs-13">{player.name}</div><div className="text-muted text-truncate fs-11">{player.team} · {player.sport}</div></div></Link>) : <div className="text-center text-muted w-100 py-4 small">No provider player statistics available.</div>}</div></section>;
+
+  return (
+    <section className="popular-players bg-card rounded-4 p-4 border mt-4">
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h2 className="h5 m-0 fw-bold border-start border-3 ps-2 widget-heading">
+          Popular Players
+        </h2>
+        <Link href="/stats" className="small widget-view-all">
+          View All <i className="bi bi-chevron-right" />
+        </Link>
+      </div>
+      <div className="fixtures-scroll-container d-flex gap-3 overflow-auto">
+        {players.length ? players.map((player, index) => (
+          <Link
+            key={`${player.name}-${index}`}
+            href="/stats"
+            className="player-card player-card-custom flex-shrink-0 d-block text-center text-decoration-none rounded-3 overflow-hidden shadow-sm"
+          >
+            <div className="player-img-wrapper" style={{ height: "185px", overflow: "hidden", backgroundColor: "#f8fafc" }}>
+              <img
+                src={player.image || PLAYER_PLACEHOLDER}
+                alt={player.name}
+                width={160}
+                height={185}
+                className="w-100 h-100 player-thumb object-fit-cover"
+                onError={(event) => {
+                  if (!event.currentTarget.src.endsWith(PLAYER_PLACEHOLDER)) event.currentTarget.src = PLAYER_PLACEHOLDER;
+                }}
+              />
+            </div>
+            <div className="player-info p-2">
+              <div className="fw-bold text-truncate fs-13 player-name-custom">{player.name}</div>
+              <div className="text-truncate fs-11 player-sub-custom">{player.team} · {player.sport}</div>
+            </div>
+          </Link>
+        )) : (
+          <div className="text-center w-100 py-4 small widget-empty-text">No provider player statistics available.</div>
+        )}
+      </div>
+    </section>
+  );
 }

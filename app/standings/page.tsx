@@ -55,12 +55,20 @@ const cricketRowsToStandings = (rows: CricketStandingRow[]): StandingsRow[] =>
     noResults: row.nr ?? "0",
   }));
 
+import { USE_STATIC_MOCK, MOCK_COMPETITIONS, MOCK_EXTENDED_ROWS as MOCK_ROWS } from "@/lib/mock-data";
+
 export default function StandingsPage() {
   const [sport, setSport] = useState<Sport>("cricket");
-  const [competitions, setCompetitions] = useState<Record<Sport, Competition[]>>({ cricket: [], football: [], NFL: [] });
-  const [selectedCompetition, setSelectedCompetition] = useState("");
-  const [rows, setRows] = useState<StandingsRow[]>([]);
-  const [competitionLoading, setCompetitionLoading] = useState(true);
+  const [competitions, setCompetitions] = useState<Record<Sport, Competition[]>>(
+    USE_STATIC_MOCK ? MOCK_COMPETITIONS : { cricket: [], football: [], NFL: [] }
+  );
+  const [selectedCompetition, setSelectedCompetition] = useState(
+    USE_STATIC_MOCK ? MOCK_COMPETITIONS.cricket[0].id : ""
+  );
+  const [rows, setRows] = useState<StandingsRow[]>(
+    USE_STATIC_MOCK ? MOCK_ROWS.cricket : []
+  );
+  const [competitionLoading, setCompetitionLoading] = useState(!USE_STATIC_MOCK);
   const [rowsLoading, setRowsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
@@ -68,6 +76,12 @@ export default function StandingsPage() {
   const competitionMenuRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
+    if (USE_STATIC_MOCK) {
+      setCompetitions(MOCK_COMPETITIONS);
+      setCompetitionLoading(false);
+      return;
+    }
+
     let cancelled = false;
 
     const loadCompetitions = async () => {
@@ -130,6 +144,13 @@ export default function StandingsPage() {
   );
 
   useEffect(() => {
+    if (USE_STATIC_MOCK) {
+      setRows(MOCK_ROWS[sport] || []);
+      setRowsLoading(false);
+      setError(null);
+      return;
+    }
+
     let cancelled = false;
 
     if (!effectiveCompetitionId) {
@@ -199,7 +220,7 @@ export default function StandingsPage() {
   const sectionTitle = `${sportConfig[sport].label} - ${activeCompetition?.name || "Competition"}`;
   const competitionButtonLabel = activeCompetition?.name || (competitionLoading ? "Loading competitions..." : "Select competition");
 
-  const renderCellValue = (value: string) => value || "-";
+  const renderCellValue = (value?: string | null) => value || "-";
 
   return (
     <main

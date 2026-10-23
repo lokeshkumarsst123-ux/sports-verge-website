@@ -38,11 +38,11 @@ export default function HelpCenterPage() {
           {topics.map((t) => (
             <div key={t.title} className="col-sm-6 col-lg-4">
               <Link href={t.href} className="text-decoration-none d-block h-100">
-                <div className="rounded-4 p-4 h-100 transition-all hover-translate" style={{ background: "var(--bg-card)", border: "1px solid var(--border-dark)" }}>
+                <div className="rounded-4 p-4 h-100 transition-all hover-translate shadow-sm" style={{ background: "#FFFFFF", border: "1px solid #EAE5DC" }}>
                   <div className="d-flex align-items-center justify-content-center rounded-3 mb-3" style={{ width: "48px", height: "48px", background: `${t.color}15` }}>
                     <i className={`bi ${t.icon}`} style={{ fontSize: "1.4rem", color: t.color }}></i>
                   </div>
-                  <h6 className="fw-bold text-white mb-2 font-space-grotesk">{t.title}</h6>
+                  <h6 className="fw-bold mb-2 font-space-grotesk" style={{ color: "#1C1F22" }}>{t.title}</h6>
                   <p className="text-muted mb-0" style={{ fontSize: "13px", lineHeight: "1.6" }}>{t.desc}</p>
                 </div>
               </Link>
@@ -50,9 +50,9 @@ export default function HelpCenterPage() {
           ))}
         </div>
 
-        <div className="rounded-4 p-5 mt-5 text-center" style={{ background: "linear-gradient(135deg, rgba(26,140,61,0.1), rgba(26,140,61,0.02))", border: "1px solid rgba(26,140,61,0.2)" }}>
+        <div className="rounded-4 p-5 mt-5 text-center" style={{ background: "#FAF6EF", border: "1px solid #EAE5DC" }}>
           <i className="bi bi-headset text-success mb-3 d-block" style={{ fontSize: "2.5rem" }}></i>
-          <h4 className="fw-bold text-white mb-2 font-space-grotesk">Still Need Help?</h4>
+          <h4 className="fw-bold mb-2 font-space-grotesk" style={{ color: "#1C1F22" }}>Still Need Help?</h4>
           <p className="text-muted mb-4" style={{ fontSize: "14px" }}>Our support team is available to assist you with any questions or issues.</p>
           <Link href="/contact" className="btn btn-success fw-bold rounded-pill px-5 py-2">Contact Support</Link>
         </div>

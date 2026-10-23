@@ -1,5 +1,6 @@
 "use client";
 
+import TipsterProfileEditor from "@/components/TipsterProfileEditor";
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -18,6 +19,7 @@ export default function ProfileDashboard() {
     isFavoriteTeam
   } = useFavorites();
 
+  const [accountEmail, setAccountEmail] = useState("");
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -83,6 +85,7 @@ export default function ProfileDashboard() {
         const user = response.data.user;
         setFormData({ firstName: user.firstName, lastName: user.lastName, email: user.email });
         updateStoredUser(user);
+        setAccountEmail(user.email);
       } catch (error) {
         if (!cancelled) {
           if (error instanceof Error && "status" in error && (error as { status?: number }).status === 401) {
@@ -162,6 +165,7 @@ export default function ProfileDashboard() {
           email: response.data.user.email,
         });
         updateStoredUser(response.data.user);
+        setAccountEmail(response.data.user.email);
         setSuccessMsg("Account information successfully updated!");
         setTimeout(() => setSuccessMsg(""), 3000);
       } catch (error) {
@@ -181,8 +185,8 @@ export default function ProfileDashboard() {
 
   if (isProfileLoading) {
     return (
-      <div className="container py-5 min-h-80vh text-center text-muted">
-        <div className="spinner-border text-success" role="status">
+      <div className="container py-5 min-h-80vh text-center d-flex align-items-center justify-content-center">
+        <div className="spinner-border" style={{ color: "#FFCC00", width: "2.5rem", height: "2.5rem" }} role="status">
           <span className="visually-hidden">Loading profile...</span>
         </div>
       </div>
@@ -192,7 +196,8 @@ export default function ProfileDashboard() {
   if (profileError) {
     return (
       <div className="container py-5 min-h-80vh">
-        <div className="alert alert-danger bg-danger bg-opacity-10 border-danger border-opacity-20 text-danger">
+        <div className="alert alert-danger bg-danger bg-opacity-10 border-danger border-opacity-20 text-danger rounded-4 p-4">
+          <i className="bi bi-exclamation-triangle-fill me-2"></i>
           {profileError}
         </div>
       </div>
@@ -200,54 +205,129 @@ export default function ProfileDashboard() {
   }
 
   return (
-    <div className="container py-5 min-h-80vh">
-      <div className="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center mb-5 gap-3">
+    <div className="container py-4 py-lg-5 min-h-80vh font-outfit">
+      {/* Top Header Bar */}
+      <div className="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center mb-4 pb-2 gap-3">
         <div>
-          <h2 className="text-white fw-semibold mt-1 mb-0 fs-2">
+          <div
+            className="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill mb-2 font-space-grotesk fw-bold"
+            style={{
+              background: "rgba(255, 204, 0, 0.15)",
+              border: "1px solid rgba(255, 204, 0, 0.35)",
+              fontSize: "11px",
+              color: "#1C1F22",
+              letterSpacing: "0.5px"
+            }}
+          >
+            <i className="bi bi-person-badge-fill text-warning"></i>
+            <span>ACCOUNT SETTINGS</span>
+          </div>
+          <h1 className="fw-black font-space-grotesk text-uppercase mb-1" style={{ fontSize: "clamp(1.6rem, 3vw, 2.2rem)", color: "#1C1F22" }}>
             Profile Dashboard
-          </h2>
-          <p className="text-muted mb-0">Manage your account, customize favorites, and view your personalized sports feed.</p>
+          </h1>
+          <p className="mb-0" style={{ color: "#5C646D", fontSize: "14px" }}>
+            Manage your account, customize favorites, and view your personalized sports feed.
+          </p>
         </div>
         <button
           onClick={() => {
             void logoutUser().then(() => router.push("/"));
           }}
-          className="btn btn-outline-danger px-4 py-2 fw-semibold"
+          className="btn px-4 py-2 fw-semibold d-inline-flex align-items-center gap-2"
+          style={{
+            background: "#FFFFFF",
+            border: "1px solid #FCA5A5",
+            color: "#DC2626",
+            borderRadius: "10px",
+            fontSize: "14px",
+            transition: "all 0.2s ease",
+            boxShadow: "0 2px 6px rgba(220, 38, 38, 0.08)"
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = "#DC2626";
+            e.currentTarget.style.color = "#FFFFFF";
+            e.currentTarget.style.borderColor = "#DC2626";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = "#FFFFFF";
+            e.currentTarget.style.color = "#DC2626";
+            e.currentTarget.style.borderColor = "#FCA5A5";
+          }}
         >
-          <i className="bi bi-box-arrow-right me-2"></i> Logout
+          <i className="bi bi-box-arrow-right"></i>
+          <span>Logout</span>
         </button>
       </div>
 
       <div className="row g-4">
         {/* Left Column: Manage account information and password */}
         <div className="col-lg-8">
-          <div className="card border-0 rounded-3 mb-4 profile-card">
-            <div className="card-body p-4">
-              <h5 className="text-white fw-semibold mb-4 border-start border-success border-3 ps-2">Manage Account Information</h5>
+          {/* Account Info Card */}
+          <div
+            className="card border-0 rounded-4 mb-4 profile-card overflow-hidden"
+            style={{
+              backgroundColor: "#FFFFFF",
+              border: "1px solid #EAE5DC",
+              boxShadow: "0 4px 20px rgba(28, 31, 34, 0.04)"
+            }}
+          >
+            <div className="card-body p-4 p-md-5">
+              <div className="d-flex align-items-center gap-2 mb-4 pb-3 border-bottom" style={{ borderColor: "#EAE5DC" }}>
+                <span style={{ width: "4px", height: "20px", background: "#FFCC00", borderRadius: "2px", display: "inline-block" }}></span>
+                <h5 className="fw-bold font-space-grotesk mb-0" style={{ color: "#1C1F22", fontSize: "1.15rem" }}>
+                  Manage Account Information
+                </h5>
+              </div>
 
               {successMsg && (
-                <div className="alert alert-success bg-success text-white border-0 py-2 small rounded-1 mb-4">
-                  {successMsg}
+                <div
+                  className="alert border-0 py-2.5 px-3 small rounded-3 mb-4 d-flex align-items-center gap-2"
+                  style={{ background: "rgba(34, 197, 94, 0.12)", color: "#166534", border: "1px solid rgba(34, 197, 94, 0.25)" }}
+                >
+                  <i className="bi bi-check-circle-fill"></i>
+                  <span>{successMsg}</span>
                 </div>
               )}
 
               <form onSubmit={handleAccountUpdate}>
                 <div className="row g-3 mb-3">
                   <div className="col-md-6">
-                    <label className="form-label text-muted small fw-medium mb-1 text-uppercase">First Name</label>
+                    <label className="form-label text-uppercase mb-1" style={{ fontSize: "11px", fontWeight: 700, color: "#1C1F22", letterSpacing: "0.5px" }}>
+                      First Name
+                    </label>
                     <input
                       type="text"
-                      className={`form-control bg-dark text-white fw-medium border-0 custom-input ${errors.firstName ? 'is-invalid' : ''}`}
+                      className={`form-control ${errors.firstName ? 'is-invalid' : ''}`}
+                      style={{
+                        backgroundColor: "#FFFFFF",
+                        color: "#1C1F22",
+                        border: "1px solid #EAE5DC",
+                        borderRadius: "10px",
+                        padding: "11px 16px",
+                        fontSize: "14px",
+                        fontWeight: 500
+                      }}
                       value={formData.firstName}
                       onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
                     />
                     {errors.firstName && <div className="invalid-feedback d-block small mt-1">{errors.firstName}</div>}
                   </div>
                   <div className="col-md-6">
-                    <label className="form-label text-muted small fw-medium mb-1 text-uppercase">Last Name</label>
+                    <label className="form-label text-uppercase mb-1" style={{ fontSize: "11px", fontWeight: 700, color: "#1C1F22", letterSpacing: "0.5px" }}>
+                      Last Name
+                    </label>
                     <input
                       type="text"
-                      className={`form-control bg-dark text-white fw-medium border-0 custom-input ${errors.lastName ? 'is-invalid' : ''}`}
+                      className={`form-control ${errors.lastName ? 'is-invalid' : ''}`}
+                      style={{
+                        backgroundColor: "#FFFFFF",
+                        color: "#1C1F22",
+                        border: "1px solid #EAE5DC",
+                        borderRadius: "10px",
+                        padding: "11px 16px",
+                        fontSize: "14px",
+                        fontWeight: 500
+                      }}
                       value={formData.lastName}
                       onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
                     />
@@ -255,22 +335,54 @@ export default function ProfileDashboard() {
                   </div>
                 </div>
 
-                <div className="mb-3">
-                  <label className="form-label text-muted small fw-medium mb-1 text-uppercase">Email Address</label>
+                <div className="mb-4">
+                  <label className="form-label text-uppercase mb-1" style={{ fontSize: "11px", fontWeight: 700, color: "#1C1F22", letterSpacing: "0.5px" }}>
+                    Email Address
+                  </label>
                   <input
                     type="email"
-                    className={`form-control bg-dark text-white fw-medium border-0 custom-input ${errors.email ? 'is-invalid' : ''}`}
+                    className={`form-control ${errors.email ? 'is-invalid' : ''}`}
+                    style={{
+                      backgroundColor: "#FFFFFF",
+                      color: "#1C1F22",
+                      border: "1px solid #EAE5DC",
+                      borderRadius: "10px",
+                      padding: "11px 16px",
+                      fontSize: "14px",
+                      fontWeight: 500
+                    }}
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   />
                   {errors.email && <div className="invalid-feedback d-block small mt-1">{errors.email}</div>}
                 </div>
 
-                <button type="submit" className="btn btn-success px-4 py-2 rounded-1 fw-semibold w-100 mt-2" disabled={isAccountLoading}>
+                <button
+                  type="submit"
+                  className="btn w-100 fw-bold d-flex align-items-center justify-content-center gap-2"
+                  disabled={isAccountLoading}
+                  style={{
+                    backgroundColor: "#FFCC00",
+                    color: "#1C1F22",
+                    border: "none",
+                    borderRadius: "10px",
+                    padding: "12px 24px",
+                    fontSize: "14px",
+                    transition: "all 0.2s ease",
+                    cursor: isAccountLoading ? "not-allowed" : "pointer",
+                    boxShadow: "0 2px 8px rgba(255, 204, 0, 0.25)"
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isAccountLoading) e.currentTarget.style.backgroundColor = "#E6B800";
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isAccountLoading) e.currentTarget.style.backgroundColor = "#FFCC00";
+                  }}
+                >
                   {isAccountLoading ? (
                     <>
                       <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                      Saving...
+                      <span>Saving...</span>
                     </>
                   ) : (
                     "Save Changes"
@@ -280,30 +392,59 @@ export default function ProfileDashboard() {
             </div>
           </div>
 
-          <div className="card border-0 rounded-3 mb-4 profile-card">
-            <div className="card-body p-4">
-              <h5 className="text-white fw-semibold mb-4 border-start border-success border-3 ps-2">Change Password</h5>
+          {/* Password Card */}
+          <div
+            className="card border-0 rounded-4 mb-4 profile-card overflow-hidden"
+            style={{
+              backgroundColor: "#FFFFFF",
+              border: "1px solid #EAE5DC",
+              boxShadow: "0 4px 20px rgba(28, 31, 34, 0.04)"
+            }}
+          >
+            <div className="card-body p-4 p-md-5">
+              <div className="d-flex align-items-center gap-2 mb-4 pb-3 border-bottom" style={{ borderColor: "#EAE5DC" }}>
+                <span style={{ width: "4px", height: "20px", background: "#FFCC00", borderRadius: "2px", display: "inline-block" }}></span>
+                <h5 className="fw-bold font-space-grotesk mb-0" style={{ color: "#1C1F22", fontSize: "1.15rem" }}>
+                  Change Password
+                </h5>
+              </div>
 
               {pwdSuccessMsg && (
-                <div className="alert alert-success bg-success text-white border-0 py-2 small rounded-1 mb-4">
-                  {pwdSuccessMsg}
+                <div
+                  className="alert border-0 py-2.5 px-3 small rounded-3 mb-4 d-flex align-items-center gap-2"
+                  style={{ background: "rgba(34, 197, 94, 0.12)", color: "#166534", border: "1px solid rgba(34, 197, 94, 0.25)" }}
+                >
+                  <i className="bi bi-check-circle-fill"></i>
+                  <span>{pwdSuccessMsg}</span>
                 </div>
               )}
 
               <form onSubmit={handlePasswordUpdate}>
                 <div className="mb-3">
-                  <label className="form-label text-muted small fw-medium mb-1 text-uppercase">Current Password</label>
+                  <label className="form-label text-uppercase mb-1" style={{ fontSize: "11px", fontWeight: 700, color: "#1C1F22", letterSpacing: "0.5px" }}>
+                    Current Password
+                  </label>
                   <div className="position-relative">
                     <input
                       type={showPassword ? "text" : "password"}
-                      className={`form-control bg-dark text-white fw-medium border-0 pe-5 custom-input ${pwdErrors.currentPassword ? 'is-invalid' : ''}`}
+                      className={`form-control pe-5 ${pwdErrors.currentPassword ? 'is-invalid' : ''}`}
+                      style={{
+                        backgroundColor: "#FFFFFF",
+                        color: "#1C1F22",
+                        border: "1px solid #EAE5DC",
+                        borderRadius: "10px",
+                        padding: "11px 16px",
+                        fontSize: "14px",
+                        fontWeight: 500
+                      }}
                       value={passwordData.currentPassword}
                       onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
                       placeholder="••••••••"
                     />
                     <button
                       type="button"
-                      className="btn position-absolute top-50 end-0 translate-middle-y border-0 text-muted px-3"
+                      className="btn position-absolute top-50 end-0 translate-middle-y border-0 px-3"
+                      style={{ color: "#76808D" }}
                       onClick={() => setShowPassword(!showPassword)}
                       aria-label={showPassword ? "Hide current password" : "Show current password"}
                     >
@@ -315,34 +456,99 @@ export default function ProfileDashboard() {
 
                 <div className="row g-3 mb-4">
                   <div className="col-md-6">
-                    <label className="form-label text-muted small fw-medium mb-1 text-uppercase">New Password</label>
-                    <div className="position-relative"><input
-                      type={showNewPassword ? "text" : "password"}
-                      className={`form-control bg-dark text-white fw-medium border-0 pe-5 custom-input ${pwdErrors.newPassword ? 'is-invalid' : ''}`}
-                      value={passwordData.newPassword}
-                      onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
-                      placeholder="Enter new password"
-                    /><button type="button" className="btn position-absolute top-50 end-0 translate-middle-y border-0 text-muted px-3" onClick={() => setShowNewPassword(!showNewPassword)} aria-label={showNewPassword ? "Hide new password" : "Show new password"}><i className={`bi ${showNewPassword ? "bi-eye-slash" : "bi-eye"}`}></i></button></div>
+                    <label className="form-label text-uppercase mb-1" style={{ fontSize: "11px", fontWeight: 700, color: "#1C1F22", letterSpacing: "0.5px" }}>
+                      New Password
+                    </label>
+                    <div className="position-relative">
+                      <input
+                        type={showNewPassword ? "text" : "password"}
+                        className={`form-control pe-5 ${pwdErrors.newPassword ? 'is-invalid' : ''}`}
+                        style={{
+                          backgroundColor: "#FFFFFF",
+                          color: "#1C1F22",
+                          border: "1px solid #EAE5DC",
+                          borderRadius: "10px",
+                          padding: "11px 16px",
+                          fontSize: "14px",
+                          fontWeight: 500
+                        }}
+                        value={passwordData.newPassword}
+                        onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
+                        placeholder="Enter new password"
+                      />
+                      <button
+                        type="button"
+                        className="btn position-absolute top-50 end-0 translate-middle-y border-0 px-3"
+                        style={{ color: "#76808D" }}
+                        onClick={() => setShowNewPassword(!showNewPassword)}
+                        aria-label={showNewPassword ? "Hide new password" : "Show new password"}
+                      >
+                        <i className={`bi ${showNewPassword ? "bi-eye-slash" : "bi-eye"}`}></i>
+                      </button>
+                    </div>
                     {pwdErrors.newPassword && <div className="invalid-feedback d-block small mt-1">{pwdErrors.newPassword}</div>}
                   </div>
                   <div className="col-md-6">
-                    <label className="form-label text-muted small fw-medium mb-1 text-uppercase">Confirm Password</label>
-                    <div className="position-relative"><input
-                      type={showConfirmPassword ? "text" : "password"}
-                      className={`form-control bg-dark text-white fw-medium border-0 pe-5 custom-input ${pwdErrors.confirmPassword ? 'is-invalid' : ''}`}
-                      value={passwordData.confirmPassword}
-                      onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
-                      placeholder="Confirm new password"
-                    /><button type="button" className="btn position-absolute top-50 end-0 translate-middle-y border-0 text-muted px-3" onClick={() => setShowConfirmPassword(!showConfirmPassword)} aria-label={showConfirmPassword ? "Hide password confirmation" : "Show password confirmation"}><i className={`bi ${showConfirmPassword ? "bi-eye-slash" : "bi-eye"}`}></i></button></div>
+                    <label className="form-label text-uppercase mb-1" style={{ fontSize: "11px", fontWeight: 700, color: "#1C1F22", letterSpacing: "0.5px" }}>
+                      Confirm Password
+                    </label>
+                    <div className="position-relative">
+                      <input
+                        type={showConfirmPassword ? "text" : "password"}
+                        className={`form-control pe-5 ${pwdErrors.confirmPassword ? 'is-invalid' : ''}`}
+                        style={{
+                          backgroundColor: "#FFFFFF",
+                          color: "#1C1F22",
+                          border: "1px solid #EAE5DC",
+                          borderRadius: "10px",
+                          padding: "11px 16px",
+                          fontSize: "14px",
+                          fontWeight: 500
+                        }}
+                        value={passwordData.confirmPassword}
+                        onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
+                        placeholder="Confirm new password"
+                      />
+                      <button
+                        type="button"
+                        className="btn position-absolute top-50 end-0 translate-middle-y border-0 px-3"
+                        style={{ color: "#76808D" }}
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        aria-label={showConfirmPassword ? "Hide password confirmation" : "Show password confirmation"}
+                      >
+                        <i className={`bi ${showConfirmPassword ? "bi-eye-slash" : "bi-eye"}`}></i>
+                      </button>
+                    </div>
                     {pwdErrors.confirmPassword && <div className="invalid-feedback d-block small mt-1">{pwdErrors.confirmPassword}</div>}
                   </div>
                 </div>
 
-                <button type="submit" className="btn btn-success px-4 py-2 rounded-1 fw-semibold w-100" disabled={isPasswordLoading}>
+                <button
+                  type="submit"
+                  className="btn w-100 fw-bold d-flex align-items-center justify-content-center gap-2"
+                  disabled={isPasswordLoading}
+                  style={{
+                    backgroundColor: "#FFCC00",
+                    color: "#1C1F22",
+                    border: "none",
+                    borderRadius: "10px",
+                    padding: "12px 24px",
+                    fontSize: "14px",
+                    transition: "all 0.2s ease",
+                    cursor: isPasswordLoading ? "not-allowed" : "pointer",
+                    boxShadow: "0 2px 8px rgba(255, 204, 0, 0.25)"
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isPasswordLoading) e.currentTarget.style.backgroundColor = "#E6B800";
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isPasswordLoading) e.currentTarget.style.backgroundColor = "#FFCC00";
+                  }}
+                >
                   {isPasswordLoading ? (
                     <>
                       <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                      Updating...
+                      <span>Updating...</span>
                     </>
                   ) : (
                     "Update Password"
@@ -351,56 +557,98 @@ export default function ProfileDashboard() {
               </form>
             </div>
           </div>
-
         </div>
 
-        {/* Right Column: Favorites Manager & Personalized Sports Feed */}
+        {/* Right Column: Favorites Manager */}
         <div className="col-lg-4">
-          {/* Favorite Teams Manager */}
-          <div className="card border-0 rounded-3 mb-4 profile-card">
+          <div
+            className="card border-0 rounded-4 mb-4 profile-card overflow-hidden"
+            style={{
+              backgroundColor: "#FFFFFF",
+              border: "1px solid #EAE5DC",
+              boxShadow: "0 4px 20px rgba(28, 31, 34, 0.04)"
+            }}
+          >
             <div className="card-body p-4">
-              <h5 className="text-white fw-semibold mb-3 border-start border-success border-3 ps-2">My Favorite Teams</h5>
-              <p className="text-muted small mb-4">Add teams you support. We will prioritize their scores and fixtures for you.</p>
+              <div className="d-flex align-items-center gap-2 mb-3 pb-3 border-bottom" style={{ borderColor: "#EAE5DC" }}>
+                <span style={{ width: "4px", height: "20px", background: "#FFCC00", borderRadius: "2px", display: "inline-block" }}></span>
+                <h5 className="fw-bold font-space-grotesk mb-0" style={{ color: "#1C1F22", fontSize: "1.15rem" }}>
+                  My Favorite Teams
+                </h5>
+              </div>
+              <p className="small mb-4" style={{ color: "#5C646D", lineHeight: "1.6" }}>
+                Add teams you support. We will prioritize their scores and fixtures for you across the platform.
+              </p>
 
               {/* List of active favorite teams */}
-              <div className="d-flex flex-wrap gap-2 mb-4">
+              <div className="d-flex flex-wrap gap-2 mb-2">
                 {favoriteTeams.length === 0 ? (
-                  <span className="text-muted small italic">No favorite teams added yet.</span>
+                  <div
+                    className="w-100 text-center p-4 rounded-3 d-flex flex-column align-items-center justify-content-center"
+                    style={{ background: "#FAF6EF", border: "1px dashed #EAE5DC" }}
+                  >
+                    <div
+                      className="d-flex align-items-center justify-content-center rounded-circle mb-2"
+                      style={{ width: "42px", height: "42px", background: "#FFFFFF", border: "1px solid #EAE5DC" }}
+                    >
+                      <i className="bi bi-star text-warning" style={{ fontSize: "18px" }}></i>
+                    </div>
+                    <span className="fw-semibold" style={{ color: "#1C1F22", fontSize: "13px" }}>No favorite teams added yet</span>
+                    <span style={{ color: "#76808D", fontSize: "12px", marginTop: "2px" }}>
+                      Star any team in match schedules to follow them here.
+                    </span>
+                  </div>
                 ) : (
                   favoriteTeams.map((team, idx) => (
-                    <span key={idx} className="badge bg-success bg-opacity-10 text-success border border-success border-opacity-20 px-3 py-2 fs-12 rounded-pill d-flex align-items-center gap-2">
-                      <i className="bi bi-star-fill text-warning"></i> {team}
+                    <span
+                      key={idx}
+                      className="badge px-3 py-2 d-flex align-items-center gap-2"
+                      style={{
+                        background: "#FAF6EF",
+                        color: "#1C1F22",
+                        border: "1px solid #EAE5DC",
+                        borderRadius: "30px",
+                        fontSize: "13px",
+                        fontWeight: 600
+                      }}
+                    >
+                      <i className="bi bi-star-fill text-warning"></i>
+                      <span>{team}</span>
                       <button
                         type="button"
                         onClick={() => removeFavoriteTeam(team)}
-                        className="btn-close btn-close-white p-0 fs-10"
-                        style={{ filter: "invert(1) grayscale(1) brightness(2)" }}
+                        className="btn-close p-0 ms-1"
+                        style={{ fontSize: "9px" }}
                         aria-label="Remove"
                       ></button>
                     </span>
                   ))
                 )}
               </div>
-
-
-
             </div>
           </div>
-
-
         </div>
 
-        {/* Full-width Row: Personalized Sports Feed */}
+        <div className="col-12 mt-4"><TipsterProfileEditor embedded accountEmail={accountEmail}/></div>
+
+        {/* Full-width Row: Personalized Sports Feed (kept modular) */}
         <div className="col-12 mt-4 d-none">
-          <div className="card border-0 rounded-3 profile-card">
-            <div className="card-body p-4">
-              <div className="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center mb-4 pb-3 border-bottom border-white-05 gap-3">
+          <div
+            className="card border-0 rounded-4 profile-card overflow-hidden"
+            style={{
+              backgroundColor: "#FFFFFF",
+              border: "1px solid #EAE5DC",
+              boxShadow: "0 4px 20px rgba(28, 31, 34, 0.04)"
+            }}
+          >
+            <div className="card-body p-4 p-md-5">
+              <div className="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center mb-4 pb-3 border-bottom gap-3" style={{ borderColor: "#EAE5DC" }}>
                 <div>
-                  <h5 className="text-white fw-bold mb-1 d-flex align-items-center gap-2">
+                  <h5 className="fw-bold font-space-grotesk mb-1 d-flex align-items-center gap-2" style={{ color: "#1C1F22" }}>
                     <i className="bi bi-bookmark-star-fill text-warning fs-5"></i>
                     My Personalized Sports Feed
                   </h5>
-                  <p className="text-muted small mb-0">Customized fixtures and results matching your favorite teams and leagues.</p>
+                  <p className="small mb-0" style={{ color: "#5C646D" }}>Customized fixtures and results matching your favorite teams and leagues.</p>
                 </div>
                 <div className="nav nav-pills custom-tabs d-inline-flex gap-2">
                   <button
@@ -424,8 +672,8 @@ export default function ProfileDashboard() {
                   {userFixtures.length === 0 ? (
                     <div className="text-center py-5">
                       <i className="bi bi-calendar2-x text-muted fs-2 mb-3 d-block"></i>
-                      <h6 className="text-light">No upcoming matches for your favorites</h6>
-                      <p className="text-muted small max-w-400 mx-auto mt-2">
+                      <h6 style={{ color: "#1C1F22" }}>No upcoming matches for your favorites</h6>
+                      <p className="small max-w-400 mx-auto mt-2" style={{ color: "#5C646D" }}>
                         Add more teams or leagues to your favorites list to populate this upcoming schedule.
                       </p>
                     </div>
@@ -434,10 +682,13 @@ export default function ProfileDashboard() {
                       {userFixtures.map((match: FixtureItem, idx: number) => (
                         <div key={idx} className="col-md-6 col-lg-4">
                           <Link href={getMatchLink(match)} className="text-decoration-none d-block w-100">
-                            <div className="fixture-card fixture-card-grid h-100 rounded-3 border border-dark p-3 d-flex flex-column justify-content-between hover-bg-dark transition-all">
+                            <div
+                              className="fixture-card fixture-card-grid h-100 rounded-3 p-3 d-flex flex-column justify-content-between transition-all"
+                              style={{ background: "#FAF6EF", border: "1px solid #EAE5DC" }}
+                            >
                               <div>
                                 <div className="d-flex justify-content-between align-items-center mb-3">
-                                  <span className="badge bg-dark text-muted fs-10 px-2 py-1 text-truncate" style={{ maxWidth: "150px" }}>
+                                  <span className="badge bg-white text-dark border fs-10 px-2 py-1 text-truncate" style={{ maxWidth: "150px", borderColor: "#EAE5DC" }}>
                                     {match.league}
                                   </span>
                                 </div>
@@ -446,20 +697,20 @@ export default function ProfileDashboard() {
                                     <div className="flex-shrink-0">
                                       <Image src={match.homeLogo} width={20} height={20} alt={match.home} />
                                     </div>
-                                    <span className={`text-light small text-truncate ${isFavoriteTeam(match.home) ? "fw-bold text-warning" : ""}`}>{match.home}</span>
+                                    <span className={`small text-truncate ${isFavoriteTeam(match.home) ? "fw-bold text-warning" : "text-dark"}`}>{match.home}</span>
                                   </div>
-                                  <span className="text-muted small px-1 flex-shrink-0">vs</span>
+                                  <span className="small px-1 flex-shrink-0" style={{ color: "#76808D" }}>vs</span>
                                   <div className="d-flex align-items-center gap-2 text-truncate justify-content-end" style={{ maxWidth: "42%" }}>
-                                    <span className={`text-light small text-truncate ${isFavoriteTeam(match.away) ? "fw-bold text-warning" : ""}`}>{match.away}</span>
+                                    <span className={`small text-truncate ${isFavoriteTeam(match.away) ? "fw-bold text-warning" : "text-dark"}`}>{match.away}</span>
                                     <div className="flex-shrink-0">
                                       <Image src={match.awayLogo} width={20} height={20} alt={match.away} />
                                     </div>
                                   </div>
                                 </div>
                               </div>
-                              <div className="text-center border-top border-white-05 pt-2 mt-2">
-                                <div className="small text-success fw-semibold">{match.day} • {match.time}</div>
-                                <div className="text-muted text-xs text-truncate mt-0.5">{match.venue}</div>
+                              <div className="text-center border-top pt-2 mt-2" style={{ borderColor: "#EAE5DC" }}>
+                                <div className="small fw-semibold" style={{ color: "#1C1F22" }}>{match.day} • {match.time}</div>
+                                <div className="text-xs text-truncate mt-0.5" style={{ color: "#76808D" }}>{match.venue}</div>
                               </div>
                             </div>
                           </Link>
@@ -473,8 +724,8 @@ export default function ProfileDashboard() {
                   {userResults.length === 0 ? (
                     <div className="text-center py-5">
                       <i className="bi bi-slash-circle text-muted fs-2 mb-3 d-block"></i>
-                      <h6 className="text-light">No recent results found for your favorites</h6>
-                      <p className="text-muted small max-w-400 mx-auto mt-2">
+                      <h6 style={{ color: "#1C1F22" }}>No recent results found for your favorites</h6>
+                      <p className="small max-w-400 mx-auto mt-2" style={{ color: "#5C646D" }}>
                         Add more teams or leagues to your favorites list to see their match scores and outcomes.
                       </p>
                     </div>
@@ -483,10 +734,13 @@ export default function ProfileDashboard() {
                       {userResults.map((item: ResultItem, idx: number) => (
                         <div key={idx} className="col-md-6 col-lg-4">
                           <Link href={getMatchLink(item)} className="text-decoration-none d-block w-100">
-                            <div className="fixture-card fixture-card-grid h-100 rounded-3 border border-dark p-3 d-flex flex-column justify-content-between hover-bg-dark transition-all">
+                            <div
+                              className="fixture-card fixture-card-grid h-100 rounded-3 p-3 d-flex flex-column justify-content-between transition-all"
+                              style={{ background: "#FAF6EF", border: "1px solid #EAE5DC" }}
+                            >
                               <div>
                                 <div className="d-flex justify-content-between align-items-center mb-3">
-                                  <span className="badge bg-dark text-muted fs-10 px-2 py-1 text-truncate" style={{ maxWidth: "150px" }}>
+                                  <span className="badge bg-white text-dark border fs-10 px-2 py-1 text-truncate" style={{ maxWidth: "150px", borderColor: "#EAE5DC" }}>
                                     {item.league}
                                   </span>
                                 </div>
@@ -498,18 +752,18 @@ export default function ProfileDashboard() {
                                         <div className="flex-shrink-0">
                                           <Image src={item.homeLogo} width={18} height={18} alt={item.home} />
                                         </div>
-                                        <span className={`text-light small text-truncate ${isFavoriteTeam(item.home) ? "fw-bold text-warning" : ""}`}>{item.home}</span>
+                                        <span className={`small text-truncate ${isFavoriteTeam(item.home) ? "fw-bold text-warning" : "text-dark"}`}>{item.home}</span>
                                       </div>
-                                      <span className="text-white small fw-bold flex-shrink-0">{item.homeScore}</span>
+                                      <span className="small fw-bold flex-shrink-0" style={{ color: "#1C1F22" }}>{item.homeScore}</span>
                                     </div>
                                     <div className="d-flex justify-content-between align-items-center">
                                       <div className="d-flex align-items-center gap-2 text-truncate" style={{ maxWidth: "75%" }}>
                                         <div className="flex-shrink-0">
                                           <Image src={item.awayLogo} width={18} height={18} alt={item.away} />
                                         </div>
-                                        <span className={`text-light small text-truncate ${isFavoriteTeam(item.away) ? "fw-bold text-warning" : ""}`}>{item.away}</span>
+                                        <span className={`small text-truncate ${isFavoriteTeam(item.away) ? "fw-bold text-warning" : "text-dark"}`}>{item.away}</span>
                                       </div>
-                                      <span className="text-white small fw-bold flex-shrink-0">{item.awayScore}</span>
+                                      <span className="small fw-bold flex-shrink-0" style={{ color: "#1C1F22" }}>{item.awayScore}</span>
                                     </div>
                                   </div>
                                 ) : (
@@ -518,11 +772,11 @@ export default function ProfileDashboard() {
                                       <div className="flex-shrink-0">
                                         <Image src={item.homeLogo} width={18} height={18} alt={item.home} />
                                       </div>
-                                      <span className={`text-light small text-truncate ${isFavoriteTeam(item.home) ? "fw-bold text-warning" : ""}`}>{item.home}</span>
+                                      <span className={`small text-truncate ${isFavoriteTeam(item.home) ? "fw-bold text-warning" : "text-dark"}`}>{item.home}</span>
                                     </div>
-                                    <span className="text-success small fw-bold fs-14 px-1 flex-shrink-0">{item.score}</span>
+                                    <span className="small fw-bold fs-14 px-1 flex-shrink-0" style={{ color: "#1C1F22" }}>{item.score}</span>
                                     <div className="d-flex align-items-center gap-2 text-truncate justify-content-end" style={{ maxWidth: "42%" }}>
-                                      <span className={`text-light small text-truncate ${isFavoriteTeam(item.away) ? "fw-bold text-warning" : ""}`}>{item.away}</span>
+                                      <span className={`small text-truncate ${isFavoriteTeam(item.away) ? "fw-bold text-warning" : "text-dark"}`}>{item.away}</span>
                                       <div className="flex-shrink-0">
                                         <Image src={item.awayLogo} width={18} height={18} alt={item.away} />
                                       </div>
@@ -530,9 +784,9 @@ export default function ProfileDashboard() {
                                   </div>
                                 )}
                               </div>
-                              <div className="text-center border-top border-white-05 pt-2 mt-2">
-                                <div className="small text-success fw-semibold mb-0.5">{item.result}</div>
-                                <div className="text-muted text-xs">{item.date}</div>
+                              <div className="text-center border-top pt-2 mt-2" style={{ borderColor: "#EAE5DC" }}>
+                                <div className="small fw-semibold mb-0.5" style={{ color: "#1C1F22" }}>{item.result}</div>
+                                <div className="text-xs" style={{ color: "#76808D" }}>{item.date}</div>
                               </div>
                             </div>
                           </Link>

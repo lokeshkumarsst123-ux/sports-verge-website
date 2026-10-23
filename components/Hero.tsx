@@ -43,18 +43,27 @@ export default function Hero() {
 
   if (!article) {
     return (
-      <section className="featured-news-section mb-4 rounded-3 border border-dark p-5 text-center text-muted">
+      <section className="featured-news-section mb-4 rounded-4 border p-5 text-center text-muted" style={{ borderColor: "#EAE5DC", backgroundColor: "#FFFFFF" }}>
         No featured news available.
       </section>
     );
   }
 
-  const previous = () => setActive((index) => (index - 1 + articles.length) % articles.length);
-  const next = () => setActive((index) => (index + 1) % articles.length);
+  const previous = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setActive((index) => (index - 1 + articles.length) % articles.length);
+  };
+
+  const next = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setActive((index) => (index + 1) % articles.length);
+  };
 
   return (
     <section className="featured-news-section mb-4">
-      <div className="carousel-inner border border-dark rounded-3 overflow-hidden position-relative">
+      <div className="carousel-inner hero-carousel-wrapper rounded-4 overflow-hidden position-relative">
         <div className="custom-carousel-item active">
           <Link href={`/news/${article.id}`} className="d-block text-decoration-none position-relative">
             <img
@@ -68,12 +77,18 @@ export default function Hero() {
                 }
               }}
             />
-            <div className="featured-overlay" />
-            <div className="carousel-caption custom-caption w-75 text-start">
-              <span className="badge fw-normal bg-dark mb-3 rounded-pill small">FEATURED NEWS</span>
-              <h2 className="fw-semibold mb-2">{article.title}</h2>
-              <p className="text-light small mb-3">{article.summary}</p>
-              <span className="btn btn-success px-4 py-2">
+            {/* <div className="featured-overlay" /> */}
+            <div className="hero-caption-custom">
+              <span className="badge fw-bold mb-3 rounded-pill hero-badge-custom">
+                FEATURED NEWS
+              </span>
+              <h2 className="fw-bold mb-2 hero-title-custom">
+                {article.title}
+              </h2>
+              <p className="small mb-3 hero-summary-custom">
+                {article.summary}
+              </p>
+              <span className="btn fw-bold px-4 py-2 rounded-pill shadow-sm d-inline-flex align-items-center hero-btn-custom">
                 Read Full Story <i className="bi bi-arrow-right ms-2" aria-hidden="true" />
               </span>
             </div>
@@ -82,12 +97,16 @@ export default function Hero() {
 
         {articles.length > 1 && (
           <>
-            <div className="carousel-indicators custom-indicators">
+            <div className="carousel-indicators custom-indicators d-none d-md-flex">
               {articles.map((item, index) => (
                 <button
                   key={`${item.id}-${index}`}
                   type="button"
-                  onClick={() => setActive(index)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setActive(index);
+                  }}
                   className={index === active ? "active" : ""}
                   aria-label={`Slide ${index + 1}`}
                   aria-current={index === active ? "true" : undefined}
@@ -96,10 +115,10 @@ export default function Hero() {
             </div>
 
             <div className="carousel-controls-custom">
-              <button type="button" className="btn-dark-control" onClick={previous} aria-label="Previous featured story">
+              <button type="button" className="btn-hero-control" onClick={previous} aria-label="Previous featured story">
                 <i className="bi bi-chevron-left" aria-hidden="true" />
               </button>
-              <button type="button" className="btn-dark-control" onClick={next} aria-label="Next featured story">
+              <button type="button" className="btn-hero-control" onClick={next} aria-label="Next featured story">
                 <i className="bi bi-chevron-right" aria-hidden="true" />
               </button>
             </div>

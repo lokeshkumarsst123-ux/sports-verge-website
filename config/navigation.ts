@@ -42,6 +42,8 @@ export const mainMenuItems: MenuItem[] = [
       { title: "Teams", href: "/teams?sport=nfl" },
     ],
   },
+  { title: "NRL", href: "/nrl" },
+  { title: "AFL", href: "/afl" },
   { title: "News", href: "/news" },
   { title: "Tips", href: "/tips" },
   { title: "Live Scores", href: "/live-scores" },

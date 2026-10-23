@@ -10,6 +10,10 @@ import { LiveScoreMatchDetail } from "@/types";
 import { cricketApi, mapCricketMatch } from "@/lib/cricket-api";
 import { mapNflMatch, mapSoccerMatch, nflApi, soccerApi } from "@/lib/sports-api";
 
+// Set to true for static/mock data to test UI and design without API dependencies.
+// Set to false to switch back to dynamic API data anytime.
+import { USE_STATIC_MOCK, MOCK_LIVE_MATCHES } from "@/lib/mock-data";
+
 export default function LiveScoresPage() {
   const [activeTab, setActiveTab] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -27,6 +31,14 @@ export default function LiveScoresPage() {
   }, []);
 
   const loadData = useCallback(async () => {
+    if (USE_STATIC_MOCK) {
+      setLoading(false);
+      setError(null);
+      setMatches(MOCK_LIVE_MATCHES);
+      setLastSyncedAt("Just now");
+      return;
+    }
+
     setLoading(true);
     setError(null);
     try {
@@ -124,24 +136,68 @@ export default function LiveScoresPage() {
   return (
     <main className="container custom-container py-4 mb-5">
       {/* Page Header */}
-      <div className="py-4 border-bottom border-secondary border-opacity-10 mb-4">
+      <div className="py-4 border-bottom mb-4" style={{ borderColor: "#eae5dc" }}>
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
           <div>
+            <div className="d-flex align-items-center gap-2 mb-2">
+              <span
+                className="badge rounded-pill px-3 py-1.5 fw-bold text-uppercase d-inline-flex align-items-center gap-2"
+                style={{
+                  background: "#FFCC00",
+                  color: "#1C1F22",
+                  border: "1px solid #FFCC00",
+                  fontSize: "11px",
+                  letterSpacing: "0.05em",
+                  fontWeight: 700,
+                }}
+              >
+                <span
+                  className="rounded-circle d-inline-block"
+                  style={{
+                    width: "6px",
+                    height: "6px",
+                    backgroundColor: "#1C1F22",
+                  }}
+                />
+                Real-Time Updates
+              </span>
+            </div>
             <h1
-              className="fw-bold text-white mb-2 font-space-grotesk ls-minus-05"
+              className="fw-bold mb-1 font-space-grotesk ls-minus-05"
+              style={{ color: "#1c1f22", fontSize: "32px" }}
             >
-              Live <span className="text-success">Scores</span>
+              Live Sports Scores
             </h1>
-            <p className="text-muted mb-0 fs-14">Real-time scores from all supported sports.</p>
+            <p className="text-muted mb-0" style={{ fontSize: "14px" }}>
+              Real-time scores, play-by-play coverage & live statistics across global leagues.
+            </p>
           </div>
 
-          <div className="d-flex align-items-center gap-2">
-            <span className="text-muted small">Last sync: {lastSyncedAt || "Syncing..."}</span>
-            <button type="button" className="btn btn-outline-success btn-sm" onClick={() => { void loadData(); }} disabled={loading}>
-              <i className={`bi bi-arrow-clockwise me-1 ${loading ? "spin" : ""}`}></i>Refresh
+          <div className="d-flex align-items-center gap-2 flex-wrap">
+            <span
+              className="badge rounded-pill px-3 py-2 font-monospace fw-semibold"
+              style={{ background: "#ffffff", border: "1px solid #eae5dc", color: "#64748b", fontSize: "12px" }}
+            >
+              Last sync: <strong style={{ color: "#1c1f22" }}>{lastSyncedAt || "Syncing..."}</strong>
+            </span>
+            <button
+              type="button"
+              className="btn rounded-pill px-3.5 py-2 fw-bold text-uppercase d-inline-flex align-items-center gap-2 shadow-none transition-all"
+              onClick={() => { void loadData(); }}
+              disabled={loading}
+              style={{
+                fontSize: "12px",
+                letterSpacing: "0.04em",
+                backgroundColor: "#FFCC00",
+                color: "#1C1F22",
+                border: "1px solid #FFCC00",
+                fontWeight: 700,
+              }}
+            >
+              <i className={`bi bi-arrow-clockwise ${loading ? "spin" : ""}`} style={{ color: "#1C1F22" }} />
+              Refresh
             </button>
           </div>
-
         </div>
       </div>
 
@@ -149,21 +205,36 @@ export default function LiveScoresPage() {
         {/* Main Content Column */}
         <div className="col-lg-8">
           {/* Search bar & filter tabs */}
-          <div className="bg-card border border-dark rounded-3 p-4 mb-4">
+          <div className="rounded-4 p-4 mb-4 shadow-sm" style={{ background: "#ffffff", border: "1px solid #eae5dc" }}>
             <div className="d-flex flex-column gap-3">
-              {/* Search Bar Row */}
-              <div className="w-100">
+              {/* Search Bar Row with Count */}
+              <div className="d-flex flex-column flex-sm-row align-items-stretch align-items-sm-center gap-3">
                 <div
-                  className={`input-group rounded-3 overflow-hidden bg-dark border search-box-wrapper ${
-                    isSearchFocused ? "border-success focused" : "border-secondary border-opacity-25"
-                  }`}
+                  className="d-flex align-items-center rounded-pill flex-grow-1 transition-all"
+                  style={{
+                    background: "#fff",
+                    border: isSearchFocused ? "1px solid #ffcc00" : "1px solid #eae5dc",
+                    boxShadow: isSearchFocused ? "0 0 0 3px rgba(255, 204, 0, 0.2)" : "none",
+                    padding: "0 16px",
+                    height: "44px",
+                  }}
                 >
-                  <span className="input-group-text bg-transparent border-0 text-muted pe-1">
-                    <i className="bi bi-search"></i>
-                  </span>
+                  <i
+                    className="bi bi-search flex-shrink-0 me-2"
+                    style={{ color: isSearchFocused ? "#1c1f22" : "#94a3b8", fontSize: "14px" }}
+                  />
                   <input
                     type="text"
-                    className="form-control bg-transparent border-0 text-light ps-2 py-2 search-input"
+                    className="border-0 bg-transparent flex-grow-1 shadow-none"
+                    style={{
+                      background: "transparent",
+                      border: "none",
+                      outline: "none",
+                      boxShadow: "none",
+                      color: "#1c1f22",
+                      fontSize: "14px",
+                      padding: 0,
+                    }}
                     placeholder="Search teams, leagues, venues..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
@@ -172,17 +243,29 @@ export default function LiveScoresPage() {
                   />
                   {searchQuery !== "" && (
                     <button
-                      className="btn bg-transparent border-0 text-muted"
+                      className="btn border-0 text-muted p-0 ms-2"
+                      style={{ background: "transparent" }}
                       onClick={() => setSearchQuery("")}
                       type="button"
+                      aria-label="Clear search"
                     >
-                      <i className="bi bi-x-lg"></i>
+                      <i className="bi bi-x-circle-fill" style={{ color: "#94a3b8", fontSize: "14px" }} />
                     </button>
                   )}
                 </div>
+
+                <div className="d-none d-sm-flex align-items-center">
+                  <span
+                    className="badge rounded-pill px-3 py-2 font-monospace fw-bold flex-shrink-0"
+                    style={{ background: "#faf8f5", border: "1px solid #eae5dc", color: "#64748b", fontSize: "12px" }}
+                  >
+                    {filteredMatches.length} Live {filteredMatches.length === 1 ? "Match" : "Matches"}
+                  </span>
+                </div>
               </div>
+
               {/* Sports Filter Tabs Row */}
-              <div className="w-100">
+              <div className="w-100 pt-1">
                 <SportsTabs activeTab={activeTab} onTabChange={setActiveTab} />
               </div>
             </div>
