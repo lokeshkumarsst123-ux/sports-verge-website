@@ -34,6 +34,7 @@ export default function Standings() {
 
   useEffect(() => {
     if (USE_STATIC_MOCK) {
+      setCompetitions(MOCK_COMPETITIONS);
       return;
     }
 

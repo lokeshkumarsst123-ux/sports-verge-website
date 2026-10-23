@@ -43,6 +43,7 @@ export default function PopularTeams() {
 
   useEffect(() => {
     if (USE_STATIC_MOCK) {
+      setTeams(MOCK_POPULAR_TEAMS);
       return;
     }
 

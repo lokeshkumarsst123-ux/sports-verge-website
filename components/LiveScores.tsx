@@ -37,6 +37,8 @@ export default function LiveScores() {
 
   useEffect(() => {
     if (USE_STATIC_MOCK) {
+      setMatches(MOCK_LIVE_SCORES);
+      setError(null);
       return;
     }
 

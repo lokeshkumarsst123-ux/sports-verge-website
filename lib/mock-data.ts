@@ -17,7 +17,7 @@ import type { ProviderStandingRow } from "@/lib/sports-api";
 import type { CricketRankingGroup, CricketBettingOddsCard } from "@/lib/cricket-api";
 
 // ─── MASTER TOGGLE ────────────────────────────────────────────────────────────
-export const USE_STATIC_MOCK = false;
+export const USE_STATIC_MOCK = true;
 
 // ─── TYPES ────────────────────────────────────────────────────────────────────
 export type MockSport = "cricket" | "football" | "NFL" | "AFL";

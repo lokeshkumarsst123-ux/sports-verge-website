@@ -27,6 +27,7 @@ export default function PopularPlayers() {
 
   useEffect(() => {
     if (USE_STATIC_MOCK) {
+      setPlayers(MOCK_POPULAR_PLAYERS);
       return;
     }
 
