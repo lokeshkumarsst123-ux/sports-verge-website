@@ -1,13 +1,12 @@
 const configuredApiUrl = process.env.NEXT_PUBLIC_API_URL?.trim();
 
-// When running on HTTPS in the browser and the target API is HTTP,
-// use the /api/backend proxy to prevent browsers from blocking Mixed Content.
+// When running in the browser on HTTPS (like on Vercel deployment),
+// always route through /api/backend proxy to completely avoid CORS and Mixed Content issues.
 const isBrowser = typeof window !== "undefined";
 const isHttps = isBrowser && window.location.protocol === "https:";
-const isHttpApi = Boolean(configuredApiUrl && configuredApiUrl.startsWith("http://"));
 
 export const API_BASE_URL = (
-  isHttps && isHttpApi
+  isHttps
     ? "/api/backend"
     : (configuredApiUrl || "http://localhost:4000/api/v1")
 ).replace(/\/+$/, "");
