@@ -5,14 +5,6 @@ const backendTarget = (
 ).replace(/\/+$/, "");
 
 const nextConfig: NextConfig = {
-  async rewrites() {
-    return [
-      {
-        source: "/api/backend/:path*",
-        destination: `${backendTarget}/:path*`,
-      },
-    ];
-  },
   images: {
     remotePatterns: [
       { protocol: "http", hostname: "localhost", port: "4000", pathname: "/uploads/**" },
