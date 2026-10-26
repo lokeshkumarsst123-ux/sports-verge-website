@@ -3,8 +3,17 @@ import type { NextConfig } from "next";
 const backendTarget = (
   process.env.NEXT_PUBLIC_API_URL?.trim() || "http://13.204.234.133:3003/api/v1"
 ).replace(/\/+$/, "");
+const backendOrigin = backendTarget.replace(/\/api\/v1\/?$/, "");
 
 const nextConfig: NextConfig = {
+  async rewrites() {
+    return [
+      {
+        source: "/uploads/:path*",
+        destination: `${backendOrigin}/uploads/:path*`,
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       { protocol: "http", hostname: "localhost", port: "4000", pathname: "/uploads/**" },

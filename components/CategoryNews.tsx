@@ -54,13 +54,16 @@ export default function CategoryNews({ category, title }: CategoryNewsProps) {
             >
               <div className="news-img-wrapper flex-shrink-0 rounded-2 overflow-hidden cat-news-img-wrap">
                 <Image
-                  src={article.image}
+                  src={article.image || "/assets/imgs/banner/news-banner_1.webp"}
                   alt={article.title}
                   width={240}
                   height={150}
                   className="w-100 h-100 object-fit-cover news-thumb"
                   loading={index === 0 ? "eager" : "lazy"}
                   unoptimized
+                  onError={(event) => {
+                    event.currentTarget.src = "/assets/imgs/banner/news-banner_1.webp";
+                  }}
                 />
               </div>
               <div className="news-content d-flex flex-column justify-content-center py-1 flex-grow-1">

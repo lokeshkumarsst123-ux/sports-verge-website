@@ -79,11 +79,11 @@ const normalizeMediaUrl = (value: unknown) => {
   const source = String(value || "").trim();
   if (!source) return "";
   if (source.startsWith("//")) return `https:${source}`;
-  if (source.startsWith("/")) return `${API_ORIGIN}${source}`;
-  if (/^https?:\/\/(localhost|127\.0\.0\.1):4000\//i.test(source)) {
+  if (source.startsWith("/")) return source;
+  if (source.includes("/uploads/")) {
     try {
       const parsed = new URL(source);
-      return `${API_ORIGIN}${parsed.pathname}${parsed.search}`;
+      return `${parsed.pathname}${parsed.search}`;
     } catch {
       return source;
     }
