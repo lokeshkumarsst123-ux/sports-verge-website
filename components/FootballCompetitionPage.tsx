@@ -3,6 +3,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import PageHeader from "@/components/PageHeader";
 import { mapProviderStandings, mapSoccerFixture, soccerApi, sportsItems, type ProviderStandingRow } from "@/lib/sports-api";
+import { USE_STATIC_MOCK, MOCK_FOOTBALL_COMPETITIONS } from "@/lib/mock-data";
 import type { FixtureItem } from "@/types";
 
 type RawRecord = Record<string, unknown>;
@@ -96,13 +97,15 @@ const sortMatches = (left: CompetitionMatch, right: CompetitionMatch) => {
 };
 
 function TeamLogo({ src, name, size = 22 }: { src: string; name: string; size?: number }) {
-  const [failed, setFailed] = useState(false);
-  useEffect(() => setFailed(false), [src]);
-  return src && !failed ? (
-    <img src={src} alt={name} style={{ width: size, height: size, objectFit: "contain" }} onError={() => setFailed(true)} />
-  ) : (
-    <img src={PLACEHOLDER_LOGO} alt={name + " logo unavailable"} style={{ width: size, height: size, objectFit: "contain" }} />
-  );
+  const [failedSource, setFailedSource] = useState<string | null>(null);
+  const imageSource = src && failedSource !== src ? src : PLACEHOLDER_LOGO;
+
+  return <img
+    src={imageSource}
+    alt={imageSource === PLACEHOLDER_LOGO ? name + " logo unavailable" : name}
+    style={{ width: size, height: size, objectFit: "contain" }}
+    onError={() => { if (src) setFailedSource(src); }}
+  />;
 }
 
 function StandingTable({ rows }: { rows: ProviderStandingRow[] }) {
@@ -149,48 +152,76 @@ function PaginationControls({ page, totalPages, totalItems, pageSize, onPageChan
 }
 
 function MatchCard({ match }: { match: CompetitionMatch }) {
+  const isCompleted = match.status === "completed";
+  const isLive = match.status === "live";
+
   return <div className="col-md-6 col-lg-4">
-    <div className="premium-table-container p-4 h-100 d-flex flex-column justify-content-between">
+    <div className="premium-table-container p-4 h-100 d-flex flex-column justify-content-between" style={{ background: "#FFFFFF", border: "1px solid #EAE5DC" }}>
       <div>
         <div className="d-flex justify-content-between align-items-center mb-3">
-          <span className="text-success fw-bold font-space-grotesk" style={{ fontSize: "11px", letterSpacing: "0.08em" }}>{match.label.toUpperCase()}</span>
-          <span className="rounded-pill px-3 py-1 font-space-grotesk fw-bold" style={{ fontSize: "10px", background: match.status === "completed" ? "rgba(255, 255, 255, 0.08)" : "rgba(34, 197, 94, 0.15)", color: match.status === "completed" ? "#a0a5ad" : "#22c55e", border: match.status === "completed" ? "1px solid rgba(255, 255, 255, 0.1)" : "1px solid rgba(34, 197, 94, 0.3)", letterSpacing: "0.05em" }}>
+          <span className="fw-bold font-space-grotesk" style={{ fontSize: "11px", letterSpacing: "0.08em", color: "#4A90E2" }}>{match.label.toUpperCase()}</span>
+          <span className="rounded-pill px-3 py-1 font-space-grotesk fw-bold" style={{
+            fontSize: "10px",
+            background: isLive ? "rgba(74, 144, 226, 0.12)" : isCompleted ? "#FAF6EF" : "rgba(255, 204, 0, 0.15)",
+            color: isLive ? "#4A90E2" : isCompleted ? "#5C646D" : "#B38F00",
+            border: isLive ? "1px solid rgba(74, 144, 226, 0.3)" : "1px solid #EAE5DC",
+            letterSpacing: "0.05em",
+          }}>
             {(match.status || "upcoming").toUpperCase()}
           </span>
         </div>
         <div className="d-flex justify-content-between align-items-center my-3">
-          <div className="d-flex align-items-center gap-2"><TeamLogo src={match.homeLogo} name={match.home} /><span className="fw-bold text-white font-space-grotesk" style={{ fontSize: "15px" }}>{match.home}</span></div>
-          {match.homeScore && <span className="fw-bold text-white font-monospace" style={{ fontSize: "18px" }}>{match.homeScore}</span>}
+          <div className="d-flex align-items-center gap-2"><TeamLogo src={match.homeLogo} name={match.home} /><span className="fw-bold font-space-grotesk" style={{ fontSize: "15px", color: "#1C1F22" }}>{match.home}</span></div>
+          {match.homeScore && <span className="fw-bold font-monospace" style={{ fontSize: "18px", color: "#1C1F22" }}>{match.homeScore}</span>}
         </div>
         <div className="d-flex justify-content-between align-items-center my-3">
-          <div className="d-flex align-items-center gap-2"><TeamLogo src={match.awayLogo} name={match.away} /><span className="fw-bold text-white font-space-grotesk" style={{ fontSize: "15px" }}>{match.away}</span></div>
-          {match.awayScore && <span className="fw-bold text-white font-monospace" style={{ fontSize: "18px" }}>{match.awayScore}</span>}
+          <div className="d-flex align-items-center gap-2"><TeamLogo src={match.awayLogo} name={match.away} /><span className="fw-bold font-space-grotesk" style={{ fontSize: "15px", color: "#1C1F22" }}>{match.away}</span></div>
+          {match.awayScore && <span className="fw-bold font-monospace" style={{ fontSize: "18px", color: "#1C1F22" }}>{match.awayScore}</span>}
         </div>
       </div>
-      <hr className="border-secondary opacity-10 my-3" />
+      <hr style={{ borderColor: "#EAE5DC" }} className="my-3" />
       <div>
-        <div className="d-flex align-items-center gap-2 text-muted mb-2" style={{ fontSize: "12px" }}><i className="bi bi-calendar-event" /><span>{match.date} · {match.time}</span></div>
-        <div className="d-flex align-items-center gap-2 text-muted mb-3" style={{ fontSize: "12px" }}><i className="bi bi-geo-alt" /><span className="text-truncate">{match.venue}</span></div>
-        {match.resultText && <div className="p-2 rounded bg-success bg-opacity-10 text-success text-center fw-semibold" style={{ fontSize: "12px" }}>{match.resultText}</div>}
+        <div className="d-flex align-items-center gap-2 mb-2" style={{ fontSize: "12px", color: "#5C646D" }}><i className="bi bi-calendar-event" /><span>{match.date} · {match.time}</span></div>
+        <div className="d-flex align-items-center gap-2 mb-3" style={{ fontSize: "12px", color: "#5C646D" }}><i className="bi bi-geo-alt" /><span className="text-truncate">{match.venue}</span></div>
+        {match.resultText && <div className="p-2 rounded text-center fw-semibold" style={{ fontSize: "12px", background: "#FAF6EF", border: "1px solid #EAE5DC", color: "#1C1F22" }}>{match.resultText}</div>}
       </div>
     </div>
   </div>;
 }
 
+const getCompetitionKey = (name: string): string => {
+  const norm = name.toLowerCase().replace(/[^a-z0-9]/g, "");
+  if (norm.includes("premier")) return "premier-league";
+  if (norm.includes("liga")) return "la-liga";
+  if (norm.includes("champion")) return "champions-league";
+  return "premier-league";
+};
+
 export default function FootballCompetitionPage({ config }: { config: CompetitionPageConfig }) {
+  const compKey = getCompetitionKey(config.displayName || config.competitionName);
+  const mockComp = MOCK_FOOTBALL_COMPETITIONS[compKey] || MOCK_FOOTBALL_COMPETITIONS["premier-league"];
+
   const [activeTab, setActiveTab] = useState(config.championsFormat ? "fixtures" : "schedule");
-  const [matches, setMatches] = useState<CompetitionMatch[]>([]);
-  const [standings, setStandings] = useState<ProviderStandingRow[]>([]);
-  const [metadata, setMetadata] = useState<RawRecord>({});
+  const [matches, setMatches] = useState<CompetitionMatch[]>(USE_STATIC_MOCK ? (mockComp.matches as unknown as CompetitionMatch[]) : []);
+  const [standings, setStandings] = useState<ProviderStandingRow[]>(USE_STATIC_MOCK ? mockComp.standings : []);
+  const [metadata, setMetadata] = useState<RawRecord>(USE_STATIC_MOCK ? mockComp.metadata : {});
   const [fixturePage, setFixturePage] = useState(1);
   const [standingPage, setStandingPage] = useState(1);
   const [teamPage, setTeamPage] = useState(1);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!USE_STATIC_MOCK);
   const [error, setError] = useState("");
 
   useEffect(() => {
     let cancelled = false;
     const load = async () => {
+      if (USE_STATIC_MOCK) {
+        setMatches(mockComp.matches as unknown as CompetitionMatch[]);
+        setStandings(mockComp.standings);
+        setMetadata(mockComp.metadata);
+        setLoading(false);
+        setError("");
+        return;
+      }
       setLoading(true);
       try {
         const competitionsResponse = await soccerApi.competitions("per_page=50");
@@ -236,7 +267,7 @@ export default function FootballCompetitionPage({ config }: { config: Competitio
     };
     void load();
     return () => { cancelled = true; };
-  }, [config.competitionName, config.displayName]);
+  }, [config.competitionName, config.displayName, compKey, mockComp]);
 
   const pageSize = 10;
   const fixturePageSize = 6;
@@ -265,16 +296,37 @@ export default function FootballCompetitionPage({ config }: { config: Competitio
   return <main className="font-outfit">
     <PageHeader title={config.displayName} subtitle={config.subtitle} className="mb-5" />
     <div className="container custom-container mb-4">
-      <div className="d-flex gap-2 border-bottom border-secondary border-opacity-10 pb-3">
-        {tabs.map((tab) => <button key={tab} onClick={() => setActiveTab(tab)} className="btn text-capitalize fw-bold rounded-pill px-4 py-2 transition-all" style={{ fontSize: "14px", background: activeTab === tab ? "var(--accent-green)" : "transparent", color: activeTab === tab ? "#fff" : "var(--text-muted)", border: activeTab === tab ? "1px solid var(--accent-green)" : "1px solid transparent" }}>{tab}</button>)}
+      <div className="d-flex gap-2 border-bottom border-secondary border-opacity-10 pb-3 flex-wrap">
+        {tabs.map((tab) => {
+          const isActive = activeTab === tab;
+          return (
+            <button
+              key={tab}
+              type="button"
+              onClick={() => setActiveTab(tab)}
+              className="btn text-capitalize fw-bold rounded-pill px-4 py-2 transition-all shadow-none"
+              style={{
+                fontSize: "14px",
+                backgroundColor: isActive ? "#FFCC00" : "#FAF6EF",
+                color: isActive ? "#1C1F22" : "#4B5563",
+                borderColor: isActive ? "#FFCC00" : "#EAE5DC",
+                borderWidth: "1px",
+                borderStyle: "solid",
+                fontWeight: isActive ? 700 : 600,
+              }}
+            >
+              {tab}
+            </button>
+          );
+        })}
       </div>
     </div>
     <div className="container custom-container">
       {loading ? <div className="premium-table-container p-5 text-center text-muted">Loading {config.displayName} data…</div> : error ? <div className="premium-table-container p-5 text-center text-warning">{error}</div> : <>
         {(activeTab === "schedule" || activeTab === "fixtures") && <><div className="row g-4">{visibleMatches.map((match) => <MatchCard key={match.id || [match.home, match.away, match.timestamp].join("-")} match={match} />)}</div><PaginationControls page={currentFixturePage} totalPages={fixtureTotalPages} totalItems={matches.length} pageSize={fixturePageSize} onPageChange={setFixturePage} /></>}
         {(activeTab === "standings" || activeTab === "groups") && <><StandingTable rows={visibleStandings} /><PaginationControls page={currentStandingPage} totalPages={standingTotalPages} totalItems={standings.length} pageSize={pageSize} onPageChange={setStandingPage} /></>}
-        {activeTab === "teams" && <><div className="row g-4">{visibleTeams.map((team) => <div key={team.name} className="col-6 col-md-4 col-lg-3"><div className="premium-table-container p-4 text-center hover-glow transition-all" style={{ cursor: "pointer" }}><div className="d-flex align-items-center justify-content-center mb-3" style={{ height: "80px" }}><TeamLogo src={team.logo} name={team.name} size={70} /></div><h6 className="fw-bold text-white font-space-grotesk text-truncate mb-0">{team.name}</h6></div></div>)}</div><PaginationControls page={currentTeamPage} totalPages={teamTotalPages} totalItems={teams.length} pageSize={teamPageSize} onPageChange={setTeamPage} /></>}
-        {activeTab === "history" && <div className="premium-table-container p-5"><h4 className="fw-bold text-white mb-3 font-space-grotesk">{config.displayName} Information</h4><p className="text-muted lh-lg mb-0" style={{ fontSize: "15px" }}>{historyText}</p></div>}
+        {activeTab === "teams" && <><div className="row g-4">{visibleTeams.map((team) => <div key={team.name} className="col-6 col-md-4 col-lg-3"><div className="premium-table-container p-4 text-center" style={{ background: "#FFFFFF", border: "1px solid #EAE5DC" }}><div className="d-flex align-items-center justify-content-center mb-3" style={{ height: "80px" }}><TeamLogo src={team.logo} name={team.name} size={70} /></div><h6 className="fw-bold font-space-grotesk text-truncate mb-0" style={{ color: "#1C1F22" }}>{team.name}</h6></div></div>)}</div><PaginationControls page={currentTeamPage} totalPages={teamTotalPages} totalItems={teams.length} pageSize={teamPageSize} onPageChange={setTeamPage} /></>}
+        {activeTab === "history" && <div className="premium-table-container p-5" style={{ background: "#FFFFFF", border: "1px solid #EAE5DC" }}><h4 className="fw-bold mb-3 font-space-grotesk" style={{ color: "#1C1F22" }}>{config.displayName} Information</h4><p className="text-muted lh-lg mb-0" style={{ fontSize: "15px" }}>{historyText}</p></div>}
       </>}
     </div>
   </main>;

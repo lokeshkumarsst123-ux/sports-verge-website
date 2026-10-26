@@ -10,7 +10,8 @@ export default function LoadingSkeleton() {
       {cards.map((i) => (
         <div
           key={i}
-          className="card bg-card border border-dark rounded-3 p-4 position-relative overflow-hidden shimmer-wrapper h-260px"
+          className="rounded-4 p-4 position-relative overflow-hidden shimmer-wrapper mb-4 shadow-sm"
+          style={{ background: "#FFFFFF", border: "1px solid #EAE5DC", minHeight: "240px" }}
         >
           {/* Top Bar Skeleton */}
           <div className="d-flex justify-content-between align-items-center mb-4">
@@ -44,14 +45,14 @@ export default function LoadingSkeleton() {
                 <div className="skeleton-line w-40px h-20px"></div>
               </div>
             </div>
-            <div className="col-12 col-md-4 d-flex flex-row flex-md-column align-items-center justify-content-between justify-content-md-center gap-2 border-start-md ps-md-4">
+            <div className="col-12 col-md-4 d-flex flex-row flex-md-column align-items-center justify-content-between justify-content-md-center gap-2 border-start-md ps-md-4" style={{ borderColor: "#EAE5DC" }}>
               <div className="skeleton-line w-60px h-24px"></div>
               <div className="skeleton-line w-80px h-16px"></div>
             </div>
           </div>
 
           {/* Footer Skeleton */}
-          <div className="d-flex justify-content-between align-items-center pt-3 border-top border-secondary border-opacity-10 mt-auto">
+          <div className="d-flex justify-content-between align-items-center pt-3 mt-auto" style={{ borderTop: "1px solid #EAE5DC" }}>
             <div className="skeleton-line w-180px h-14px"></div>
             <div className="skeleton-line w-120px h-32px"></div>
           </div>

@@ -76,7 +76,7 @@ export default function AdminDashboardPage() {
 
   return <div className="admin-dashboard">
     <section className="admin-dashboard-hero">
-      <div className="admin-dashboard-hero-copy"><span className="admin-dashboard-eyebrow"><i className="bi bi-soundwave me-2" />OPERATIONS / LIVE OVERVIEW</span><h1>Control center</h1><p>Everything important across your Sports Verg platform, in one clear view.</p><div className="admin-dashboard-meta"><span className="admin-live-pill"><i />Systems operational</span><span><i className="bi bi-clock me-1" />{refreshedLabel}</span></div></div>
+      <div className="admin-dashboard-hero-copy"><span className="admin-dashboard-eyebrow"><i className="bi bi-soundwave me-2" />OPERATIONS / LIVE OVERVIEW</span><h1>Control center</h1><p>Everything important across your Sports Verge platform, in one clear view.</p><div className="admin-dashboard-meta"><span className="admin-live-pill"><i />Systems operational</span><span><i className="bi bi-clock me-1" />{refreshedLabel}</span></div></div>
       <div className="admin-dashboard-hero-art" aria-hidden="true"><span className="admin-orbit admin-orbit-one" /><span className="admin-orbit admin-orbit-two" /><i className="bi bi-grid-1x2-fill" /></div>
       <button type="button" className="admin-dashboard-refresh" onClick={() => void load()} disabled={loading}><i className={`bi bi-arrow-clockwise ${loading ? "admin-spin" : ""}`} /> <span>{loading ? "Refreshing" : "Refresh data"}</span></button>
     </section>

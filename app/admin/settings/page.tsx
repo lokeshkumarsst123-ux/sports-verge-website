@@ -101,7 +101,7 @@ export default function AdminSettingsPage() {
       <section className="admin-card">
         <div className="admin-card-header"><div><strong>Website identity</strong><div className="admin-muted small">These values represent your public platform identity.</div></div><i className="bi bi-globe2 admin-stat-icon" /></div>
         <div className="admin-card-body"><div className="row g-3">
-          <div className="col-md-8"><label className="admin-form-label">WEBSITE NAME</label><input required className="form-control admin-form-control" value={form.websiteName} onChange={(event) => set("websiteName", event.target.value)} placeholder="The Sports Verg" /></div>
+          <div className="col-md-8"><label className="admin-form-label">WEBSITE NAME</label><input required className="form-control admin-form-control" value={form.websiteName} onChange={(event) => set("websiteName", event.target.value)} placeholder="The Sports Verge" /></div>
           <div className="col-md-4"><label className="admin-form-label">LOGO IMAGE</label><input type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/avif" className="form-control admin-form-control" onChange={chooseLogo} /><small className="admin-muted d-block mt-1">JPG, PNG, WEBP, GIF or AVIF · maximum 5 MB.</small></div>
           {preview && <div className="col-12"><div className="admin-image-preview"><img src={preview} alt="Website logo preview" style={{ maxHeight: 70, objectFit: "contain" }} /><div className="admin-image-preview-copy"><strong>{form.logoFile?.name || "Current website logo"}</strong><span>Logo preview</span></div></div></div>}
         </div></div>

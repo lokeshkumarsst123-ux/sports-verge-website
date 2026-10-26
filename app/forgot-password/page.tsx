@@ -119,24 +119,17 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <main
-      className="min-vh-100 d-flex align-items-center justify-content-center py-5 px-3 position-relative overflow-hidden auth-main-bg"
-      
-    >
-      {/* Background Mesh Glows */}
-      <div
-        className="position-absolute rounded-circle mesh-glow-1"
-      ></div>
-      <div
-        className="position-absolute rounded-circle mesh-glow-2"
-      ></div>
+    <main className="min-vh-100 d-flex align-items-center justify-content-center py-5 px-3 position-relative overflow-hidden auth-main-bg">
+      {/* Background Ambient Glows */}
+      <div className="position-absolute rounded-circle auth-glow-top-left"></div>
+      <div className="position-absolute rounded-circle auth-glow-bottom-right"></div>
 
       <div className="w-100 position-relative auth-card-wrapper">
         {/* Logo Header */}
         <div className="text-center mb-4">
           <Link href="/" className="d-inline-block">
             <Image
-              src="/assets/imgs/logo-white.svg"
+              src="/assets/imgs/logo.svg"
               alt="SportsVerge"
               width={180}
               height={45}
@@ -147,7 +140,7 @@ export default function ForgotPasswordPage() {
         </div>
 
         {/* Card Body */}
-        <div className="card bg-card border border-dark rounded-4 p-4 p-md-5">
+        <div className="card auth-card p-4 p-md-5">
           {globalError && (
             <div className="alert alert-danger bg-danger bg-opacity-10 border-danger border-opacity-20 text-danger small rounded-3 p-3 mb-4" role="alert">
               {globalError}
@@ -156,14 +149,14 @@ export default function ForgotPasswordPage() {
 
           {flowStep === "email" && (
             <>
-              <h3 className="text-white fw-bold mb-1">Reset Password</h3>
-              <p className="text-muted small mb-4">
+              <h3 className="auth-title h3 mb-1">Reset Password</h3>
+              <p className="auth-subtitle mb-4">
                 Enter your registered email address below and we&apos;ll send you a password reset link.
               </p>
 
               <form onSubmit={handleSendResetLink} className="d-flex flex-column gap-3">
                 <div>
-                  <label className="form-label text-muted small fw-medium mb-1">EMAIL ADDRESS</label>
+                  <label className="auth-label">EMAIL ADDRESS</label>
                   <input
                     type="email"
                     name="email"
@@ -172,10 +165,9 @@ export default function ForgotPasswordPage() {
                       setEmail(e.target.value);
                       if (errors.email) setErrors({});
                     }}
-                    className={`form-control bg-dark text-white border-0 ${
+                    className={`form-control auth-input ${
                       errors.email ? "is-invalid" : ""
                     }`}
-                    
                     placeholder="john@example.com"
                   />
                   {errors.email && (
@@ -186,7 +178,6 @@ export default function ForgotPasswordPage() {
                 <button
                   type="submit"
                   className="btn btn-signup w-100 fw-semibold text-uppercase py-2.5 mt-3 ls-05"
-                  
                   disabled={loading}
                 >
                   {loading ? (
@@ -201,7 +192,7 @@ export default function ForgotPasswordPage() {
               </form>
 
               <div className="text-center mt-4">
-                <Link href="/login" className="text-success text-decoration-none small fw-semibold">
+                <Link href="/login" className="auth-link small fw-semibold">
                   <i className="bi bi-arrow-left me-1"></i> Back to Login
                 </Link>
               </div>
@@ -210,12 +201,12 @@ export default function ForgotPasswordPage() {
 
           {flowStep === "link_sent" && (
             <div className="text-center py-2">
-              <div className="d-inline-flex align-items-center justify-content-center bg-success bg-opacity-10 text-success rounded-circle p-3 mb-4 w-64 h-64">
-                <i className="bi bi-shield-lock-fill fs-28"></i>
+              <div className="auth-icon-circle mb-3">
+                <i className="bi bi-shield-lock-fill"></i>
               </div>
-              <h4 className="text-white fw-bold">Check Your Email</h4>
-              <p className="text-muted small my-3 lh-1-6">
-                If an account exists for <strong className="text-light">{email}</strong>, a secure password reset link has been sent. You can also paste the reset token below.
+              <h4 className="auth-title h4 fw-bold mb-2">Check Your Email</h4>
+              <p className="auth-subtitle my-3 lh-1-6">
+                If an account exists for <strong className="text-dark fw-bold">{email}</strong>, a secure password reset link has been sent. You can also paste the reset token below.
               </p>
 
               <form onSubmit={handleVerifyOTP} className="my-4">
@@ -229,7 +220,7 @@ export default function ForgotPasswordPage() {
                       if (errors.otp) setErrors({});
                     }}
                     placeholder="Paste reset token"
-                    className={`form-control bg-dark text-white border-0 text-center fw-bold fs-4 py-3 ls-05 ${
+                    className={`form-control auth-input text-center fw-bold fs-5 py-2.5 ls-05 ${
                       errors.otp ? "is-invalid" : ""
                     }`}
                   />
@@ -239,7 +230,7 @@ export default function ForgotPasswordPage() {
                 <button
                   type="submit"
                   disabled={loading || otp.length < 32}
-                  className="btn btn-login w-100 fw-semibold text-uppercase py-3 position-relative d-flex justify-content-center align-items-center fs-13"
+                  className="btn btn-signup w-100 fw-semibold text-uppercase py-2.5 mt-3 ls-05 d-inline-flex justify-content-center align-items-center gap-2"
                 >
                   {loading ? (
                     <>
@@ -252,14 +243,15 @@ export default function ForgotPasswordPage() {
                 </button>
               </form>
 
-              <div className="text-center mt-2">
+              <div className="text-center mt-3">
                 <span className="text-muted small">Didn&apos;t get the link? </span>
                 <button
+                  type="button"
                   onClick={() => {
                     setFlowStep("email");
                     setEmail(email);
                   }}
-                  className="btn btn-link text-success text-decoration-none small p-0 fw-semibold align-baseline"
+                  className="btn btn-link auth-link small p-0 fw-semibold align-baseline"
                 >
                   Try Again
                 </button>
@@ -269,29 +261,28 @@ export default function ForgotPasswordPage() {
 
           {flowStep === "reset_form" && (
             <>
-              <h3 className="text-white fw-bold mb-1">New Password</h3>
-              <p className="text-muted small mb-4">
+              <h3 className="auth-title h3 mb-1">New Password</h3>
+              <p className="auth-subtitle mb-4">
                 Create a secure password to update your login credentials.
               </p>
 
               <form onSubmit={handleResetPassword} className="d-flex flex-column gap-3">
                 <div>
-                  <label className="form-label text-muted small fw-medium mb-1">NEW PASSWORD</label>
+                  <label className="auth-label">NEW PASSWORD</label>
                   <div className="position-relative">
                     <input
                       type={showPassword ? "text" : "password"}
                       name="password"
                       value={passwords.password}
                       onChange={handleInputChange}
-                      className={`form-control bg-dark text-white border-0 pe-5 ${
+                      className={`form-control auth-input pe-5 ${
                         errors.password ? "is-invalid" : ""
                       }`}
-                      
                       placeholder="••••••••"
                     />
                     <button
                       type="button"
-                      className="btn position-absolute top-50 end-0 translate-middle-y border-0 text-muted px-3"
+                      className="auth-eye-btn position-absolute top-50 end-0 translate-middle-y"
                       onClick={() => setShowPassword(!showPassword)}
                       aria-label={showPassword ? "Hide password" : "Show password"}
                     >
@@ -304,22 +295,21 @@ export default function ForgotPasswordPage() {
                 </div>
 
                 <div>
-                  <label className="form-label text-muted small fw-medium mb-1">CONFIRM NEW PASSWORD</label>
+                  <label className="auth-label">CONFIRM NEW PASSWORD</label>
                   <div className="position-relative">
                     <input
                       type={showConfirmPassword ? "text" : "password"}
                       name="confirmPassword"
                       value={passwords.confirmPassword}
                       onChange={handleInputChange}
-                      className={`form-control bg-dark text-white border-0 pe-5 ${
+                      className={`form-control auth-input pe-5 ${
                         errors.confirmPassword ? "is-invalid" : ""
                       }`}
-                      
                       placeholder="••••••••"
                     />
                     <button
                       type="button"
-                      className="btn position-absolute top-50 end-0 translate-middle-y border-0 text-muted px-3"
+                      className="auth-eye-btn position-absolute top-50 end-0 translate-middle-y"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                       aria-label={showConfirmPassword ? "Hide password confirmation" : "Show password confirmation"}
                     >
@@ -334,7 +324,6 @@ export default function ForgotPasswordPage() {
                 <button
                   type="submit"
                   className="btn btn-signup w-100 fw-semibold text-uppercase py-2.5 mt-3 ls-05"
-                  
                   disabled={loading}
                 >
                   {loading ? (
@@ -352,20 +341,17 @@ export default function ForgotPasswordPage() {
 
           {flowStep === "success" && (
             <div className="text-center py-2">
-              <div
-                className="d-inline-flex align-items-center justify-content-center bg-success bg-opacity-10 text-success rounded-circle p-3 mb-4 w-64px h-64px"
-              >
-                <i className="bi bi-check2-circle fs-36"></i>
+              <div className="auth-icon-circle mb-3">
+                <i className="bi bi-check2-circle"></i>
               </div>
-              <h4 className="text-white fw-bold">Password Reset Complete</h4>
-              <p className="text-muted small my-3 lh-1-6">
+              <h4 className="auth-title h4 fw-bold mb-2">Password Reset Complete</h4>
+              <p className="auth-subtitle my-3 lh-1-6">
                 Your account credentials have been successfully updated. You can now login with your new password.
               </p>
 
               <Link
                 href="/login"
-                className="btn btn-signup w-100 fw-semibold text-uppercase py-2.5 mt-3 ls-05"
-                
+                className="btn btn-signup w-100 fw-semibold text-uppercase py-2.5 mt-3 ls-05 d-inline-block text-center"
               >
                 Go to Sign In
               </Link>

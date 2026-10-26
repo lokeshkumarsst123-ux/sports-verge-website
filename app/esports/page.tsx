@@ -79,16 +79,16 @@ export default function EsportsPage() {
                     </span>
                   </div>
 
-                  <h5 className="fw-bold text-white mb-3 font-space-grotesk">{t.title}</h5>
+                  <h5 className="fw-bold mb-3 font-space-grotesk" style={{ color: "#1C1F22" }}>{t.title}</h5>
 
                   <div className="d-flex flex-column gap-2 mb-4">
                     <div className="d-flex align-items-center justify-content-between">
                       <span className="text-muted small">Prize Pool</span>
-                      <span className="text-white fw-semibold font-monospace">{t.prizePool}</span>
+                      <span className="fw-semibold font-monospace" style={{ color: "#1C1F22" }}>{t.prizePool}</span>
                     </div>
                     <div className="d-flex align-items-center justify-content-between">
                       <span className="text-muted small">Participants</span>
-                      <span className="text-white small fw-medium">{t.teams}</span>
+                      <span className="small fw-semibold" style={{ color: "#1C1F22" }}>{t.teams}</span>
                     </div>
                     <div className="d-flex align-items-center justify-content-between">
                       <span className="text-muted small">Schedule</span>
@@ -99,18 +99,18 @@ export default function EsportsPage() {
 
                 <div>
                   {t.status === "Live" && (
-                    <button className="btn btn-danger fw-bold rounded-pill w-100 py-2 d-flex align-items-center justify-content-center gap-1">
+                    <button className="btn btn-danger fw-bold rounded-pill w-100 py-2 d-flex align-items-center justify-content-center gap-1 shadow-sm">
                       <span className="d-inline-block rounded-circle me-1 bg-white" style={{ width: "6px", height: "6px", animation: "pulse 1.5s infinite" }}></span>
                       Watch Live Stream
                     </button>
                   )}
                   {t.status === "Upcoming" && (
-                    <button className="btn btn-outline-light fw-bold rounded-pill w-100 py-2">
+                    <button className="btn fw-bold rounded-pill w-100 py-2 shadow-sm" style={{ background: "#FFCC00", color: "#1C1F22", border: "none" }}>
                       Get Match Reminders
                     </button>
                   )}
                   {t.status === "Completed" && (
-                    <button className="btn btn-outline-secondary fw-bold rounded-pill w-100 py-2" disabled>
+                    <button className="btn fw-bold rounded-pill w-100 py-2" style={{ background: "#FAF6EF", color: "#5C646D", border: "1px solid #EAE5DC" }} disabled>
                       Tournament Concluded
                     </button>
                   )}

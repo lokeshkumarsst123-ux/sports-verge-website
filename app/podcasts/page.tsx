@@ -77,15 +77,15 @@ export default function PodcastsPage() {
                     <span className="text-muted font-monospace" style={{ fontSize: "11px" }}>{ep.duration}</span>
                   </div>
 
-                  <h5 className="fw-bold text-white mb-2 font-space-grotesk lh-sm" style={{ fontSize: "16px" }}>{ep.title}</h5>
+                  <h5 className="fw-bold mb-2 font-space-grotesk lh-sm" style={{ fontSize: "16px", color: "#1C1F22" }}>{ep.title}</h5>
                   <p className="text-muted mb-4" style={{ fontSize: "13px", lineHeight: "1.6" }}>{ep.desc}</p>
                 </div>
 
                 <div className="d-flex align-items-center justify-content-between pt-3 border-top border-secondary border-opacity-10">
                   <div className="text-muted" style={{ fontSize: "11px" }}>
-                    Hosted by <span className="text-light fw-medium">{ep.host}</span>
+                    Hosted by <span className="fw-semibold" style={{ color: "#1C1F22" }}>{ep.host}</span>
                   </div>
-                  <button className="btn btn-sm btn-success rounded-pill px-3 py-1.5 fw-semibold d-flex align-items-center gap-1" style={{ fontSize: "12px" }}>
+                  <button className="btn btn-sm rounded-pill px-3 py-1.5 fw-semibold d-flex align-items-center gap-1 shadow-sm" style={{ fontSize: "12px", background: "#FFCC00", color: "#1C1F22", border: "none" }}>
                     <i className="bi bi-play-fill"></i> Play
                   </button>
                 </div>

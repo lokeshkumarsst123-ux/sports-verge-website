@@ -1,23 +1,43 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { Suspense, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { apiErrorMessage, apiFieldErrors, authApi, saveAuthSession } from "@/lib/auth-api";
-import { getStoredTipster, saveStoredTipster, INITIAL_TIPSTERS } from "@/lib/tipster-store";
+import { useRouter, useSearchParams } from "next/navigation";
+import {
+  apiErrorMessage,
+  apiFieldErrors,
+  authApi,
+  saveAuthSession,
+} from "@/lib/auth-api";
 
 export default function LoginPage() {
-  const router = useRouter();
-  const [loginRole, setLoginRole] = useState<"user" | "tipster">(() => {
-    if (typeof window !== "undefined") {
-      const params = new URLSearchParams(window.location.search);
-      if (params.get("role") === "tipster") {
-        return "tipster";
+  return (
+    <Suspense
+      fallback={
+        <main className="container py-5">
+          <p role="status">Loading sign in...</p>
+        </main>
       }
-    }
-    return "user";
-  });
+    >
+      <LoginForm />
+    </Suspense>
+  );
+}
+
+function LoginForm() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const requestedNext = searchParams.get("next");
+  const nextPath =
+    requestedNext &&
+    requestedNext.startsWith("/") &&
+    !requestedNext.startsWith("//")
+      ? requestedNext
+      : null;
+  const registerHref = nextPath
+    ? `/register?next=${encodeURIComponent(nextPath)}`
+    : "/register";
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -27,16 +47,6 @@ export default function LoginPage() {
   const [globalError, setGlobalError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-
-  const handleRoleChange = (role: "user" | "tipster") => {
-    setLoginRole(role);
-    setGlobalError(null);
-    setErrors({});
-    setFormData({
-      email: "",
-      password: "",
-    });
-  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -73,62 +83,12 @@ export default function LoginPage() {
     setLoading(true);
     setGlobalError(null);
 
-    // Tipster Studio Sign In Flow
-    if (loginRole === "tipster") {
-      try {
-        // Find existing tipster by email or use matching demo tipster
-        const matched = INITIAL_TIPSTERS.find(
-          (t) => t.email.toLowerCase() === formData.email.trim().toLowerCase()
-        );
-
-        if (matched) {
-          saveStoredTipster(matched);
-        } else {
-          // Check if already in localStorage or create tipster profile
-          const existing = getStoredTipster();
-          if (existing && existing.email.toLowerCase() === formData.email.trim().toLowerCase()) {
-            saveStoredTipster(existing);
-          } else {
-            const newTipster = {
-              ...INITIAL_TIPSTERS[0],
-              id: `tipster-${Date.now()}`,
-              displayName: formData.email.split("@")[0],
-              username: formData.email.split("@")[0].toLowerCase().replace(/[^a-z0-9_]/g, ""),
-              email: formData.email.trim(),
-              subscriptionStatus: "active" as const,
-              createdAt: new Date().toISOString(),
-            };
-            saveStoredTipster(newTipster);
-          }
-        }
-
-        // Redirect to Tipster Dashboard
-        setTimeout(() => {
-          setLoading(false);
-          router.push("/tipster/dashboard");
-        }, 400);
-        return;
-      } catch (err) {
-        setGlobalError("Failed to sign in to Tipster Studio. Please try again.");
-        setLoading(false);
-        return;
-      }
-    }
-
-    // Standard User Sign In Flow
+    // Standard Sign In Flow
     try {
       const response = await authApi.login(formData);
       sessionStorage.removeItem("admin_session");
       saveAuthSession(response.data);
-      const requestedNext =
-        typeof window !== "undefined"
-          ? new URLSearchParams(window.location.search).get("next")
-          : null;
-      const nextPath =
-        requestedNext && requestedNext.startsWith("/") && !requestedNext.startsWith("//")
-          ? requestedNext
-          : "/profile";
-      router.push(nextPath);
+      router.push(nextPath || "/profile");
     } catch (error) {
       setGlobalError(apiErrorMessage(error));
       setErrors(apiFieldErrors(error));
@@ -139,16 +99,16 @@ export default function LoginPage() {
 
   return (
     <main className="min-vh-100 d-flex align-items-center justify-content-center py-5 px-3 position-relative overflow-hidden auth-main-bg">
-      {/* Background Mesh Glows */}
+      {/* Background Ambient Glows */}
       <div className="position-absolute rounded-circle auth-glow-top-left"></div>
       <div className="position-absolute rounded-circle auth-glow-bottom-right"></div>
 
-      <div className="w-100 position-relative auth-card-wrapper" style={{ maxWidth: "460px" }}>
+      <div className="w-100 position-relative auth-card-wrapper">
         {/* Logo Header */}
         <div className="text-center mb-4">
           <Link href="/" className="d-inline-block">
             <Image
-              src="/assets/imgs/logo-white.svg"
+              src="/assets/imgs/logo.svg"
               alt="SportsVerge"
               width={180}
               height={45}
@@ -159,80 +119,14 @@ export default function LoginPage() {
         </div>
 
         {/* Card Body */}
-        <div className="card bg-card border border-dark rounded-4 p-4 p-md-5 mb-4 shadow-lg">
-          {/* Role Selector Tabs (User vs Tipster) */}
-          <div
-            className="p-1 rounded-3 mb-4 d-flex align-items-center"
-            style={{
-              background: "rgba(255, 255, 255, 0.05)",
-              border: "1px solid rgba(255, 255, 255, 0.1)",
-            }}
-          >
-            <button
-              type="button"
-              onClick={() => handleRoleChange("user")}
-              className={`btn flex-fill rounded-3 py-2 px-3 fw-semibold font-space-grotesk d-inline-flex align-items-center justify-content-center gap-2 border-0 ${
-                loginRole === "user" ? "text-white" : "text-secondary"
-              }`}
-              style={{
-                fontSize: "13px",
-                transition: "all 0.25s ease",
-                backgroundColor: loginRole === "user" ? "#22c55e" : "transparent",
-                boxShadow: loginRole === "user" ? "0 4px 12px rgba(34, 197, 94, 0.35)" : "none",
-              }}
-            >
-              <i className="bi bi-person-fill"></i>
-              <span>User Sign In</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleRoleChange("tipster")}
-              className={`btn flex-fill rounded-3 py-2 px-3 fw-semibold font-space-grotesk d-inline-flex align-items-center justify-content-center gap-2 border-0 ${
-                loginRole === "tipster" ? "text-white" : "text-secondary"
-              }`}
-              style={{
-                fontSize: "13px",
-                transition: "all 0.25s ease",
-                backgroundColor: loginRole === "tipster" ? "#22c55e" : "transparent",
-                boxShadow: loginRole === "tipster" ? "0 4px 12px rgba(34, 197, 94, 0.35)" : "none",
-              }}
-            >
-              <i className="bi bi-speedometer2"></i>
-              <span>Tipster Studio</span>
-            </button>
+        <div className="card auth-card p-4 p-md-5 mb-4">
+          {/* Heading and description */}
+          <div className="mb-4">
+            <h3 className="auth-title h3 mb-1">Sign In</h3>
+            <p className="auth-subtitle mb-0">
+              One account for browsing tips and managing your Tipster profile.
+            </p>
           </div>
-
-          {/* Heading and description dynamically keyed to role */}
-          {loginRole === "tipster" ? (
-            <div className="mb-4">
-              <div className="d-flex align-items-center justify-content-between mb-1 flex-wrap gap-2">
-                <h3 className="text-white fw-bold mb-0 font-space-grotesk">Tipster Studio</h3>
-                <span
-                  className="badge rounded-pill font-space-grotesk fw-bold px-2.5 py-1"
-                  style={{
-                    background: "rgba(34, 197, 94, 0.15)",
-                    color: "#4ade80",
-                    border: "1px solid rgba(34, 197, 94, 0.35)",
-                    fontSize: "11px",
-                  }}
-                >
-                  <i className="bi bi-patch-check-fill me-1 text-success"></i> PRO CREATOR
-                </span>
-              </div>
-              <p className="text-muted small mb-0">
-                Sign in to your Tipster Studio to publish tips and track performance.
-              </p>
-            </div>
-          ) : (
-            <div className="mb-4">
-              <h3 className="text-white fw-bold mb-1 font-space-grotesk">Sign In</h3>
-              <p className="text-muted small mb-0">
-                Enter your credentials to access your sports dashboard.
-              </p>
-            </div>
-          )}
-
           {/* Global Alert Notification */}
           {globalError && (
             <div
@@ -243,37 +137,36 @@ export default function LoginPage() {
                 <i className="bi bi-shield-slash"></i>
                 <span>Authentication Alert</span>
               </div>
-              <div className="text-muted text-opacity-80 fs-12 text-inherit">{globalError}</div>
+              <div className="text-muted text-opacity-80 fs-12 text-inherit">
+                {globalError}
+              </div>
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="d-flex flex-column gap-3">
             <div>
-              <label className="form-label text-muted small fw-medium mb-1">
-                {loginRole === "tipster" ? "TIPSTER EMAIL ADDRESS" : "EMAIL ADDRESS"}
-              </label>
+              <label className="auth-label">EMAIL ADDRESS</label>
               <input
                 type="email"
                 name="email"
                 value={formData.email}
                 onChange={handleInputChange}
-                className={`form-control bg-dark text-white fw-medium border-0 ${
+                className={`form-control auth-input ${
                   errors.email ? "is-invalid" : ""
                 }`}
-                placeholder={
-                  loginRole === "tipster" ? "tipster@sportsverge.com" : "john@example.com"
-                }
+                placeholder="you@example.com"
               />
-              {errors.email && <div className="invalid-feedback small mt-1">{errors.email}</div>}
+              {errors.email && (
+                <div className="invalid-feedback small mt-1">
+                  {errors.email}
+                </div>
+              )}
             </div>
 
             <div>
               <div className="d-flex justify-content-between align-items-center mb-1">
-                <label className="form-label text-muted small fw-medium m-0">PASSWORD</label>
-                <Link
-                  href="/forgot-password"
-                  className="text-success text-decoration-none small fs-12"
-                >
+                <label className="auth-label mb-0">PASSWORD</label>
+                <Link href="/forgot-password" className="auth-link small fs-12">
                   Forgot Password?
                 </Link>
               </div>
@@ -283,35 +176,36 @@ export default function LoginPage() {
                   name="password"
                   value={formData.password}
                   onChange={handleInputChange}
-                  className={`form-control bg-dark text-white fw-medium border-0 pe-5 ${
+                  className={`form-control auth-input pe-5 ${
                     errors.password ? "is-invalid" : ""
                   }`}
                   placeholder="••••••••"
                 />
                 <button
                   type="button"
-                  className="btn position-absolute top-50 end-0 translate-middle-y border-0 text-muted px-3"
+                  className="auth-eye-btn position-absolute top-50 end-0 translate-middle-y"
                   onClick={() => setShowPassword(!showPassword)}
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
-                  <i className={`bi ${showPassword ? "bi-eye-slash" : "bi-eye"}`}></i>
+                  <i
+                    className={`bi ${showPassword ? "bi-eye-slash" : "bi-eye"}`}
+                  ></i>
                 </button>
               </div>
               {errors.password && (
-                <div className="invalid-feedback d-block small mt-1">{errors.password}</div>
+                <div className="invalid-feedback d-block small mt-1">
+                  {errors.password}
+                </div>
               )}
+              <small className="password-hint d-block mt-1">
+                Enter your registered password.
+              </small>
             </div>
 
             <button
               type="submit"
-              className="btn btn-signup w-100 fw-semibold text-uppercase py-2.5 mt-3 ls-05 font-space-grotesk d-inline-flex align-items-center justify-content-center gap-2"
+              className="btn btn-signup w-100 fw-semibold text-uppercase py-2.5 mt-3 ls-05 d-inline-flex align-items-center justify-content-center gap-2"
               disabled={loading}
-              style={{
-                background: "#22c55e",
-                borderColor: "#22c55e",
-                color: "#ffffff",
-                boxShadow: "0 4px 15px rgba(34, 197, 94, 0.35)",
-              }}
             >
               {loading ? (
                 <>
@@ -322,11 +216,6 @@ export default function LoginPage() {
                   ></span>
                   Signing In...
                 </>
-              ) : loginRole === "tipster" ? (
-                <>
-                  <i className="bi bi-speedometer2"></i>
-                  <span>Sign In to Tipster Studio</span>
-                </>
               ) : (
                 "Sign In"
               )}
@@ -334,33 +223,16 @@ export default function LoginPage() {
           </form>
 
           {/* Footer Navigation */}
-          <div className="text-center mt-4 pt-3 border-top border-secondary border-opacity-20">
-            {loginRole === "tipster" ? (
-              <div className="d-flex align-items-center justify-content-between">
-                <span className="text-muted small">Not a Tipster yet?</span>
-                <Link
-                  href="/tipster-register"
-                  className="text-success text-decoration-none small fw-semibold"
-                >
-                  Join as Pro Tipster
-                </Link>
-              </div>
-            ) : (
-              <div className="d-flex align-items-center justify-content-between">
-                <span className="text-muted small">New to SportsVerge?</span>
-                <Link
-                  href="/register"
-                  className="text-success text-decoration-none small fw-semibold"
-                >
-                  Create Account
-                </Link>
-              </div>
-            )}
+          <div className="text-center mt-4 pt-3 auth-footer-divider">
+            <div className="d-flex align-items-center justify-content-between">
+              <span className="text-muted small">New to SportsVerge?</span>
+              <Link href={registerHref} className="auth-link small">
+                Create Account
+              </Link>
+            </div>
           </div>
         </div>
       </div>
     </main>
   );
 }
-
-

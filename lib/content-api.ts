@@ -1,7 +1,9 @@
 import { API_BASE_URL, API_ORIGIN } from "@/lib/api-config";
 import { formatUserDate } from "@/lib/date-time";
 
+export type EditorialLayout = {perspectives?:Array<{framework:string;text:string}>;poll?:{question:string;options:string[]}};
 export type PublicNewsArticle = {
+  editorialLayout?: EditorialLayout;
   id: string;
   title: string;
   summary: string;

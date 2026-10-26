@@ -78,6 +78,7 @@ export const saveAuthSession = (auth: AuthResponse) => {
     "user_session",
     JSON.stringify({ accessToken: auth.accessToken, ...auth.user, user: auth.user }),
   );
+  window.dispatchEvent(new Event("auth-session-changed"));
 };
 
 export const getStoredUser = (): AuthUser | null => {
@@ -106,6 +107,7 @@ export const updateStoredUser = (user: AuthUser) => {
     const session = JSON.parse(sessionStorage.getItem("user_session") || "null");
     if (session?.accessToken) {
       sessionStorage.setItem("user_session", JSON.stringify({ ...session, ...user, user }));
+      window.dispatchEvent(new Event("auth-session-changed"));
     }
   } catch {
     // A later authenticated request will restore the session if storage is malformed.
@@ -113,7 +115,10 @@ export const updateStoredUser = (user: AuthUser) => {
 };
 
 export const clearAuthSession = () => {
-  if (typeof window !== "undefined") sessionStorage.removeItem("user_session");
+  if (typeof window !== "undefined") {
+    sessionStorage.removeItem("user_session");
+    window.dispatchEvent(new Event("auth-session-changed"));
+  }
 };
 
 export const logoutUser = async () => {

@@ -36,27 +36,27 @@ export default function HowToUsePage() {
 
         <div className="d-flex flex-column gap-4">
           {steps.map((step, i) => (
-            <div key={i} className="d-flex gap-4 align-items-start rounded-4 p-4" style={{ background: "var(--bg-card)", border: "1px solid var(--border-dark)" }}>
+            <div key={i} className="d-flex gap-4 align-items-start rounded-4 p-4 shadow-sm" style={{ background: "#FFFFFF", border: "1px solid #EAE5DC" }}>
               <div className="d-flex align-items-center justify-content-center rounded-3 fw-bold font-space-grotesk flex-shrink-0" style={{ width: "56px", height: "56px", background: `${step.color}15`, color: step.color, fontSize: "18px" }}>
                 {step.num}
               </div>
               <div className="flex-grow-1">
                 <div className="d-flex align-items-center gap-2 mb-2">
                   <i className={`bi ${step.icon}`} style={{ color: step.color, fontSize: "1rem" }}></i>
-                  <h5 className="fw-bold text-white mb-0 font-space-grotesk" style={{ fontSize: "15px" }}>{step.title}</h5>
+                  <h5 className="fw-bold mb-0 font-space-grotesk" style={{ color: "#1C1F22", fontSize: "16px" }}>{step.title}</h5>
                 </div>
-                <p className="text-muted lh-lg mb-0" style={{ fontSize: "13px" }}>{step.desc}</p>
+                <p className="lh-lg mb-0" style={{ color: "#5C646D", fontSize: "14px" }}>{step.desc}</p>
               </div>
             </div>
           ))}
         </div>
 
-        <div className="rounded-4 p-5 mt-5 text-center" style={{ background: "linear-gradient(135deg, rgba(26,140,61,0.1), rgba(26,140,61,0.02))", border: "1px solid rgba(26,140,61,0.2)" }}>
-          <h4 className="fw-bold text-white mb-3 font-space-grotesk">Ready to Dive In?</h4>
-          <p className="text-muted mb-4" style={{ fontSize: "14px" }}>Start exploring live scores, breaking news, and more.</p>
+        <div className="rounded-4 p-5 mt-5 text-center shadow-sm" style={{ background: "linear-gradient(135deg, #FAF6EF 0%, #FFFFFF 100%)", border: "1px solid #EAE5DC" }}>
+          <h4 className="fw-bold mb-3 font-space-grotesk" style={{ color: "#1C1F22" }}>Ready to Dive In?</h4>
+          <p className="mb-4" style={{ color: "#5C646D", fontSize: "14px" }}>Start exploring live scores, breaking news, and more.</p>
           <div className="d-flex gap-3 justify-content-center flex-wrap">
-            <Link href="/" className="btn btn-success fw-bold rounded-pill px-5 py-2">Go to Homepage</Link>
-            <Link href="/faqs" className="btn btn-outline-light fw-bold rounded-pill px-5 py-2">Read FAQs</Link>
+            <Link href="/" className="btn fw-bold rounded-pill px-5 py-2 shadow-sm" style={{ background: "#FFCC00", color: "#1C1F22", border: "none" }}>Go to Homepage</Link>
+            <Link href="/faqs" className="btn fw-bold rounded-pill px-5 py-2" style={{ background: "#FFFFFF", color: "#1C1F22", border: "1px solid #1C1F22" }}>Read FAQs</Link>
           </div>
         </div>
       </div>

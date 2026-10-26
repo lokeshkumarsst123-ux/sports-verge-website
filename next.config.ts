@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { protocol: "http", hostname: "localhost", port: "4000", pathname: "/uploads/**" },
       { protocol: "http", hostname: "127.0.0.1", port: "4000", pathname: "/uploads/**" },
+      { protocol: "http", hostname: "13.204.234.133", port: "3003", pathname: "/**" },
       { protocol: "https", hostname: "images.entitysport.com", pathname: "/assets/uploads/**" },
       { protocol: "https", hostname: "gcdnimages.entitysport.com", pathname: "/assets/uploads/**" },
       { protocol: "https", hostname: "gcdnimages.entitysport.com", pathname: "/soccer/**" },

@@ -47,19 +47,43 @@ export default function FAQsPage() {
           <div key={group.group} className="mb-5">
             <div className="d-flex align-items-center gap-2 mb-3">
               <i className={`bi ${group.icon}`} style={{ color: group.color, fontSize: "1.1rem" }}></i>
-              <h5 className="fw-bold text-white mb-0 font-space-grotesk">{group.group}</h5>
+              <h5 className="fw-bold mb-0 font-space-grotesk" style={{ color: "#1C1F22" }}>{group.group}</h5>
             </div>
             <div className="d-flex flex-column gap-2">
               {group.faqs.map((faq, i) => {
                 const key = `${group.group}-${i}`;
                 const isOpen = openItem === key;
                 return (
-                  <div key={key} className="rounded-3 overflow-hidden" style={{ border: `1px solid ${isOpen ? group.color + "40" : "var(--border-dark)"}`, background: isOpen ? `${group.color}08` : "var(--bg-card)" }}>
-                    <button className="w-100 d-flex align-items-center justify-content-between gap-3 p-3 text-start border-0" style={{ background: "none", color: isOpen ? "#fff" : "var(--text-muted)", fontSize: "14px", fontWeight: isOpen ? 600 : 400, cursor: "pointer" }} onClick={() => toggle(key)}>
-                      <span style={{ color: isOpen ? "#white" : "inherit" }}>{faq.q}</span>
-                      <i className={`bi ${isOpen ? "bi-dash-lg" : "bi-plus-lg"} flex-shrink-0`} style={{ color: group.color, fontSize: "14px" }}></i>
+                  <div
+                    key={key}
+                    className="rounded-3 overflow-hidden shadow-sm"
+                    style={{
+                      border: `1px solid ${isOpen ? group.color + "60" : "#EAE5DC"}`,
+                      background: isOpen ? `${group.color}0a` : "#FFFFFF",
+                      transition: "all 0.2s ease"
+                    }}
+                  >
+                    <button
+                      className="w-100 d-flex align-items-center justify-content-between gap-3 p-3 text-start border-0"
+                      style={{
+                        background: "none",
+                        color: "#1C1F22",
+                        fontSize: "14px",
+                        fontWeight: isOpen ? 600 : 500,
+                        cursor: "pointer"
+                      }}
+                      onClick={() => toggle(key)}
+                    >
+                      <span style={{ color: "#1C1F22" }}>{faq.q}</span>
+                      <i className={`bi ${isOpen ? "bi-dash-lg" : "bi-plus-lg"} flex-shrink-0 fw-bold`} style={{ color: group.color, fontSize: "15px" }}></i>
                     </button>
-                    {isOpen && <div className="px-3 pb-3"><p className="text-muted mb-0 lh-lg" style={{ fontSize: "13px" }}>{faq.a}</p></div>}
+                    {isOpen && (
+                      <div className="px-3 pb-3">
+                        <p className="mb-0 lh-lg" style={{ fontSize: "13px", color: "#4B5563" }}>
+                          {faq.a}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 );
               })}

@@ -43,8 +43,9 @@ const applyCricketTrendSnapshot = (groups: ReturnType<typeof mapCricketRankingGr
       // The ICC endpoint currently has no previous-rank field. Use its value when
       // supplied; otherwise compare this response with the last saved snapshot.
       if (/^[+-]?\d+(?:\.\d+)?$/.test(item.change) && item.change !== "0") return item;
-      const previousRank = previousRanks[item.name] || item.rank;
-      const change = previousRank - item.rank;
+      const previousRank = Number(previousRanks[item.name] || item.rank);
+      const currentRank = Number(item.rank);
+      const change = previousRank - currentRank;
       return {
         ...item,
         change: String(change),
@@ -127,16 +128,36 @@ function ProviderRankingCard({ sport, rows }: { sport: Sport; rows: ProviderStan
   </article>;
 }
 
+import { USE_STATIC_MOCK, MOCK_RANKING_COMPETITIONS as MOCK_COMPETITIONS, MOCK_CRICKET_RANKINGS, MOCK_FOOTBALL_ROWS, MOCK_NFL_ROWS } from "@/lib/mock-data";
+
 export default function RankingsPage() {
   const [sport, setSport] = useState<RankingSport>("cricket");
-  const [competitions, setCompetitions] = useState<Record<Sport, Competition[]>>({ cricket: [], football: [], NFL: [] });
-  const [selected, setSelected] = useState("");
-  const [rows, setRows] = useState<ProviderStandingRow[]>([]);
-  const [cricketRankings, setCricketRankings] = useState<ReturnType<typeof mapCricketRankingGroups>>([]);
-  const [loading, setLoading] = useState(true);
+  const [competitions, setCompetitions] = useState<Record<Sport, Competition[]>>(
+    USE_STATIC_MOCK ? MOCK_COMPETITIONS : { cricket: [], football: [], NFL: [] }
+  );
+  const [selectedBySport, setSelectedBySport] = useState<Record<Sport, string>>(
+    USE_STATIC_MOCK ? { cricket: "icc", football: "fifa-men", NFL: "nfl-power" } : { cricket: "", football: "", NFL: "" }
+  );
+  const [rows, setRows] = useState<ProviderStandingRow[]>(
+    USE_STATIC_MOCK ? MOCK_FOOTBALL_ROWS : []
+  );
+  const [rowsKey, setRowsKey] = useState("");
+  const [cricketRankings, setCricketRankings] = useState<ReturnType<typeof mapCricketRankingGroups>>(
+    USE_STATIC_MOCK ? MOCK_CRICKET_RANKINGS : []
+  );
+  const [loading, setLoading] = useState(!USE_STATIC_MOCK);
   const [message, setMessage] = useState<string | null>(null);
 
   useEffect(() => {
+    if (USE_STATIC_MOCK) {
+      setCompetitions(MOCK_COMPETITIONS);
+      setSelectedBySport({ cricket: "icc", football: "fifa-men", NFL: "nfl-power" });
+      setCricketRankings(MOCK_CRICKET_RANKINGS);
+      setLoading(false);
+      setMessage(null);
+      return;
+    }
+
     let cancelled = false;
     const load = async () => {
       const responses = await Promise.allSettled([cricketApi.competitions(), soccerApi.competitions(), nflApi.competitions(), cricketApi.rankings()]);
@@ -150,37 +171,55 @@ export default function RankingsPage() {
       });
       if (!cancelled) {
         setCompetitions(next);
+        setSelectedBySport((current) => {
+          const selected = { ...current };
+          (Object.keys(next) as Sport[]).forEach((key) => {
+            if (!next[key].some((item) => item.id === selected[key])) selected[key] = next[key][0]?.id || "";
+          });
+          return selected;
+        });
         if (responses[3].status === "fulfilled") setCricketRankings(applyCricketTrendSnapshot(mapCricketRankingGroups(responses[3].value)));
         else setMessage("Unable to load cricket rankings from the provider.");
-        if (sport === "cricket") setLoading(false);
+        setLoading(false);
       }
     };
     void load();
     return () => { cancelled = true; };
-  }, [sport]);
+  }, []);
 
   const available = competitions[sport];
-  useEffect(() => { setSelected(available[0]?.id || ""); }, [available]);
+  const selected = selectedBySport[sport];
 
   useEffect(() => {
+    if (USE_STATIC_MOCK) {
+      if (sport === "football") {
+        setRows(MOCK_FOOTBALL_ROWS);
+        setRowsKey(`football:${selected || "fifa-men"}`);
+      } else if (sport === "NFL") {
+        setRows(MOCK_NFL_ROWS);
+        setRowsKey(`NFL:${selected || "nfl-power"}`);
+      }
+      setLoading(false);
+      setMessage(null);
+      return;
+    }
+
     let cancelled = false;
     if (sport === "cricket") {
-      setLoading(false);
       return () => { cancelled = true; };
     }
     if (!selected) {
-      setRows([]);
-      setLoading(false);
       return () => { cancelled = true; };
     }
-    setLoading(true);
     const load = async () => {
+      setLoading(true);
       try {
         const api = sport === "football" ? soccerApi : nflApi;
         const [data, matchesData] = await Promise.all([api.competition(selected), api.competitionMatchesAll(selected)]);
         if (!cancelled) {
           const next = mapProviderRankingRows(data, matchesData, sport);
           setRows(next);
+          setRowsKey(`${sport}:${selected}`);
           setMessage(next.length ? null : "No ranking data supplied for this provider.");
         }
       } catch {
@@ -196,18 +235,22 @@ export default function RankingsPage() {
     return () => { cancelled = true; };
   }, [selected, sport]);
 
+  const currentRows = USE_STATIC_MOCK
+    ? (sport === "football" ? MOCK_FOOTBALL_ROWS : sport === "NFL" ? MOCK_NFL_ROWS : [])
+    : (rowsKey === `${sport}:${selected}` ? rows : []);
+
   return <main className="rankings-page font-outfit">
     <section className="container custom-container rankings-container">
       <div className="rankings-heading-row">
         <div><span className="rankings-eyebrow">SPORTS DATA</span><h1>WORLD RANKINGS</h1><p>Official team rankings and standings across major international sports leagues.</p></div>
-        <div className="rankings-sport-tabs">{sports.map((item) => <button type="button" key={item.id} className={sport === item.id ? "active" : ""} onClick={() => setSport(item.id)}><i className={`bi ${item.icon}`} />{item.id}</button>)}</div>
+        <div className="rankings-sport-tabs">{sports.map((item) => <button type="button" key={item.id} className={sport === item.id ? "active" : ""} onClick={() => { setSport(item.id); setMessage(null); }}><i className={`bi ${item.icon}`} />{item.id}</button>)}</div>
       </div>
 
-      {sport !== "cricket" && <div className="rankings-filter-row"><label htmlFor="ranking-competition">Competition</label><select id="ranking-competition" value={selected} onChange={(event) => setSelected(event.target.value)}><option value="">Select competition</option>{available.map((item) => <option value={item.id} key={item.id}>{item.name}</option>)}</select></div>}
+      {sport !== "cricket" && <div className="rankings-filter-row"><label htmlFor="ranking-competition">Competition</label><select id="ranking-competition" value={selected} onChange={(event) => { setSelectedBySport((current) => ({ ...current, [sport]: event.target.value })); setMessage(null); }}><option value="">Select competition</option>{available.map((item) => <option value={item.id} key={item.id}>{item.name}</option>)}</select></div>}
 
       {loading ? <div className="ranking-state-card">Loading rankings…</div> : sport === "cricket" ? (
-        cricketRankings.length ? <div className="ranking-groups">{cricketRankings.map((group) => <CricketRankingCard group={group} key={group.category} />)}</div> : <div className="ranking-state-card">{message || "No cricket rankings available"}</div>
-      ) : sport === "football" || sport === "NFL" ? rows.length ? <div className="ranking-groups"><ProviderRankingCard key={`${sport}-${selected}`} sport={sport} rows={rows} /></div> : <div className="ranking-state-card">{message || "No ranking data supplied for this provider."}</div> : <div className="ranking-state-card">{message || "No ranking data supplied for this provider."}</div>}
+        cricketRankings.length ? <div className="ranking-groups">{cricketRankings.map((group) => <CricketRankingCard group={group} key={group.category} />)}</div> : <div className="ranking-state-card">{message || "No cricket rankings supplied by the provider."}</div>
+      ) : sport === "football" || sport === "NFL" ? currentRows.length ? <div className="ranking-groups"><ProviderRankingCard key={`${sport}-${selected}`} sport={sport} rows={currentRows} /></div> : <div className="ranking-state-card">{message || "No ranking data supplied for this provider."}</div> : <div className="ranking-state-card">{message || "No ranking data supplied for this provider."}</div>}
     </section>
   </main>;
 }

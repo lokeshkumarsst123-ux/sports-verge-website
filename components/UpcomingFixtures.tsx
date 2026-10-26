@@ -64,21 +64,61 @@ export default function UpcomingFixtures() {
   }, [sorted.length]);
 
   return (
-    <section className="fixtures-section bg-card rounded-3 border border-dark p-4 mt-4">
-      <div className="d-flex justify-content-between align-items-center mb-4"><h2 className="h5 m-0 fw-semibold border-start border-success border-3 ps-2">Upcoming Fixtures</h2><Link href="/fixtures" className="text-success text-decoration-none small fw-semibold">View All <i className="bi bi-chevron-right"></i></Link></div>
+    <section className="fixtures-section bg-card rounded-4 border p-4 mt-4">
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h2 className="h5 m-0 fw-bold border-start border-3 ps-2 widget-heading">
+          Upcoming Fixtures
+        </h2>
+        <Link href="/fixtures" className="small widget-view-all">
+          View All <i className="bi bi-chevron-right" />
+        </Link>
+      </div>
       <ul className="nav nav-pills custom-tabs mb-4 flex-nowrap overflow-x-auto scrollbar-none gap-2">
         {(["all", "cricket", "football", "NFL"] as const).map((tab) => <li className="nav-item" key={tab}><button className={`nav-link text-capitalize ${activeTab === tab ? "active" : ""}`} onClick={() => setActiveTab(tab)}>{tab}</button></li>)}
       </ul>
       <div className="position-relative">
         {showArrows && <button className="slider-arrow arrow-left d-none d-md-flex align-items-center justify-content-center" onClick={() => scrollRef.current?.scrollBy({ left: -340, behavior: "smooth" })} aria-label="Scroll left"><i className="bi bi-chevron-left"></i></button>}
         <div ref={scrollRef} className="fixtures-scroll-container d-flex gap-3 overflow-auto">
-          {sorted.length ? sorted.map((match, index) => <Link href={getMatchLink(match)} key={`${match.type}-${match.id || "match"}-${index}`} className="fixture-card flex-shrink-0 rounded-3 border border-dark p-3 text-decoration-none">
-            <div className="d-flex justify-content-between align-items-center mb-3"><span className="text-muted small text-truncate" style={{ maxWidth: "160px" }}>{match.league}</span></div>
-            <div className="d-flex justify-content-between align-items-center mb-4 px-2">
-              {[{ name: match.home, logo: match.homeLogo }, { name: match.away, logo: match.awayLogo }].map((team, teamIndex) => <React.Fragment key={`${match.id || index}-team-${teamIndex}-${team.name}`}><div className="text-center" style={{ width: "80px" }}><Image src={team.logo} width={34} height={34} alt={team.name} className="object-fit-contain" /><div className="small fw-semibold text-light mt-2 text-truncate">{team.name}</div></div>{teamIndex === 0 && <div className="small text-muted">VS</div>}</React.Fragment>)}
+          {sorted.length ? sorted.map((match, index) => <Link
+            href={getMatchLink(match)}
+            key={`${match.type}-${match.id || "match"}-${index}`}
+            className="fixture-card fixtures-card-custom text-decoration-none flex-shrink-0 shadow-sm"
+          >
+            <div className="d-flex justify-content-between align-items-center mb-2">
+              <span className="small text-truncate fw-semibold fixture-league-custom">{match.league}</span>
             </div>
-            <div className="text-center"><div className="small text-light">{match.day}</div><div className="fw-bold text-light">{match.time}</div><div className="text-muted fs-11 text-truncate">{match.venue}</div></div>
-          </Link>) : <div className="text-center text-muted w-100 py-4 small">{error || "No upcoming fixtures for this category."}</div>}
+
+            <div className="d-flex justify-content-between align-items-center my-auto px-1 py-1">
+              {[
+                { name: match.home, logo: match.homeLogo },
+                { name: match.away, logo: match.awayLogo }
+              ].map((team, teamIndex) => (
+                <React.Fragment key={`${match.id || index}-team-${teamIndex}-${team.name}`}>
+                  <div className="text-center" style={{ width: "76px" }}>
+                    <Image
+                      src={team.logo}
+                      width={32}
+                      height={32}
+                      alt={team.name}
+                      className="object-fit-contain"
+                    />
+                    <div className="small fw-bold mt-1 text-truncate fixture-team-name-custom" title={team.name}>
+                      {team.name}
+                    </div>
+                  </div>
+                  {teamIndex === 0 && (
+                    <div className="small fw-bold fixture-vs-custom mx-2">VS</div>
+                  )}
+                </React.Fragment>
+              ))}
+            </div>
+
+            <div className="text-center mt-2 pt-2 border-top" style={{ borderColor: "#F3EFE6" }}>
+              <div className="small fw-medium fixture-day-custom">{match.day}</div>
+              <div className="fw-bold fixture-time-custom">{match.time}</div>
+              <div className="fs-11 text-truncate fixture-venue-custom">{match.venue}</div>
+            </div>
+          </Link>) : <div className="text-center w-100 py-4 small widget-empty-text">{error || "No upcoming fixtures for this category."}</div>}
         </div>
         {showArrows && <button className="slider-arrow arrow-right d-none d-md-flex align-items-center justify-content-center" onClick={() => scrollRef.current?.scrollBy({ left: 340, behavior: "smooth" })} aria-label="Scroll right"><i className="bi bi-chevron-right"></i></button>}
       </div>

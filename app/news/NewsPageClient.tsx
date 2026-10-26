@@ -90,12 +90,13 @@ function NewsContent({ initialCategory: initialCategoryProp }: NewsPageClientPro
           <input
             type="text"
             placeholder="Search articles, authors..."
-            className="form-control text-white rounded-pill ps-5 pe-4 py-2"
+            className="form-control rounded-pill ps-5 pe-4 py-2"
             style={{
-              background: "rgba(255,255,255,0.06)",
-              border: "1px solid rgba(255,255,255,0.1)",
+              background: "#FFFFFF",
+              border: "1px solid #EAE5DC",
               fontSize: "13px",
-              color: "#fff",
+              color: "#1C1F22",
+              boxShadow: "0 2px 8px rgba(28, 31, 34, 0.04)",
             }}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -104,7 +105,7 @@ function NewsContent({ initialCategory: initialCategoryProp }: NewsPageClientPro
       </PageHeader>
 
       {/* ─── Category Tabs ─── */}
-      <div className="d-flex flex-wrap gap-2 mb-5 pb-3" style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
+      <div className="d-flex flex-wrap gap-2 mb-5 pb-3" style={{ borderBottom: "1px solid #EAE5DC" }}>
         {categoryConfig.map((cat) => {
           const isActive = activeCategory === cat.name;
           return (
@@ -121,12 +122,13 @@ function NewsContent({ initialCategory: initialCategoryProp }: NewsPageClientPro
                 borderRadius: "999px",
                 fontSize: "13px",
                 padding: "7px 18px",
-                background: isActive ? "#22c55e" : "rgba(255,255,255,0.06)",
-                border: isActive ? "1px solid #22c55e" : "1px solid rgba(255,255,255,0.1)",
-                color: isActive ? "#000" : "#d1d5db",
+                background: isActive ? "#FFCC00" : "#FFFFFF",
+                border: isActive ? "1px solid #FFCC00" : "1px solid #EAE5DC",
+                color: "#1C1F22",
+                boxShadow: isActive ? "0 4px 12px rgba(255, 204, 0, 0.2)" : "0 2px 6px rgba(28, 31, 34, 0.03)",
               }}
             >
-              <i className={`bi ${cat.icon}`} style={{ fontSize: "12px", color: isActive ? "#000" : cat.color }}></i>
+              <i className={`bi ${cat.icon}`} style={{ fontSize: "12px", color: isActive ? "#1C1F22" : "#4A90E2" }}></i>
               {cat.name}
             </button>
           );
@@ -140,44 +142,36 @@ function NewsContent({ initialCategory: initialCategoryProp }: NewsPageClientPro
           {/* ─── Featured Article ─── */}
           {featuredArticle && (
             <div className="mb-5">
-              <Link href={`/news/${featuredArticle.id}`} className="text-decoration-none">
+              <Link href={`/news/${featuredArticle.id}`} className="text-decoration-none d-block">
                 <div
-                  className="rounded-4 overflow-hidden position-relative transition-all hover-glow"
-                  style={{ minHeight: "400px", border: "1px solid rgba(255,255,255,0.08)" }}
+                  className="rounded-4 overflow-hidden position-relative news-featured-banner"
+                  style={{ minHeight: "440px", border: "1px solid #EAE5DC", backgroundColor: "#FAF6EF" }}
                 >
                   {/* Background image */}
                   <img
                     src={featuredArticle.image}
                     alt={featuredArticle.title}
-                    className="w-100 h-100 object-fit-cover position-absolute"
+                    className="w-100 h-100 object-fit-cover position-absolute news-featured-img"
                     style={{ inset: 0 }}
                   />
-                  {/* Gradient overlay */}
-                  <div
-                    className="position-absolute w-100 h-100"
-                    style={{
-                      inset: 0,
-                      background: "linear-gradient(to right, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.7) 55%, rgba(0,0,0,0.1) 100%)",
-                    }}
-                  ></div>
 
-                  {/* Content */}
-                  <div className="position-relative d-flex align-items-center h-100 p-4 p-lg-5" style={{ minHeight: "400px" }}>
-                    <div style={{ maxWidth: "520px" }}>
+                  {/* Frosted Glass Content Panel on Cream Theme */}
+                  <div className="position-relative d-flex align-items-center h-100 p-4 p-lg-5" style={{ minHeight: "440px" }}>
+                    <div className="news-featured-card">
                       <div className="d-flex align-items-center gap-2 mb-3">
-                        <span className="badge bg-success rounded-pill px-3 py-1 fw-bold" style={{ fontSize: "10px", letterSpacing: "0.08em" }}>
+                        <span className="badge rounded-pill px-3 py-1 fw-bold" style={{ fontSize: "11px", letterSpacing: "0.08em", backgroundColor: "#FFCC00", color: "#1C1F22", boxShadow: "0 2px 6px rgba(255, 204, 0, 0.25)" }}>
                           ★ FEATURED
                         </span>
-                        <span className="badge rounded-pill px-3 py-1 fw-semibold" style={{ fontSize: "10px", background: "rgba(255,255,255,0.12)", color: "#d1d5db" }}>
+                        <span className="badge rounded-pill px-3 py-1 fw-bold" style={{ fontSize: "11px", background: "rgba(74, 144, 226, 0.12)", color: "#2B6CB0", border: "1px solid rgba(74, 144, 226, 0.25)" }}>
                           {featuredArticle.category}
                         </span>
                       </div>
 
-                      <h2 className="fw-bold text-white mb-3 font-space-grotesk lh-sm" style={{ fontSize: "clamp(1.4rem, 3vw, 2rem)" }}>
+                      <h2 className="fw-bold mb-3 font-space-grotesk lh-sm news-featured-title" style={{ fontSize: "clamp(1.3rem, 2.5vw, 1.85rem)", color: "#1C1F22" }}>
                         {featuredArticle.title}
                       </h2>
 
-                      <p className="text-muted mb-4 lh-lg" style={{ fontSize: "14px" }}>
+                      <p className="mb-3 lh-base news-featured-summary" style={{ fontSize: "13.5px", color: "#4B5563" }}>
                         {featuredArticle.summary}
                       </p>
 
@@ -187,16 +181,16 @@ function NewsContent({ initialCategory: initialCategoryProp }: NewsPageClientPro
                             src={featuredArticle.authorImage}
                             alt={featuredArticle.author}
                             className="rounded-circle"
-                            style={{ width: "28px", height: "28px", objectFit: "cover", border: "2px solid rgba(34,197,94,0.4)" }}
+                            style={{ width: "28px", height: "28px", objectFit: "cover", border: "2px solid #FFCC00" }}
                           />
                         )}
-                        <span className="text-success fw-semibold" style={{ fontSize: "12px" }}>{featuredArticle.author}</span>
-                        <span className="text-muted" style={{ fontSize: "12px" }}>· {featuredArticle.date} · {featuredArticle.readTime}</span>
+                        <span className="fw-semibold" style={{ fontSize: "12px", color: "#4A90E2" }}>{featuredArticle.author}</span>
+                        <span style={{ fontSize: "12px", color: "#6B7280" }}>· {featuredArticle.date} · {featuredArticle.readTime}</span>
                       </div>
 
                       <span
-                        className="btn btn-success fw-bold rounded-pill px-4 py-2 d-inline-flex align-items-center gap-2"
-                        style={{ fontSize: "13px" }}
+                        className="btn fw-bold rounded-pill px-4 py-2 d-inline-flex align-items-center gap-2 shadow-sm news-featured-btn"
+                        style={{ fontSize: "13.5px", backgroundColor: "#FFCC00", color: "#1C1F22", border: "none" }}
                       >
                         Read Full Article <i className="bi bi-arrow-right"></i>
                       </span>
@@ -212,9 +206,9 @@ function NewsContent({ initialCategory: initialCategoryProp }: NewsPageClientPro
         {/* Articles Grid */}
         <div className={newsAd ? "col-lg-8" : "col-12"}>
           {filteredArticles.length === 0 ? (
-            <div className="text-center py-5 rounded-4" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid var(--border-dark)" }}>
+            <div className="text-center py-5 rounded-4" style={{ background: "#FFFFFF", border: "1px solid var(--border-dark)" }}>
               <i className="bi bi-journal-x text-muted mb-3 d-block" style={{ fontSize: "3.5rem", opacity: 0.3 }}></i>
-              <h4 className="text-white fw-semibold mb-2">{newsError ? "News is temporarily unavailable" : "No Articles Found"}</h4>
+              <h4 className="fw-semibold mb-2" style={{ color: "#1C1F22" }}>{newsError ? "News is temporarily unavailable" : "No Articles Found"}</h4>
               <p className="text-muted small mb-0">{newsError || "Try a different category or adjust your search."}</p>
             </div>
           ) : (
@@ -223,7 +217,7 @@ function NewsContent({ initialCategory: initialCategoryProp }: NewsPageClientPro
                 <div key={article.id} className="col-md-6">
                   <Link href={`/news/${article.id}`} className="text-decoration-none d-block h-100">
                     <div
-                      className="rounded-3 overflow-hidden h-100 d-flex flex-column transition-all hover-translate"
+                      className="rounded-4 overflow-hidden h-100 d-flex flex-column transition-all hover-translate shadow-sm"
                       style={{ background: "var(--bg-card)", border: "1px solid var(--border-dark)" }}
                     >
                       {/* Thumbnail */}
@@ -236,7 +230,7 @@ function NewsContent({ initialCategory: initialCategoryProp }: NewsPageClientPro
                         />
                         <span
                           className="position-absolute top-0 end-0 m-2 badge rounded-pill fw-semibold"
-                          style={{ fontSize: "10px", background: "rgba(0,0,0,0.75)", color: "#86efac", border: "1px solid rgba(34,197,94,0.3)", backdropFilter: "blur(8px)" }}
+                          style={{ fontSize: "10px", background: "rgba(255, 255, 255, 0.9)", color: "#1C1F22", border: "1px solid #EAE5DC", backdropFilter: "blur(8px)" }}
                         >
                           {article.category}
                         </span>
@@ -254,7 +248,7 @@ function NewsContent({ initialCategory: initialCategoryProp }: NewsPageClientPro
                         </div>
 
                         {/* Title */}
-                        <h5 className="text-white fw-semibold mb-2 lh-sm hover-text-success transition-all" style={{ fontSize: "14px", lineHeight: "1.5" }}>
+                        <h5 className="fw-bold mb-2 lh-sm transition-all" style={{ fontSize: "14px", lineHeight: "1.5", color: "#1C1F22" }}>
                           {article.title}
                         </h5>
 
@@ -269,10 +263,10 @@ function NewsContent({ initialCategory: initialCategoryProp }: NewsPageClientPro
                           style={{ borderTop: "1px solid var(--border-dark)" }}
                         >
                           <span className="text-muted d-flex align-items-center gap-1" style={{ fontSize: "11px" }}>
-                            <i className="bi bi-clock text-success" style={{ fontSize: "11px" }}></i>
+                            <i className="bi bi-clock" style={{ fontSize: "11px", color: "#4A90E2" }}></i>
                             {article.readTime}
                           </span>
-                          <span className="fw-semibold text-success d-flex align-items-center gap-1" style={{ fontSize: "12px" }}>
+                          <span className="fw-semibold d-flex align-items-center gap-1" style={{ fontSize: "12px", color: "#4A90E2" }}>
                             Read More <i className="bi bi-arrow-right-short"></i>
                           </span>
                         </div>
@@ -288,8 +282,8 @@ function NewsContent({ initialCategory: initialCategoryProp }: NewsPageClientPro
         {/* ─── Sidebar Ad ─── */}
         {newsAd && (
           <div className="col-lg-4">
-            <div className="sticky-lg-top" style={{ top: "90px" }}>
-              <div className="rounded-4 p-4 text-center" style={{ background: "var(--bg-card)", border: "1px solid var(--border-dark)" }}>
+            <div className="sticky-lg-top" style={{ top: "90px", zIndex: 10 }}>
+              <div className="rounded-4 p-4 text-center shadow-sm" style={{ background: "var(--bg-card)", border: "1px solid var(--border-dark)" }}>
                 <p className="text-muted text-uppercase fw-semibold mb-3" style={{ fontSize: "10px", letterSpacing: "0.12em" }}>
                   Sponsor Showcase
                 </p>
@@ -306,7 +300,7 @@ function NewsContent({ initialCategory: initialCategoryProp }: NewsPageClientPro
                   </span>
                 </div>
 
-                <h6 className="text-white fw-bold mb-1">{newsAd.title}</h6>
+                <h6 className="fw-bold mb-1" style={{ color: "#1C1F22" }}>{newsAd.title}</h6>
                 <p className="text-muted mb-0" style={{ fontSize: "12px" }}>
                   Premium sports coverage and partnerships curated for SportsVerge elite users.
                 </p>
@@ -323,7 +317,7 @@ function NewsContent({ initialCategory: initialCategoryProp }: NewsPageClientPro
 
 export default function NewsPage({ initialCategory = "All News" }: NewsPageClientProps) {
   return (
-    <main className="font-outfit text-white">
+    <main className="font-outfit" style={{ color: "#1C1F22" }}>
       <Suspense
         fallback={
           <div className="container custom-container py-4">

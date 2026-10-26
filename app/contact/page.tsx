@@ -138,13 +138,13 @@ export default function ContactPage() {
   };
 
   return (
-    <main className="bg-page text-white py-5 font-outfit">
+    <main className="bg-page py-5 font-outfit" style={{ color: "#1C1F22" }}>
       <div className="container py-4">
         {/* Header */}
         <div className="row mb-5 text-center text-lg-start">
           <div className="col-12">
-            <h1 className="text-white fw-extrabold display-5 mb-2">Get in Touch</h1>
-            <p className="text-muted lead max-w-600">
+            <h1 className="fw-extrabold display-5 mb-2" style={{ color: "#1C1F22" }}>Get in Touch</h1>
+            <p className="lead max-w-600" style={{ color: "#5A626A" }}>
               Have questions, feedback, or support inquiries? Fill out the form below and our administrators will get back to you shortly.
             </p>
           </div>
@@ -153,21 +153,22 @@ export default function ContactPage() {
         <div className="row g-4">
           {/* Left Column: Form Section */}
           <div className="col-lg-7">
-            <div className="card border-0 rounded-3 p-4 contact-card">
-              <h4 className="text-white fw-normal mb-4 d-flex align-items-center gap-2">
-                <i className="bi bi-envelope-paper-fill text-success"></i>
+            <div className="card border-0 rounded-4 p-4 contact-card">
+              <h4 className="fw-bold mb-4 d-flex align-items-center gap-2" style={{ color: "#1C1F22" }}>
+                <i className="bi bi-envelope-paper-fill" style={{ color: "#4A90E2" }}></i>
                 Send Us a Message
               </h4>
 
               {successMessage && (
-                <div className="alert alert-success bg-success bg-opacity-15 border border-success border-opacity-30 text-white rounded-3 p-3 mb-4 d-flex align-items-center justify-content-between">
+                <div className="alert alert-success bg-opacity-15 border border-success border-opacity-30 rounded-3 p-3 mb-4 d-flex align-items-center justify-content-between" style={{ backgroundColor: "rgba(74, 144, 226, 0.12)", color: "#1C1F22" }}>
                   <div className="d-flex align-items-center gap-2">
-                    <i className="bi bi-check-circle-fill text-success fs-5"></i>
+                    <i className="bi bi-check-circle-fill fs-5" style={{ color: "#4A90E2" }}></i>
                     <span>{successMessage}</span>
                   </div>
                   <button
                     type="button"
-                    className="btn btn-sm btn-outline-success border-0 px-2 text-white"
+                    className="btn btn-sm border-0 px-2 fw-semibold"
+                    style={{ color: "#4A90E2" }}
                     onClick={() => setShowEmailModal(true)}
                   >
                     View Submission Receipt <i className="bi bi-eye ms-1"></i>
@@ -184,7 +185,8 @@ export default function ContactPage() {
                       name="fullName"
                       value={formData.fullName}
                       onChange={handleInputChange}
-                      className={`form-control bg-dark text-white fw-normal border-0 custom-input px-3 py-2.5 ${formErrors.fullName ? "is-invalid" : ""}`}
+                      className={`form-control fw-normal border custom-input px-3 py-2.5 ${formErrors.fullName ? "is-invalid" : ""}`}
+                      style={{ backgroundColor: "#FFFFFF", borderColor: "#EAE5DC", color: "#1C1F22" }}
                       placeholder="e.g. John Doe"
                     />
                     {formErrors.fullName && <div className="invalid-feedback d-block small mt-1">{formErrors.fullName}</div>}
@@ -197,7 +199,8 @@ export default function ContactPage() {
                       name="email"
                       value={formData.email}
                       onChange={handleInputChange}
-                      className={`form-control bg-dark text-white fw-normal border-0 custom-input px-3 py-2.5 ${formErrors.email ? "is-invalid" : ""}`}
+                      className={`form-control fw-normal border custom-input px-3 py-2.5 ${formErrors.email ? "is-invalid" : ""}`}
+                      style={{ backgroundColor: "#FFFFFF", borderColor: "#EAE5DC", color: "#1C1F22" }}
                       placeholder="e.g. john@example.com"
                     />
                     {formErrors.email && <div className="invalid-feedback d-block small mt-1">{formErrors.email}</div>}
@@ -210,7 +213,8 @@ export default function ContactPage() {
                       name="subject"
                       value={formData.subject}
                       onChange={handleInputChange}
-                      className={`form-control bg-dark text-white fw-normal border-0 custom-input px-3 py-2.5 ${formErrors.subject ? "is-invalid" : ""}`}
+                      className={`form-control fw-normal border custom-input px-3 py-2.5 ${formErrors.subject ? "is-invalid" : ""}`}
+                      style={{ backgroundColor: "#FFFFFF", borderColor: "#EAE5DC", color: "#1C1F22" }}
                       placeholder="What is this inquiry regarding?"
                     />
                     {formErrors.subject && <div className="invalid-feedback d-block small mt-1">{formErrors.subject}</div>}
@@ -223,7 +227,8 @@ export default function ContactPage() {
                       rows={5}
                       value={formData.message}
                       onChange={handleInputChange}
-                      className={`form-control bg-dark text-white fw-normal border-0 custom-input px-3 py-2.5 ${formErrors.message ? "is-invalid" : ""}`}
+                      className={`form-control fw-normal border custom-input px-3 py-2.5 ${formErrors.message ? "is-invalid" : ""}`}
+                      style={{ backgroundColor: "#FFFFFF", borderColor: "#EAE5DC", color: "#1C1F22" }}
                       placeholder="Describe your issue or feedback in detail..."
                     ></textarea>
                     {formErrors.message && <div className="invalid-feedback d-block small mt-1">{formErrors.message}</div>}
@@ -233,7 +238,8 @@ export default function ContactPage() {
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="btn btn-success fw-bold px-4 py-2.5 rounded-1 w-100 d-flex align-items-center justify-content-center gap-2"
+                      className="btn fw-bold px-4 py-2.5 rounded-pill w-100 d-flex align-items-center justify-content-center gap-2 shadow-sm"
+                      style={{ backgroundColor: "#FFCC00", color: "#1C1F22", border: "none" }}
                     >
                       {isSubmitting ? (
                         <>
@@ -255,42 +261,42 @@ export default function ContactPage() {
           {/* Right Column: Details & Inquiry History */}
           <div className="col-lg-5">
             {/* Quick Contact info */}
-            <div className="card border-0 rounded-3 p-4 contact-card mb-4">
-              <h4 className="text-white fw-normal mb-4 d-flex align-items-center gap-2">
-                <i className="bi bi-info-circle-fill text-success"></i>
+            <div className="card border-0 rounded-4 p-4 contact-card mb-4">
+              <h4 className="fw-bold mb-4 d-flex align-items-center gap-2" style={{ color: "#1C1F22" }}>
+                <i className="bi bi-info-circle-fill" style={{ color: "#4A90E2" }}></i>
                 Support Center
               </h4>
 
               <div className="d-flex flex-column gap-3">
                 <div className="d-flex align-items-start gap-3">
-                  <div className="contact-info-icon bg-success bg-opacity-10 text-success rounded p-2.5 flex-shrink-0">
+                  <div className="contact-info-icon rounded p-2.5 flex-shrink-0" style={{ background: "rgba(74, 144, 226, 0.12)", color: "#4A90E2" }}>
                     <i className="bi bi-telephone-fill"></i>
                   </div>
                   <div>
                     <span className="text-muted text-xs text-uppercase d-block mb-0.5">Call Support</span>
-                    <span className="text-white fw-semibold small">{siteSettings.contactNumber}</span>
+                    <span className="fw-semibold small" style={{ color: "#1C1F22" }}>{siteSettings.contactNumber}</span>
                     <span className="text-muted text-xs d-block mt-0.5">Toll-free, Mon-Fri 9AM - 6PM EST</span>
                   </div>
                 </div>
 
                 <div className="d-flex align-items-start gap-3">
-                  <div className="contact-info-icon bg-success bg-opacity-10 text-success rounded p-2.5 flex-shrink-0">
+                  <div className="contact-info-icon rounded p-2.5 flex-shrink-0" style={{ background: "rgba(74, 144, 226, 0.12)", color: "#4A90E2" }}>
                     <i className="bi bi-envelope-at-fill"></i>
                   </div>
                   <div>
                     <span className="text-muted text-xs text-uppercase d-block mb-0.5">Email Admin</span>
-                    <span className="text-white fw-semibold small">{siteSettings.contactEmail}</span>
+                    <span className="fw-semibold small" style={{ color: "#1C1F22" }}>{siteSettings.contactEmail}</span>
                     <span className="text-muted text-xs d-block mt-0.5">Direct ticket routing for enterprise users</span>
                   </div>
                 </div>
 
                 <div className="d-flex align-items-start gap-3">
-                  <div className="contact-info-icon bg-success bg-opacity-10 text-success rounded p-2.5 flex-shrink-0">
+                  <div className="contact-info-icon rounded p-2.5 flex-shrink-0" style={{ background: "rgba(74, 144, 226, 0.12)", color: "#4A90E2" }}>
                     <i className="bi bi-geo-alt-fill"></i>
                   </div>
                   <div>
                     <span className="text-muted text-xs text-uppercase d-block mb-0.5">Headquarters</span>
-                    <span className="text-white fw-semibold small">SportsVerge Inc.</span>
+                    <span className="fw-semibold small" style={{ color: "#1C1F22" }}>SportsVerge Inc.</span>
                     <span className="text-muted text-xs d-block mt-0.5">100 Tech Plaza, Suite 400, New York, NY 10001</span>
                   </div>
                 </div>

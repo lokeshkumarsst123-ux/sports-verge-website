@@ -16,24 +16,37 @@ const sports = [
 
 export default function SportsTabs({ activeTab, onTabChange }: SportsTabsProps) {
   return (
-    <div className="sports-tabs-container">
-      <ul className="nav nav-pills custom-tabs d-flex flex-nowrap overflow-x-auto scrollbar-none gap-2 pb-2">
+    <div className="sports-tabs-container w-100">
+      <div className="d-flex flex-nowrap overflow-x-auto scrollbar-none gap-2 pb-1">
         {sports.map((sport) => {
           const isActive = activeTab === sport.id;
           return (
-            <li className="nav-item flex-shrink-0" key={sport.id}>
-              <button
-                className={`nav-link px-4 py-2 d-flex align-items-center gap-2 fw-semibold text-nowrap transition-smooth ${isActive ? "active" : ""}`}
-                onClick={() => onTabChange(sport.id)}
-                type="button"
-              >
-                <i className={`bi ${sport.icon} ${isActive ? "text-white" : "text-muted"} fs-14`}></i>
-                {sport.label}
-              </button>
-            </li>
+            <button
+              key={sport.id}
+              onClick={() => onTabChange(sport.id)}
+              type="button"
+              className="btn border-0 rounded-pill px-4 py-2 fw-bold text-uppercase flex-shrink-0 d-flex align-items-center gap-2 transition-all shadow-none"
+              style={{
+                fontSize: "12px",
+                letterSpacing: "0.04em",
+                backgroundColor: isActive ? "#FFCC00" : "#FAF8F5",
+                color: isActive ? "#1C1F22" : "#64748B",
+                border: `1px solid ${isActive ? "#FFCC00" : "#EAE5DC"}`,
+                fontWeight: 700,
+              }}
+            >
+              <i
+                className={`bi ${sport.icon}`}
+                style={{
+                  fontSize: "13px",
+                  color: isActive ? "#1C1F22" : "#94A3B8",
+                }}
+              />
+              {sport.label}
+            </button>
           );
         })}
-      </ul>
+      </div>
     </div>
   );
 }

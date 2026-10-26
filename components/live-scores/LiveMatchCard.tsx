@@ -17,123 +17,216 @@ export default function LiveMatchCard({ match }: LiveMatchCardProps) {
     return <FootballMatchCard match={match} />;
   }
 
-  const getSportIcon = (sport: string) => {
+  const getSportBadge = (sport: string) => {
     switch (sport.toLowerCase()) {
       case "cricket":
-        return "bi-activity";
+        return { label: "Cricket", icon: "bi-activity", color: "#16a34a", bg: "rgba(22, 163, 74, 0.1)", border: "rgba(22, 163, 74, 0.25)" };
       case "football":
-        return "bi-dribbble";
+        return { label: "Football", icon: "bi-dribbble", color: "#2563eb", bg: "rgba(37, 99, 235, 0.1)", border: "rgba(37, 99, 235, 0.25)" };
       case "nfl":
-        return "bi-trophy-fill";
+        return { label: "NFL", icon: "bi-trophy-fill", color: "#d97706", bg: "rgba(217, 119, 6, 0.1)", border: "rgba(217, 119, 6, 0.25)" };
       default:
-        return "bi-sport";
+        return { label: sport, icon: "bi-trophy", color: "#64748b", bg: "rgba(100, 116, 139, 0.1)", border: "rgba(100, 116, 139, 0.25)" };
     }
   };
 
+  const badge = getSportBadge(match.sport);
+
   return (
     <div
-      className="card bg-card border border-dark rounded-3 mb-4 p-4 position-relative overflow-hidden live-match-card"
+      className="card rounded-4 mb-4 p-4 position-relative overflow-hidden transition-all"
+      style={{
+        background: "#ffffff",
+        border: "1px solid #eae5dc",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.02)",
+      }}
     >
-      {/* Top Section: Competition & Sport Tag */}
-      <div className="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom border-secondary border-opacity-10">
-        <div className="d-flex align-items-center gap-2">
+      {/* ── Top Header: Sport Badge • Competition • Status • Clock ── */}
+      <div className="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3 pb-3 border-bottom" style={{ borderColor: "#eae5dc" }}>
+        <div className="d-flex align-items-center gap-2 flex-wrap">
           <span
-            className="d-flex align-items-center justify-content-center text-success bg-success bg-opacity-10 rounded-circle w-24px h-24px"
+            className="badge rounded-pill px-2 py-1 fw-bold text-uppercase d-flex align-items-center gap-1"
+            style={{
+              fontSize: "10px",
+              letterSpacing: "0.04em",
+              backgroundColor: badge.bg,
+              color: badge.color,
+              border: `1px solid ${badge.border}`,
+            }}
           >
-            <i className={`bi ${getSportIcon(match.sport)} fs-12`}></i>
+            <i className={`bi ${badge.icon}`} style={{ fontSize: "11px" }} />
+            {badge.label}
           </span>
-          <span className="fw-semibold text-light small uppercase">{match.competitionName}</span>
+          <span className="fw-bold small text-truncate" style={{ color: "#1c1f22" }}>
+            {match.competitionName}
+          </span>
         </div>
-        <div className="d-flex align-items-center gap-2 text-muted fs-11">
-          <i className="bi bi-clock-history"></i>
-          <span>Updated {match.lastUpdated}</span>
+
+        <div className="d-flex align-items-center gap-2">
+          <StatusBadge status={match.matchStatus} />
+          {match.matchTime && (
+            <span
+              className="badge rounded-pill px-2.5 py-1 font-monospace fw-bold"
+              style={{
+                fontSize: "11px",
+                background: "#faf8f5",
+                border: "1px solid #eae5dc",
+                color: "#4b5563",
+              }}
+            >
+              {match.matchTime}
+            </span>
+          )}
         </div>
       </div>
 
-      {/* Match Title / Info */}
-      <div className="mb-3">
-        <div className="text-muted small fw-medium">{match.matchName}</div>
-      </div>
-
-      {/* Core Teams Grid */}
-      <div className="row align-items-center g-3 mb-3">
-        {/* Teams List (Column Left) */}
-        <div className="col-12 col-md-8 d-flex flex-column gap-3">
-          {/* Team 1 */}
-          <div className="d-flex align-items-center justify-content-between gap-2 w-100">
-            <div className="d-flex align-items-center gap-2 overflow-hidden min-w-0 flex-grow-1">
-              <div
-                className="d-flex align-items-center justify-content-center bg-dark rounded p-1 border border-secondary border-opacity-10 flex-shrink-0 w-32px h-32px position-relative"
-              >
-                <Image
-                  src={match.team1Logo}
-                  alt={match.team1Name}
-                  width={24}
-                  height={24} className="object-fit-contain"
-                />
-              </div>
-              <span className="fw-semibold text-white text-truncate flex-grow-1">{match.team1Name}</span>
+      {/* ── Teams & Score Display ── */}
+      <div
+        className="d-flex flex-column rounded-3 overflow-hidden my-2.5"
+        style={{ background: "#faf8f5", border: "1px solid #eae5dc" }}
+      >
+        {/* Team 1 */}
+        <div
+          className="d-flex align-items-center justify-content-between p-3"
+          style={{ borderBottom: "1px solid #eae5dc" }}
+        >
+          <div className="d-flex align-items-center gap-3 overflow-hidden min-w-0">
+            <div
+              className="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+              style={{
+                width: "40px",
+                height: "40px",
+                background: "#ffffff",
+                border: "1px solid #eae5dc",
+                padding: "6px",
+              }}
+            >
+              <img
+                src={match.team1Logo}
+                alt={match.team1Name}
+                width={26}
+                height={26}
+                className="object-fit-contain"
+                onError={(e) => {
+                  (e.currentTarget as HTMLImageElement).src = "/assets/imgs/teams/team-placeholder.svg";
+                }}
+              />
+            </div>
+            <div className="min-w-0">
+              <span className="fw-bold d-block text-truncate" style={{ color: "#1c1f22", fontSize: "15px" }}>
+                {match.team1Name}
+              </span>
               {match.team1Overs && (
-                <span className="text-muted small text-nowrap flex-shrink-0">({match.team1Overs} ov)</span>
+                <span className="text-muted small font-monospace">
+                  {match.team1Overs} overs
+                </span>
               )}
             </div>
-            <div className="fs-5 fw-bold text-success font-monospace flex-shrink-0 ps-2">{match.team1Score}</div>
           </div>
-
-          {/* Team 2 */}
-          <div className="d-flex align-items-center justify-content-between gap-2 w-100">
-            <div className="d-flex align-items-center gap-2 overflow-hidden min-w-0 flex-grow-1">
-              <div
-                className="d-flex align-items-center justify-content-center bg-dark rounded p-1 border border-secondary border-opacity-10 flex-shrink-0 w-32px h-32px position-relative"
-              >
-                <Image
-                  src={match.team2Logo}
-                  alt={match.team2Name}
-                  width={24}
-                  height={24} className="object-fit-contain"
-                />
-              </div>
-              <span className="fw-semibold text-white text-truncate flex-grow-1">{match.team2Name}</span>
-              {match.team2Overs && (
-                <span className="text-muted small text-nowrap flex-shrink-0">({match.team2Overs} ov)</span>
-              )}
-            </div>
-            <div className="fs-5 fw-bold text-success font-monospace flex-shrink-0 ps-2">{match.team2Score}</div>
+          <div className="text-end flex-shrink-0 ps-3">
+            <span
+              className="font-monospace fw-bold"
+              style={{
+                fontSize: "22px",
+                color: "#1c1f22",
+                letterSpacing: "-0.02em",
+              }}
+            >
+              {match.team1Score || "—"}
+            </span>
           </div>
         </div>
 
-        {/* Status Box (Column Right on Desktop, wraps on Mobile) */}
-        <div className="col-12 col-md-4 d-flex flex-row flex-md-column align-items-center justify-content-between justify-content-md-center gap-2 border-start-md ps-md-4">
-          <div className="d-flex flex-column align-items-md-center">
-            <span className="text-muted d-none d-md-block mb-1 fs-11">STATUS</span>
-            <StatusBadge status={match.matchStatus} />
+        {/* Team 2 */}
+        <div className="d-flex align-items-center justify-content-between p-3">
+          <div className="d-flex align-items-center gap-3 overflow-hidden min-w-0">
+            <div
+              className="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+              style={{
+                width: "40px",
+                height: "40px",
+                background: "#ffffff",
+                border: "1px solid #eae5dc",
+                padding: "6px",
+              }}
+            >
+              <img
+                src={match.team2Logo}
+                alt={match.team2Name}
+                width={26}
+                height={26}
+                className="object-fit-contain"
+                onError={(e) => {
+                  (e.currentTarget as HTMLImageElement).src = "/assets/imgs/teams/team-placeholder.svg";
+                }}
+              />
+            </div>
+            <div className="min-w-0">
+              <span className="fw-bold d-block text-truncate" style={{ color: "#1c1f22", fontSize: "15px" }}>
+                {match.team2Name}
+              </span>
+              {match.team2Overs && (
+                <span className="text-muted small font-monospace">
+                  {match.team2Overs} overs
+                </span>
+              )}
+            </div>
           </div>
-          <div className="text-start text-md-center mt-2 mt-md-0 d-flex flex-row flex-md-column align-items-center gap-2">
-            <span className="text-muted d-none d-md-block mb-0.5 fs-11">TIME</span>
-            <div className="small font-monospace text-light">{match.matchTime}</div>
+          <div className="text-end flex-shrink-0 ps-3">
+            <span
+              className="font-monospace fw-bold"
+              style={{
+                fontSize: "22px",
+                color: "#1c1f22",
+                letterSpacing: "-0.02em",
+              }}
+            >
+              {match.team2Score || "—"}
+            </span>
           </div>
         </div>
       </div>
 
-      {/* Sport Match Notes (e.g. target, winner statement) */}
+      {/* ── Live Commentary / Note Banner (if present) ── */}
       {match.note && (
-        <div className="bg-success bg-opacity-10 border border-success border-opacity-20 rounded p-3 mb-3 text-success small fw-medium">
-          <i className="bi bi-info-circle me-2"></i>
-          {match.note}
+        <div
+          className="d-flex align-items-center gap-2 p-2.5 my-2 rounded-3"
+          style={{
+            background: "#fffdf0",
+            border: "1px solid #fde68a",
+            borderLeft: "4px solid #ffcc00",
+          }}
+        >
+          <i className="bi bi-info-circle-fill flex-shrink-0" style={{ fontSize: "13px", color: "#d97706" }} />
+          <span className="small fw-semibold" style={{ color: "#78350f", lineHeight: 1.4, fontSize: "12.5px" }}>
+            {match.note}
+          </span>
         </div>
       )}
 
-      {/* Bottom Metadata & Button */}
-      <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3 pt-3 border-top border-secondary border-opacity-10">
-        <div className="d-flex align-items-center gap-2 text-muted fs-12">
-          <i className="bi bi-geo-alt"></i>
-          <span className="text-truncate max-w-250px">{match.venue}</span>
+      {/* ── Card Footer: Venue & Action Button ── */}
+      <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3 pt-3 mt-2 border-top" style={{ borderColor: "#eae5dc" }}>
+        <div className="d-flex align-items-center gap-2 text-muted small">
+          <i className="bi bi-geo-alt" style={{ color: "#94a3b8" }} />
+          <span className="text-truncate" style={{ maxWidth: "260px" }}>
+            {match.venue || "Stadium Venue"}
+          </span>
         </div>
+
         <Link
-          href={`/live-scores/${match.id}`}
-          className="btn btn-outline-success btn-sm w-100 w-sm-auto px-4 py-2 fw-semibold text-uppercase fs-12 ls-05"
+          href={`/live-scores/${match.id}?sport=${match.sport.toLowerCase()}`}
+          className="btn rounded-pill px-4 py-2 fw-bold text-uppercase d-inline-flex align-items-center gap-2 transition-all w-100 w-sm-auto justify-content-center shadow-none"
+          style={{
+            fontSize: "12px",
+            letterSpacing: "0.04em",
+            backgroundColor: "#FFCC00",
+            color: "#1C1F22",
+            border: "1px solid #FFCC00",
+            fontWeight: 700,
+          }}
         >
-          View Match Details
+          <span>View Match Details</span>
+          <i className="bi bi-arrow-right" style={{ fontSize: "12px", color: "#1C1F22" }} />
         </Link>
       </div>
     </div>
