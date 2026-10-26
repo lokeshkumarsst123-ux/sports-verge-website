@@ -26,7 +26,7 @@ const toCard = (match: ReturnType<typeof mapCricketMatch> | ReturnType<typeof ma
   awayOvers: match.team2Overs,
   note: match.note,
   venue: match.venue,
-  sport: match.sport,
+  sport: match.sport as LiveScoreMatch["sport"],
 });
 
 export default function LiveScores() {

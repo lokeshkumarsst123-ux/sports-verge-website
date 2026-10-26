@@ -337,11 +337,41 @@ export interface NFLMatchData {
   team2Roster: NFLTeamRoster;
 }
 
+export interface AFLMatchData {
+  league: string;
+  season: string;
+  round: string;
+  matchDate: string;
+  matchTime: string;
+  stadium: string;
+  city: string;
+  umpires: string;
+  quarter: string;
+  gameClock: string;
+  matchStatus: string;
+  attendance?: string;
+  weather?: string;
+  team1Score?: { goals: number; behinds: number; total: number };
+  team2Score?: { goals: number; behinds: number; total: number };
+  quarterScores: {
+    team1: { q1: string; q2: string; q3: string; q4: string; final: string };
+    team2: { q1: string; q2: string; q3: string; q4: string; final: string };
+  };
+  team1Stats: Record<string, any>;
+  team2Stats: Record<string, any>;
+  leadersTeam1?: Record<string, any>;
+  leadersTeam2?: Record<string, any>;
+  scoringTimeline: Array<{ quarter: string; time: string; team: number; type: string; player: string }>;
+  events: Array<{ quarter: string; time: string; type: string; detail: string }>;
+  team1Roster: { starting18: string[]; interchange: string[]; coach: string };
+  team2Roster: { starting18: string[]; interchange: string[]; coach: string };
+}
+
 // ─── Core Match Detail ────────────────────────────────────────────────────────
 
 export interface LiveScoreMatchDetail {
   id: string;
-  sport: "cricket" | "football" | "NFL";
+  sport: "cricket" | "football" | "NFL" | "AFL";
   competitionName: string;
   matchName: string;
   team1Logo: string;
@@ -373,4 +403,6 @@ export interface LiveScoreMatchDetail {
   // NFL-specific optional fields
   nflData?: NFLMatchData;
 
+  // AFL-specific optional fields
+  aflData?: AFLMatchData;
 }
